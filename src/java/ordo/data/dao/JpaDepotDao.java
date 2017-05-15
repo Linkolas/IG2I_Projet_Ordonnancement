@@ -5,8 +5,7 @@
  */
 package ordo.data.dao;
 
-import ordo.data.entities.Depot;
-import ordo.data.entities.Lieu;
+import ordo.data.entities.*;
 
 /**
  *

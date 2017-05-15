@@ -11,21 +11,21 @@ import ordo.data.entities.*;
  *
  * @author Nicolas
  */
-public class JpaLieuDao extends JpaDao<Lieu> {
+public class JpaSolutionDao extends JpaDao<Solution> {
     
     
-    private static JpaLieuDao instance = null;
+    private static JpaSolutionDao instance = null;
     
-    public static JpaLieuDao getInstance() {
+    public static JpaSolutionDao getInstance() {
         if (instance == null) {
-            instance = new JpaLieuDao();
+            instance = new JpaSolutionDao();
         }
         
         return instance;
     }
     
-    private JpaLieuDao() {
-        super(Lieu.class);
+    private JpaSolutionDao() {
+        super(Solution.class);
     }
     
 }
