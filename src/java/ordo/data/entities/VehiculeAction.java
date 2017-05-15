@@ -21,25 +21,26 @@ import javax.persistence.OneToMany;
  * @author Nicolas
  */
 @Entity
-public class Vehicule implements Serializable {
+public class VehiculeAction implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column
-    private float distanceParcourue;
-    @Column
-    private float distanceParcourue_train;
-    @Column
-    private float tempsTrajet;
-    @OneToMany(mappedBy = "vehicule")
-    private List<SwapBody> swapBodies;
-    @OneToMany(mappedBy = "vehicule")
-    private List<CommandeClient> commandes;
-    @OneToMany(mappedBy = "vehicule")
-    private List<VehiculeAction> actions;
     
-    public Vehicule() {
+    @Column
+    private EnumAction enumAction;
+    @Column
+    private float duree;
+    @Column
+    private float distance;
+    @ManyToOne
+    private Vehicule vehicule;
+    @ManyToOne
+    private Lieu depart;
+    @ManyToOne
+    private Lieu arrivee;
+    
+    public VehiculeAction() {
     }
     
     public Long getId() {
@@ -50,36 +51,52 @@ public class Vehicule implements Serializable {
         this.id = id;
     }
 
-    public List<SwapBody> getSwapBodies() {
-        return swapBodies;
+    public EnumAction getEnumAction() {
+        return enumAction;
     }
 
-    public void setSwapBodies(List<SwapBody> swapBodies) {
-        this.swapBodies = swapBodies;
+    public void setEnumAction(EnumAction enumAction) {
+        this.enumAction = enumAction;
     }
 
-    public float getDistanceParcourue() {
-        return distanceParcourue;
+    public float getDuree() {
+        return duree;
     }
 
-    public void setDistanceParcourue(float distanceParcourue) {
-        this.distanceParcourue = distanceParcourue;
+    public void setDuree(float duree) {
+        this.duree = duree;
     }
 
-    public float getDistanceParcourue_train() {
-        return distanceParcourue_train;
+    public float getDistance() {
+        return distance;
     }
 
-    public void setDistanceParcourue_train(float distanceParcourue_train) {
-        this.distanceParcourue_train = distanceParcourue_train;
+    public void setDistance(float distance) {
+        this.distance = distance;
     }
 
-    public float getTempsTrajet() {
-        return tempsTrajet;
+    public Vehicule getVehicule() {
+        return vehicule;
     }
 
-    public void setTempsTrajet(float tempsTrajet) {
-        this.tempsTrajet = tempsTrajet;
+    public void setVehicule(Vehicule vehicule) {
+        this.vehicule = vehicule;
+    }
+
+    public Lieu getDepart() {
+        return depart;
+    }
+
+    public void setDepart(Lieu depart) {
+        this.depart = depart;
+    }
+
+    public Lieu getArrivee() {
+        return arrivee;
+    }
+
+    public void setArrivee(Lieu arrivee) {
+        this.arrivee = arrivee;
     }
     
 
@@ -96,10 +113,10 @@ public class Vehicule implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Vehicule)) {
+        if (!(object instanceof VehiculeAction)) {
             return false;
         }
-        Vehicule other = (Vehicule) object;
+        VehiculeAction other = (VehiculeAction) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -112,4 +129,12 @@ public class Vehicule implements Serializable {
     }
     // </editor-fold>
 
+    public static enum EnumAction {
+        DEPLACEMENT,
+        PARK,
+        PICKUP,
+        SWAP,
+        EXCHANGE,
+    }
+    
 }
