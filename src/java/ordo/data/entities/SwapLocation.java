@@ -6,6 +6,7 @@
 package ordo.data.entities;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,13 +17,16 @@ import javax.persistence.Id;
  * @author Nicolas
  */
 @Entity
-public class Depot extends Lieu implements Serializable {
-
+public class SwapLocation extends Lieu implements Serializable {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    
+    @Column
+    private String libelle;
 
-    public Depot() {
+    public SwapLocation() {
     }
     
     public Long getId() {
@@ -31,6 +35,14 @@ public class Depot extends Lieu implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+    
+    public String getLibelle() {
+        return libelle;
+    }
+
+    public void setLibelle(String libelle) {
+        this.libelle = libelle;
     }
 
     
@@ -47,10 +59,10 @@ public class Depot extends Lieu implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Depot)) {
+        if (!(object instanceof SwapLocation)) {
             return false;
         }
-        Depot other = (Depot) object;
+        SwapLocation other = (SwapLocation) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }

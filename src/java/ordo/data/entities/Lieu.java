@@ -17,7 +17,7 @@ import javax.persistence.Id;
  * @author Nicolas
  */
 @Entity
-public abstract class Lieu implements Serializable {
+public class Lieu implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
