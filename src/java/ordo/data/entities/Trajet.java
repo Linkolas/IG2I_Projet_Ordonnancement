@@ -33,6 +33,9 @@ public class Trajet implements Serializable {
     @ManyToOne
     private Lieu destination;
 
+    public Trajet() {
+    }
+    
     public Long getId() {
         return id;
     }

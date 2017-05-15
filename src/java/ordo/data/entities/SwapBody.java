@@ -30,6 +30,9 @@ public class SwapBody implements Serializable {
     @ManyToOne @JoinColumn(nullable = true)
     private Lieu lieu;
 
+    public SwapBody() {
+    }
+    
     public Long getId() {
         return id;
     }
