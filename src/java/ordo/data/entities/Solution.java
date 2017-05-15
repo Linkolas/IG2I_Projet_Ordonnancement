@@ -21,27 +21,18 @@ import javax.persistence.OneToMany;
  * @author Nicolas
  */
 @Entity
-public class Vehicule implements Serializable {
+public class Solution implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column
-    private float distanceParcourue;
-    @Column
-    private float distanceParcourue_train;
-    @Column
-    private float tempsTrajet;
-    @OneToMany(mappedBy = "vehicule")
-    private List<SwapBody> swapBodies;
-    @OneToMany(mappedBy = "vehicule")
-    private List<CommandeClient> commandes;
-    @OneToMany(mappedBy = "vehicule")
-    private List<VehiculeAction> actions;
-    @ManyToOne
-    private Solution solution;
     
-    public Vehicule() {
+    @Column
+    private String libelle;
+    @OneToMany(mappedBy = "solution")
+    private List<Vehicule> vehicules;
+    
+    public Solution() {
     }
     
     public Long getId() {
@@ -52,38 +43,6 @@ public class Vehicule implements Serializable {
         this.id = id;
     }
 
-    public List<SwapBody> getSwapBodies() {
-        return swapBodies;
-    }
-
-    public void setSwapBodies(List<SwapBody> swapBodies) {
-        this.swapBodies = swapBodies;
-    }
-
-    public float getDistanceParcourue() {
-        return distanceParcourue;
-    }
-
-    public void setDistanceParcourue(float distanceParcourue) {
-        this.distanceParcourue = distanceParcourue;
-    }
-
-    public float getDistanceParcourue_train() {
-        return distanceParcourue_train;
-    }
-
-    public void setDistanceParcourue_train(float distanceParcourue_train) {
-        this.distanceParcourue_train = distanceParcourue_train;
-    }
-
-    public float getTempsTrajet() {
-        return tempsTrajet;
-    }
-
-    public void setTempsTrajet(float tempsTrajet) {
-        this.tempsTrajet = tempsTrajet;
-    }
-    
 
     // <editor-fold defaultstate="collapsed" desc=".equals, .toString, ...">
     private static final long serialVersionUID = 1L;
@@ -98,10 +57,10 @@ public class Vehicule implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Vehicule)) {
+        if (!(object instanceof Solution)) {
             return false;
         }
-        Vehicule other = (Vehicule) object;
+        Solution other = (Solution) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
