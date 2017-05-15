@@ -83,6 +83,30 @@ public class Vehicule implements Serializable {
     public void setTempsTrajet(float tempsTrajet) {
         this.tempsTrajet = tempsTrajet;
     }
+
+    public List<CommandeClient> getCommandes() {
+        return commandes;
+    }
+
+    public void setCommandes(List<CommandeClient> commandes) {
+        this.commandes = commandes;
+    }
+
+    public List<VehiculeAction> getActions() {
+        return actions;
+    }
+
+    public void setActions(List<VehiculeAction> actions) {
+        this.actions = actions;
+    }
+
+    public Solution getSolution() {
+        return solution;
+    }
+
+    public void setSolution(Solution solution) {
+        this.solution = solution;
+    }
     
 
     // <editor-fold defaultstate="collapsed" desc=".equals, .toString, ...">

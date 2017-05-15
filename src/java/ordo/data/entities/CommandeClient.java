@@ -65,6 +65,14 @@ public class CommandeClient extends Lieu implements Serializable {
     public void setDureeService(float dureeService) {
         this.dureeService = dureeService;
     }
+
+    public Vehicule getVehicule() {
+        return vehicule;
+    }
+
+    public void setVehicule(Vehicule vehicule) {
+        this.vehicule = vehicule;
+    }
     
     
     // <editor-fold defaultstate="collapsed" desc=".equals, .toString, ...">

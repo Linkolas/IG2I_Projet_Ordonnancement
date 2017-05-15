@@ -58,6 +58,14 @@ public class SwapBody implements Serializable {
     public void setLieu(Lieu lieu) {
         this.lieu = lieu;
     }
+
+    public Vehicule getVehicule() {
+        return vehicule;
+    }
+
+    public void setVehicule(Vehicule vehicule) {
+        this.vehicule = vehicule;
+    }
     
 
     // <editor-fold defaultstate="collapsed" desc=".equals, .toString, ...">

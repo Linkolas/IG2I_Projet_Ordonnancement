@@ -44,6 +44,39 @@ public class Trajet implements Serializable {
         this.id = id;
     }
 
+    public float getDuree() {
+        return duree;
+    }
+
+    public void setDuree(float duree) {
+        this.duree = duree;
+    }
+
+    public float getDistance() {
+        return distance;
+    }
+
+    public void setDistance(float distance) {
+        this.distance = distance;
+    }
+
+    public Lieu getDepart() {
+        return depart;
+    }
+
+    public void setDepart(Lieu depart) {
+        this.depart = depart;
+    }
+
+    public Lieu getDestination() {
+        return destination;
+    }
+
+    public void setDestination(Lieu destination) {
+        this.destination = destination;
+    }
+    
+
     // <editor-fold defaultstate="collapsed" desc=".equals, .toString, ...">
     private static final long serialVersionUID = 1L;
     
