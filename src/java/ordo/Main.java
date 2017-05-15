@@ -13,10 +13,7 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("WORKS");
         
-        Lieu l = new Lieu();
-        l.setVille("Lieu");
         JpaLieuDao daoLieu = JpaLieuDao.getInstance();
-        daoLieu.create(l);
         daoLieu.findAll();
         
         Depot d = new Depot();
