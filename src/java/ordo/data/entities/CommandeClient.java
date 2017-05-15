@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 /**
  *
@@ -27,6 +28,8 @@ public class CommandeClient extends Lieu implements Serializable {
     private float quantiteVoulue;
     @Column
     private float dureeService;
+    @ManyToOne
+    private Vehicule vehicule;
     
     public CommandeClient() {
     }

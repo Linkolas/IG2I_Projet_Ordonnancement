@@ -8,6 +8,7 @@
     <class>ordo.data.entities.CommandeClient</class>
     <class>ordo.data.entities.Trajet</class>
     <class>ordo.data.entities.SwapBody</class>
+    <class>ordo.data.entities.Vehicule</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/Projet_Ordo"/>

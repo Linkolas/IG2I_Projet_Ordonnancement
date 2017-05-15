@@ -6,6 +6,7 @@
 package ordo.data.entities;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,26 +14,30 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 /**
  *
  * @author Nicolas
  */
 @Entity
-public class SwapBody implements Serializable {
+public class Vehicule implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
     @Column
-    private float quantite;
-    @ManyToOne @JoinColumn(nullable = true)
-    private Lieu lieu;
-    @ManyToOne
-    private Vehicule vehicule;
-
-    public SwapBody() {
+    private float distanceParcourue;
+    @Column
+    private float distanceParcourue_train;
+    @Column
+    private float tempsTrajet;
+    @OneToMany(mappedBy = "vehicule")
+    private List<SwapBody> swapBodies;
+    @OneToMany(mappedBy = "vehicule")
+    private List<CommandeClient> commandes;
+    
+    public Vehicule() {
     }
     
     public Long getId() {
@@ -42,21 +47,37 @@ public class SwapBody implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-    
-    public float getQuantite() {
-        return quantite;
+
+    public List<SwapBody> getSwapBodies() {
+        return swapBodies;
     }
 
-    public void setQuantite(float quantite) {
-        this.quantite = quantite;
+    public void setSwapBodies(List<SwapBody> swapBodies) {
+        this.swapBodies = swapBodies;
     }
 
-    public Lieu getLieu() {
-        return lieu;
+    public float getDistanceParcourue() {
+        return distanceParcourue;
     }
 
-    public void setLieu(Lieu lieu) {
-        this.lieu = lieu;
+    public void setDistanceParcourue(float distanceParcourue) {
+        this.distanceParcourue = distanceParcourue;
+    }
+
+    public float getDistanceParcourue_train() {
+        return distanceParcourue_train;
+    }
+
+    public void setDistanceParcourue_train(float distanceParcourue_train) {
+        this.distanceParcourue_train = distanceParcourue_train;
+    }
+
+    public float getTempsTrajet() {
+        return tempsTrajet;
+    }
+
+    public void setTempsTrajet(float tempsTrajet) {
+        this.tempsTrajet = tempsTrajet;
     }
     
 
@@ -73,10 +94,10 @@ public class SwapBody implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof SwapBody)) {
+        if (!(object instanceof Vehicule)) {
             return false;
         }
-        SwapBody other = (SwapBody) object;
+        Vehicule other = (Vehicule) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
