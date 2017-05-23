@@ -17,7 +17,7 @@ import ordo.data.dao.IDaoBase;
  */
 public class ServletContextListener implements javax.servlet.ServletContextListener {
  
-    // List of the registered IDaoBase objects to close.
+    /** List of the registered IDaoBase objects to close. */
     static private List<IDaoBase> daos = new ArrayList<>();
     
     /**
