@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ordo.data.dao.jpa;
 
 import java.util.Collection;
@@ -16,32 +11,50 @@ import ordo.context.ServletContextListener;
 import ordo.data.dao.IDaoBase;
 
 /**
- *
+ * JPA implementation of IDaoBase.
+ * Extend this class when creating a new entity model to persist.
+ * 
  * @author Nicolas
  */
 public abstract class JpaDao<T> implements IDaoBase<T> {
 
-    EntityManagerFactory emf = null;
-    EntityManager em = null;
-    EntityTransaction et = null;
+    /** The EMF must be closed when the app does not need it anymore. */
+    private EntityManagerFactory emf = null;
+    /** Used to interact with the persistence context. */
+    protected EntityManager em = null;
+    /** Used to control transactions with persistence context. */
+    protected EntityTransaction et = null;
     
-    Class<T> classe;
-    String entityTableName;
+    /** The class of the entity wich this JPA is devoted to. */
+    private Class<T> entityClass;
+    /** The Table in which the Entity is stored. */
+    protected String entityTableName;
     
-    public JpaDao(Class<T> c) {
-        classe = c;
+    /**
+     * Initialize the JpaDao object for the given Entity class.
+     * @param entityClass The Entity class for which this JpaDao is created.
+     */
+    public JpaDao(Class<T> entityClass) {
+        // Save the Entity data : its class and its table name.
+        this.entityClass = entityClass;
         
-        if(null != c.getAnnotation(Table.class)) {
-            entityTableName = c.getAnnotation(Table.class).name();
+        // We have to check if a @Table annotation has been used.
+        if(null != this.entityClass.getAnnotation(Table.class)) {
+            // If it has, table the specified name.
+            entityTableName = this.entityClass.getAnnotation(Table.class).name();
         } else {
-            entityTableName = c.getSimpleName();
+            // If not, default to the class name.
+            entityTableName = this.entityClass.getSimpleName();
         }
         
+        // Create the Persistence environment for this entity class.
         emf = Persistence.createEntityManagerFactory("ProjetOrdonnancementPU");
         em = emf.createEntityManager();
         et = em.getTransaction();
         
-        ServletContextListener.addJpaDao(this);
+        // Register this Dao so it gets closed when needed.
+        // FIXME: This should not be done here, but in a Factory.
+        ServletContextListener.registerDao(this);
     }
     
     @Override
@@ -60,10 +73,10 @@ public abstract class JpaDao<T> implements IDaoBase<T> {
         
         return retour;
     }
-
+    
     @Override
     public T find(Integer id) {
-        return em.find(classe, id);
+        return em.find(entityClass, id);
     }
 
     @Override
@@ -123,7 +136,7 @@ public abstract class JpaDao<T> implements IDaoBase<T> {
 
     @Override
     public void close() {
-        System.out.println("Closing DAO");
+        System.out.println("Closing DAO for entity " + entityClass.getSimpleName());
         em.close();
         emf.close();
     }

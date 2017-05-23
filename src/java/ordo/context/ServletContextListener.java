@@ -1,25 +1,32 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ordo.context;
 
-import ordo.data.dao.jpa.JpaDao;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletContextEvent;
+import ordo.data.dao.IDaoBase;
 
 /**
- *
+ * This class is registered as a Listener in the web.xml file.
+ * It is called at app deployment and un-deployment.
+ * 
+ * Its purpose is to make sure that all the IDaoBase objects are closed;
+ * if it's not the case, the re-deployed app could have conflicts where
+ * two conflicting versions may be in memory.
+ * 
  * @author Nicolas
  */
 public class ServletContextListener implements javax.servlet.ServletContextListener {
  
-    static private List<JpaDao> jpaDaos = new ArrayList<>();
+    // List of the registered IDaoBase objects to close.
+    static private List<IDaoBase> daos = new ArrayList<>();
     
-    static public void addJpaDao(JpaDao jpaDao) {
-        jpaDaos.add(jpaDao);
+    /**
+     * Registers a IDaoBase object so it is closed whenever the app is
+     * un-deployed.
+     * @param dao 
+     */
+    static public void registerDao(IDaoBase dao) {
+        daos.add(dao);
     }
     
     @Override
@@ -31,8 +38,9 @@ public class ServletContextListener implements javax.servlet.ServletContextListe
     public void contextDestroyed(ServletContextEvent sce) {
         System.out.println("SERVLET CONTEXT DESTROYED");
         
-        for(JpaDao jpaDao: jpaDaos) {
-            jpaDao.close();
+        // Close all the registered IDaoBase objects.
+        for(IDaoBase dao: daos) {
+            dao.close();
         }
     }
 }
