@@ -29,15 +29,17 @@ public abstract class JpaDao<T> implements DaoBase<T> {
     public JpaDao(Class<T> c) {
         classe = c;
         
-        emf = Persistence.createEntityManagerFactory("ProjetOrdonnancementPU");
-        em = emf.createEntityManager();
-        et = em.getTransaction();
-        
         if(null != c.getAnnotation(Table.class)) {
             entityTableName = c.getAnnotation(Table.class).name();
         } else {
             entityTableName = c.getSimpleName();
         }
+        
+        emf = Persistence.createEntityManagerFactory("ProjetOrdonnancementPU");
+        em = emf.createEntityManager();
+        et = em.getTransaction();
+        
+        ServletContextListener.addJpaDao(this);
     }
     
     @Override
@@ -119,6 +121,7 @@ public abstract class JpaDao<T> implements DaoBase<T> {
 
     @Override
     public void close() {
+        System.out.println("Closing DAO");
         em.close();
         emf.close();
     }
