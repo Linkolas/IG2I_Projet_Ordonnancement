@@ -11,6 +11,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+import javax.persistence.Table;
 
 /**
  *
@@ -23,6 +24,7 @@ public abstract class JpaDao<T> implements DaoBase<T> {
     EntityTransaction et = null;
     
     Class<T> classe;
+    String entityTableName;
     
     public JpaDao(Class<T> c) {
         classe = c;
@@ -30,6 +32,12 @@ public abstract class JpaDao<T> implements DaoBase<T> {
         emf = Persistence.createEntityManagerFactory("ProjetOrdonnancementPU");
         em = emf.createEntityManager();
         et = em.getTransaction();
+        
+        if(null != c.getAnnotation(Table.class)) {
+            entityTableName = c.getAnnotation(Table.class).name();
+        } else {
+            entityTableName = c.getSimpleName();
+        }
     }
     
     @Override
@@ -56,7 +64,7 @@ public abstract class JpaDao<T> implements DaoBase<T> {
 
     @Override
     public Collection<T> findAll() {
-        Query createQuery = em.createQuery("select t from " + classe.getSimpleName() + " t");
+        Query createQuery = em.createQuery("select t from " + entityTableName + " t");
         return createQuery.getResultList();
     }
 
@@ -98,7 +106,7 @@ public abstract class JpaDao<T> implements DaoBase<T> {
         
         try {
             et.begin();
-            Query createQuery = em.createQuery("delete from " + classe.getSimpleName());
+            Query createQuery = em.createQuery("delete from " + entityTableName);
             createQuery.executeUpdate();
             et.commit();
             
