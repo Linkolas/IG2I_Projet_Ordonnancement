@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ordo.data.dao;
+package ordo.data.dao.jpa;
 
 import ordo.data.entities.*;
 
@@ -11,21 +11,21 @@ import ordo.data.entities.*;
  *
  * @author Nicolas
  */
-public class JpaTrajetDao extends JpaDao<Trajet> {
+public class JpaLieuDao extends JpaDao<Lieu> {
     
     
-    private static JpaTrajetDao instance = null;
+    private static JpaLieuDao instance = null;
     
-    public static JpaTrajetDao getInstance() {
+    public static JpaLieuDao getInstance() {
         if (instance == null) {
-            instance = new JpaTrajetDao();
+            instance = new JpaLieuDao();
         }
         
         return instance;
     }
     
-    private JpaTrajetDao() {
-        super(Trajet.class);
+    private JpaLieuDao() {
+        super(Lieu.class);
     }
     
 }

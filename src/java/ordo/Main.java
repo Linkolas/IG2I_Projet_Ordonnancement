@@ -1,7 +1,7 @@
 package ordo;
 
-import ordo.data.dao.JpaDepotDao;
-import ordo.data.dao.JpaLieuDao;
+import ordo.data.dao.jpa.JpaDepotDao;
+import ordo.data.dao.jpa.JpaLieuDao;
 import ordo.data.entities.Depot;
 import ordo.data.entities.Lieu;
 

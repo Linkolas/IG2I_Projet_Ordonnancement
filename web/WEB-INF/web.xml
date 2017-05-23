@@ -14,6 +14,6 @@
         </session-timeout>
     </session-config>
     <listener>
-        <listener-class>ordo.data.dao.ServletContextListener</listener-class>
+        <listener-class>ordo.context.ServletContextListener</listener-class>
     </listener>
 </web-app>

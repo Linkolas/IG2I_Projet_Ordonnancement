@@ -7,7 +7,7 @@ package ordo.data.dao;
 
 import java.util.Collection;
 
-public interface DaoBase<T> {
+public interface IDaoBase<T> {
     public boolean create(T obj);
     public T find(Integer id);
     public Collection<T> findAll();

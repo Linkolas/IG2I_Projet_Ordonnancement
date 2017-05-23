@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ordo.data.dao;
+package ordo.data.dao.jpa;
 
 import java.util.Collection;
 import javax.persistence.EntityManager;
@@ -12,12 +12,14 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.Table;
+import ordo.context.ServletContextListener;
+import ordo.data.dao.IDaoBase;
 
 /**
  *
  * @author Nicolas
  */
-public abstract class JpaDao<T> implements DaoBase<T> {
+public abstract class JpaDao<T> implements IDaoBase<T> {
 
     EntityManagerFactory emf = null;
     EntityManager em = null;

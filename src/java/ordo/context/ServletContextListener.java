@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ordo.data.dao;
+package ordo.context;
 
+import ordo.data.dao.jpa.JpaDao;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletContextEvent;
