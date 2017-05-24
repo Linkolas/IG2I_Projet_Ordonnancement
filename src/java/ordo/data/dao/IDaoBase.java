@@ -23,7 +23,7 @@ public interface IDaoBase<T> {
      * @param id The id of the Entity to search for.
      * @return The Entity if found, null if not found.
      */
-    public T find(Integer id);
+    public T find(long id);
     
     /**
      * Retrieve a collection of all the Entities.

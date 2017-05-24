@@ -75,7 +75,7 @@ public abstract class JpaDao<T> implements IDaoBase<T> {
     }
     
     @Override
-    public T find(Integer id) {
+    public T find(long id) {
         return em.find(entityClass, id);
     }
 
