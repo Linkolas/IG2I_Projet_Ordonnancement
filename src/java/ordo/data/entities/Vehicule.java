@@ -6,6 +6,7 @@
 package ordo.data.entities;
 
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -54,6 +55,20 @@ public class Vehicule implements Serializable {
 
     public List<SwapBody> getSwapBodies() {
         return swapBodies;
+    }
+    
+    public void add(CommandeClient cc){
+        if(cc != null && !commandes.contains(cc))
+            commandes.add(cc);
+    }
+    
+    public float getQuantity(){
+        float rtn = 0;
+        for(Iterator<CommandeClient> iter = this.commandes.iterator(); iter.hasNext(); ){
+            CommandeClient cc = iter.next();
+            rtn+= cc.getQuantiteVoulue();
+        }
+        return rtn;
     }
 
     public void setSwapBodies(List<SwapBody> swapBodies) {

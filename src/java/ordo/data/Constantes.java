@@ -20,10 +20,9 @@ public abstract class Constantes {
     public static float dureeExchange = -1;
     
     
-    public static float coutTracteur = -1;
-    public static float coutTrain = -1;
-    public static float coutDureeTracteur = -1;
-    public static float coutTrajetTracteur = -1;
+    public static float coutCamion = -1;
+    public static float coutDureeCamion = -1;
+    public static float coutTrajetCamion = -1;
     public static float coutSecondeRemorque = -1;
     public static float coutTrajetSecondeRemorque = -1;
     
