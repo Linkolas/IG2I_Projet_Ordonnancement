@@ -48,7 +48,7 @@ public abstract class JpaDao<T> implements IDaoBase<T> {
         }
         
         // Create the Persistence environment for this entity class.
-        emf = Persistence.createEntityManagerFactory("EntrepotPU");
+        emf = Persistence.createEntityManagerFactory("ProjetOrdonnancementPU");
         em = emf.createEntityManager();
         et = em.getTransaction();
         
