@@ -89,4 +89,108 @@ public class Solution implements Serializable {
     }
     // </editor-fold>
 
+    
+    private float capaciteMax = -1;
+    private float dureeMaxTournee = -1;
+    
+    private float dureePark = -1;
+    private float dureePickup = -1;
+    private float dureeSwap = -1;
+    private float dureeExchange = -1;
+    
+    private float coutCamion = -1;
+    private float coutDureeCamion = -1;
+    private float coutTrajetCamion = -1;
+    private float coutSecondeRemorque = -1;
+    private float coutTrajetSecondeRemorque = -1;
+
+    public float getCapaciteMax() {
+        return capaciteMax;
+    }
+
+    public void setCapaciteMax(float capaciteMax) {
+        this.capaciteMax = capaciteMax;
+    }
+
+    public float getDureeMaxTournee() {
+        return dureeMaxTournee;
+    }
+
+    public void setDureeMaxTournee(float dureeMaxTournee) {
+        this.dureeMaxTournee = dureeMaxTournee;
+    }
+
+    public float getDureePark() {
+        return dureePark;
+    }
+
+    public void setDureePark(float dureePark) {
+        this.dureePark = dureePark;
+    }
+
+    public float getDureePickup() {
+        return dureePickup;
+    }
+
+    public void setDureePickup(float dureePickup) {
+        this.dureePickup = dureePickup;
+    }
+
+    public float getDureeSwap() {
+        return dureeSwap;
+    }
+
+    public void setDureeSwap(float dureeSwap) {
+        this.dureeSwap = dureeSwap;
+    }
+
+    public float getDureeExchange() {
+        return dureeExchange;
+    }
+
+    public void setDureeExchange(float dureeExchange) {
+        this.dureeExchange = dureeExchange;
+    }
+
+    public float getCoutCamion() {
+        return coutCamion;
+    }
+
+    public void setCoutCamion(float coutCamion) {
+        this.coutCamion = coutCamion;
+    }
+
+    public float getCoutDureeCamion() {
+        return coutDureeCamion;
+    }
+
+    public void setCoutDureeCamion(float coutDureeCamion) {
+        this.coutDureeCamion = coutDureeCamion;
+    }
+
+    public float getCoutTrajetCamion() {
+        return coutTrajetCamion;
+    }
+
+    public void setCoutTrajetCamion(float coutTrajetCamion) {
+        this.coutTrajetCamion = coutTrajetCamion;
+    }
+
+    public float getCoutSecondeRemorque() {
+        return coutSecondeRemorque;
+    }
+
+    public void setCoutSecondeRemorque(float coutSecondeRemorque) {
+        this.coutSecondeRemorque = coutSecondeRemorque;
+    }
+
+    public float getCoutTrajetSecondeRemorque() {
+        return coutTrajetSecondeRemorque;
+    }
+
+    public void setCoutTrajetSecondeRemorque(float coutTrajetSecondeRemorque) {
+        this.coutTrajetSecondeRemorque = coutTrajetSecondeRemorque;
+    }
+    
+    
 }
