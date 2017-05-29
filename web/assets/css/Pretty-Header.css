@@ -25,6 +25,8 @@
   color:#fff;
   background:#292c2f;
   border:0;
+  padding-top:15px;
+  padding-bottom:15px;
 }
 
 .custom-header ul.nav.navbar-nav li a:hover{

@@ -1,3 +1,4 @@
+﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 
@@ -17,16 +18,22 @@
     <nav class="navbar navbar-default custom-header">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand navbar-link" href="#"><img class="img-responsive" src="http://www.mind-up.fr/images/logo/ecllogob.png"> </a>
+                <a class="navbar-brand navbar-link" href="#"><img class="img-responsive" src="assets/img/ecllogob.png"> </a>
                 <button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <ul class="nav navbar-nav links">
-                    <li role="presentation"><a href="#">Overview </a></li>
-                    <li role="presentation"><a href="#">Surveys </a></li>
+                    <li role="presentation"><a href="#">Overview</a></li>
+                    <li role="presentation"><a href="#">Surveys</a></li>
                     <li role="presentation"><a href="#">Reports</a></li>
+                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">Dropdown <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li role="presentation"><a href="#">First Item</a></li>
+                            <li role="presentation"><a href="#">Second Item</a></li>
+                            <li role="presentation"><a href="#">Third Item</a></li>
+                        </ul>
+                    </li>
                 </ul>
-                <ul class="nav navbar-nav navbar-right"></ul>
             </div>
         </div>
     </nav>
@@ -47,7 +54,7 @@
                 </tr>
                 <tr>
                     <td>Camion-train 2</td>
-                    <td>Engie</td>
+                    <td>Engie </td>
                     <td>265 km ; 4 heures 20 minutes</td>
                 </tr>
             </tbody>
@@ -62,13 +69,13 @@
                     <div class="form-group">
                         <input type="file" name="file-input">
                     </div>
-                    <button class="btn btn-default" type="submit">Envoyer </button>
+                    <button class="btn btn-default" type="submit">Envoyer</button>
                 </form>
             </div>
             <div class="col-md-3 col-md-offset-3 col-sm-2 col-sm-offset-2">
                 <form class="form-inline bootstrap-form-with-validation" method="post">
                     <p>Remettre à zéro</p>
-                    <button class="btn btn-danger" type="submit">SUPPRIMER </button>
+                    <button class="btn btn-danger" type="submit">SUPPRIMER</button>
                 </form>
             </div>
         </div>
