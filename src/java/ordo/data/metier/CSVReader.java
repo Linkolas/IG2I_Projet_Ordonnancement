@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import ordo.data.Constantes;
 import ordo.data.dao.jpa.JpaCommandeClientDao;
 import ordo.data.dao.jpa.JpaDepotDao;
 import ordo.data.dao.jpa.JpaLieuDao;
@@ -20,6 +21,7 @@ import ordo.data.dao.jpa.JpaSwapLocationDao;
 import ordo.data.entities.Depot;
 import ordo.data.entities.SwapLocation;
 import ordo.data.entities.CommandeClient;
+import ordo.data.Constantes;
 
 /**
  *
@@ -62,8 +64,8 @@ public class CSVReader
     public void readAllCSV()
     {
         //readFleet();
-        readLocations();
-        //readSwapActions();
+        //readLocations();
+        readSwapActions();
     }
     
     public void readFleet()
@@ -126,7 +128,7 @@ public class CSVReader
             while ((currentLine = fileReader.readLine()) != null)
             {
                 String[] splitedLine = currentLine.split(";");
-                System.out.println(splitedLine[0] + " " + splitedLine[1] + " " + splitedLine[2] + " " + splitedLine[3] + " " + splitedLine[4] + " " + splitedLine[5] + " " + splitedLine[6] + " " + splitedLine[7] + " " + splitedLine[8]);
+                //System.out.println(splitedLine[0] + " " + splitedLine[1] + " " + splitedLine[2] + " " + splitedLine[3] + " " + splitedLine[4] + " " + splitedLine[5] + " " + splitedLine[6] + " " + splitedLine[7] + " " + splitedLine[8]);
                 if(splitedLine[0].equals("DEPOT"))
                 {
                     Depot d = new Depot();
@@ -205,6 +207,27 @@ public class CSVReader
             {
                 String[] splitedLine = currentLine.split(";");
                 System.out.println(splitedLine[0] + " " + splitedLine[1]);
+                if(splitedLine[swapActions_index_action].equals("PARK"))
+                {
+                    Constantes.dureePark = Float.parseFloat(splitedLine[swapActions_index_duration]);
+                }
+                else if(splitedLine[swapActions_index_action].equals("SWAP"))
+                {
+                    Constantes.dureeSwap = Float.parseFloat(splitedLine[swapActions_index_duration]);
+                }
+                else if(splitedLine[swapActions_index_action].equals("EXCHANGE"))
+                {
+                    Constantes.dureeExchange = Float.parseFloat(splitedLine[swapActions_index_duration]);
+                }
+                else
+                {
+                    Constantes.dureePickup = Float.parseFloat(splitedLine[swapActions_index_duration]);
+                }
+                
+                System.out.println(Constantes.dureePark);
+                System.out.println(Constantes.dureeSwap);
+                System.out.println(Constantes.dureeExchange);
+                System.out.println(Constantes.dureePickup);
             }
         } 
         
