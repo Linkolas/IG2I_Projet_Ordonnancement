@@ -26,7 +26,7 @@ public abstract class JpaDao<T> implements IDaoBase<T> {
     protected EntityTransaction et = null;
     
     /** The class of the entity wich this JPA is devoted to. */
-    private Class<T> entityClass;
+    protected Class<T> entityClass;
     /** The Table in which the Entity is stored. */
     protected String entityTableName;
     
@@ -48,7 +48,7 @@ public abstract class JpaDao<T> implements IDaoBase<T> {
         }
         
         // Create the Persistence environment for this entity class.
-        emf = Persistence.createEntityManagerFactory("ProjetOrdonnancementPU");
+        emf = Persistence.createEntityManagerFactory("EntrepotPU");
         em = emf.createEntityManager();
         et = em.getTransaction();
         
@@ -81,7 +81,8 @@ public abstract class JpaDao<T> implements IDaoBase<T> {
 
     @Override
     public Collection<T> findAll() {
-        Query createQuery = em.createQuery("select t from " + entityTableName + " t");
+        //Query createQuery = em.createQuery("select t from " + entityTableName + " t");
+        Query createQuery = em.createQuery("select t from " + entityClass.getSimpleName() + " t");
         return createQuery.getResultList();
     }
 
@@ -123,7 +124,7 @@ public abstract class JpaDao<T> implements IDaoBase<T> {
         
         try {
             et.begin();
-            Query createQuery = em.createQuery("delete from " + entityTableName);
+            Query createQuery = em.createQuery("delete from " + entityClass.getSimpleName());
             createQuery.executeUpdate();
             et.commit();
             

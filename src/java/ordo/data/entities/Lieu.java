@@ -32,7 +32,7 @@ public class Lieu implements Serializable {
     @Column
     private float coordY;
     @Column
-    private int numeroLieu;
+    private String numeroLieu;
 
     public Lieu() {
     }
@@ -61,11 +61,11 @@ public class Lieu implements Serializable {
         this.ville = ville;
     }
 
-    public int getNumeroLieu() {
+    public String getNumeroLieu() {
         return numeroLieu;
     }
 
-    public void setNumeroLieu(int numeroLieu) {
+    public void setNumeroLieu(String numeroLieu) {
         this.numeroLieu = numeroLieu;
     }
     
