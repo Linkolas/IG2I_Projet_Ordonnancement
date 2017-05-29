@@ -1,0 +1,10 @@
+img.img-responsive{
+  max-height:45px;
+}
+
+a.navbar-brand.navbar-link{
+  height:initial;
+  margin:0;
+  padding:0;
+}
+
