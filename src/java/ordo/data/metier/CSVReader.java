@@ -13,6 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import ordo.data.dao.jpa.JpaCommandeClientDao;
+import ordo.data.dao.jpa.JpaDepotDao;
+import ordo.data.dao.jpa.JpaLieuDao;
+import ordo.data.dao.jpa.JpaSwapLocationDao;
+import ordo.data.entities.Depot;
+import ordo.data.entities.SwapLocation;
+import ordo.data.entities.CommandeClient;
 
 /**
  *
@@ -55,7 +62,7 @@ public class CSVReader
     public void readAllCSV()
     {
         //readFleet();
-        //readLocations();
+        readLocations();
         //readSwapActions();
     }
     
@@ -102,6 +109,12 @@ public class CSVReader
     {
         BufferedReader fileReader = null;
         String currentLine = "";
+        
+        JpaDepotDao daoDepot = JpaDepotDao.getInstance();
+        JpaSwapLocationDao daoSwapLocation = JpaSwapLocationDao.getInstance();
+        JpaCommandeClientDao daoClient = JpaCommandeClientDao.getInstance();
+        
+        
         try
         {
             String fileName = System.getProperty("user.home")+"/Desktop/projet2017/large_normal/Locations.csv";
@@ -114,6 +127,45 @@ public class CSVReader
             {
                 String[] splitedLine = currentLine.split(";");
                 System.out.println(splitedLine[0] + " " + splitedLine[1] + " " + splitedLine[2] + " " + splitedLine[3] + " " + splitedLine[4] + " " + splitedLine[5] + " " + splitedLine[6] + " " + splitedLine[7] + " " + splitedLine[8]);
+                if(splitedLine[0].equals("DEPOT"))
+                {
+                    Depot d = new Depot();
+                    d.setNumeroLieu(splitedLine[locations_index_id]);
+                    d.setCodePostal(splitedLine[locations_index_postCode]);
+                    d.setVille(splitedLine[locations_index_city]);
+                    d.setCoordX(Float.parseFloat(splitedLine[locations_index_Xcoord]));
+                    d.setCoordY(Float.parseFloat(splitedLine[locations_index_Ycoord]));
+                    
+                    daoDepot.create(d);                   
+                }
+                else if(splitedLine[0].equals("SWAP_LOCATION"))
+                {
+                    SwapLocation sl = new SwapLocation();
+                    sl.setNumeroLieu(splitedLine[locations_index_id]);
+                    sl.setCodePostal(splitedLine[locations_index_postCode]);
+                    sl.setVille(splitedLine[locations_index_city]);
+                    sl.setCoordX(Float.parseFloat(splitedLine[locations_index_Xcoord]));
+                    sl.setCoordY(Float.parseFloat(splitedLine[locations_index_Ycoord]));
+                    
+                    daoSwapLocation.create(sl);
+                }
+                else
+                {
+                    CommandeClient c = new CommandeClient();
+                    c.setNumeroLieu(splitedLine[locations_index_id]);
+                    c.setCodePostal(splitedLine[locations_index_postCode]);
+                    c.setVille(splitedLine[locations_index_city]);
+                    c.setCoordX(Float.parseFloat(splitedLine[locations_index_Xcoord]));
+                    c.setCoordY(Float.parseFloat(splitedLine[locations_index_Ycoord]));
+                    c.setQuantiteVoulue(Float.parseFloat(splitedLine[locations_index_quantity]));
+                    if(splitedLine[locations_index_trainPossible].equals("1"))
+                    {
+                        c.setNombreRemorquesMax(2);
+                    }
+                    c.setDureeService(Float.parseFloat(splitedLine[locations_index_serviceTime]));
+                    
+                    daoClient.create(c);
+                }
             }
         } 
         
