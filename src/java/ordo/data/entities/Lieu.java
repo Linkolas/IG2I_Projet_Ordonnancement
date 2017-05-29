@@ -28,7 +28,9 @@ public class Lieu implements Serializable {
     @Column
     private String ville;
     @Column
-    private String coordonnees;
+    private float coordX;
+    @Column
+    private float coordY;
     @Column
     private int numeroLieu;
 
@@ -59,14 +61,6 @@ public class Lieu implements Serializable {
         this.ville = ville;
     }
 
-    public String getCoordonnees() {
-        return coordonnees;
-    }
-
-    public void setCoordonnees(String coordonnees) {
-        this.coordonnees = coordonnees;
-    }
-
     public int getNumeroLieu() {
         return numeroLieu;
     }
@@ -75,6 +69,21 @@ public class Lieu implements Serializable {
         this.numeroLieu = numeroLieu;
     }
     
+    public float getCoordX() {
+        return coordX;
+    }
+
+    public void setCoordX(float coordX) {
+        this.coordX = coordX;
+    }
+
+    public float getCoordY() {
+        return coordY;
+    }
+
+    public void setCoordY(float coordY) {
+        this.coordY = coordY;
+    }
     
     // <editor-fold defaultstate="collapsed" desc=".equals, .toString, ...">
     private static final long serialVersionUID = 1L;
