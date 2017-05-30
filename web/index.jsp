@@ -70,18 +70,44 @@
                         %>
                         <%= String.join(", ", libellesCommandes) %>
                     </td>
+                    <td>
+                        <%= ((int) (vehicule.getDistanceParcourue() / 1000))%> km ; 
+                        <%
+                        int heures = ((int) (vehicule.getTempsTrajet() / 60));
+                        int minutes = ((int) vehicule.getTempsTrajet() - heures * 60);
+                        switch(heures) {
+                            case 0:
+                                break;
+                            case 1:
+                        %>
+                        1 heure
+                        <%
+                                break;
+                            default:
+                        %>
+                        <%= heures %> heures
+                        <%
+                                break;
+                        }
+
+                        switch(minutes) {
+                            case 0:
+                                break;
+                            case 1:
+                        %>
+                        1 minute
+                        <%
+                                break;
+                            default:
+                        %>
+                        <%= minutes %> minutes
+                        <%
+                                break;
+                        }
+                        %>
+                    </td>
                 </tr>
                 </c:forEach>
-                <tr>
-                    <td>Camion 1</td>
-                    <td>Sopra-Steria, Boulanger</td>
-                    <td>300 km ; 5 heures</td>
-                </tr>
-                <tr>
-                    <td>Camion-train 2</td>
-                    <td>Engie </td>
-                    <td>265 km ; 4 heures 20 minutes</td>
-                </tr>
             </tbody>
         </table>
     </div>

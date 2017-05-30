@@ -48,7 +48,7 @@ public class Index extends HttpServlet {
         
         v1.setDistanceParcourue(300000);
         v1.setTempsTrajet(300);
-        v2.setDistanceParcourue(240000);
+        v2.setDistanceParcourue(265000);
         v2.setTempsTrajet(260);
         
         
