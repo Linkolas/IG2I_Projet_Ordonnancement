@@ -32,6 +32,8 @@ public class CommandeClient extends Lieu implements Serializable {
     private Vehicule vehicule;
     @OneToMany(mappedBy = "commande")
     private List<Colis> colis  = new ArrayList<>();
+    @Column
+    private boolean isLivree = false;
     
     public CommandeClient() {
     }
@@ -86,6 +88,14 @@ public class CommandeClient extends Lieu implements Serializable {
     
     public void delColis(Colis colis) {
         this.colis.remove(colis);
+    }
+
+    public boolean isLivree() {
+        return isLivree;
+    }
+
+    public void setLivree(boolean isLivree) {
+        this.isLivree = isLivree;
     }
     
     // <editor-fold defaultstate="collapsed" desc=".equals, .toString, ...">

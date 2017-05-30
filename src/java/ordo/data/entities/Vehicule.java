@@ -55,10 +55,18 @@ public class Vehicule implements Serializable {
     }
     
     public float getQuantity(){
+        return getQuantity(false);
+    }
+    
+    public float getQuantity(boolean onlyNotLivre){
         float rtn = 0;
-        for(Iterator<CommandeClient> iter = this.commandes.iterator(); iter.hasNext(); ){
-            CommandeClient cc = iter.next();
-            rtn+= cc.getQuantiteVoulue();
+        for(SwapBody sb: swapBodies) {
+            for(Colis c: sb.getColis()) {
+                if(onlyNotLivre && c.getCommande().isLivree()) {
+                    continue;
+                }
+                rtn += c.getQuantite();
+            }
         }
         return rtn;
     }
