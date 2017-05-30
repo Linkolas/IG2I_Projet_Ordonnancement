@@ -135,6 +135,11 @@ public class Vehicule implements Serializable {
     public boolean isTrain() {
         return (swapBodies.size() > 1);
     }
+    
+    public boolean isCamion(){
+        return (this.swapBodies.size() == 1 );
+    }
+    
 
     // <editor-fold defaultstate="collapsed" desc=".equals, .toString, ...">
     private static final long serialVersionUID = 1L;

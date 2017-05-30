@@ -53,9 +53,9 @@ public class CSVReader
     private static final int swapActions_index_duration = 1;
     
     //Lists
-    private List fleet = new ArrayList();
-    private List location = new ArrayList();
-    private List swapActions = new ArrayList();
+    //private List fleet = new ArrayList();
+    //private List location = new ArrayList();
+    //private List swapActions = new ArrayList();
 
     public CSVReader()
     {
@@ -64,8 +64,8 @@ public class CSVReader
     public void readAllCSV()
     {
         //readFleet();
-        //readLocations();
-        readSwapActions();
+        readLocations();
+        //readSwapActions();
     }
     
     public void readFleet()
@@ -83,8 +83,33 @@ public class CSVReader
             while ((currentLine = fileReader.readLine()) != null)
             {
                 String[] splitedLine = currentLine.split(";");
-                System.out.println(splitedLine[0] + " " + splitedLine[1] + " " + splitedLine[2] + " " + splitedLine[3] + " " + splitedLine[4] + " " + splitedLine[5]);
+                
+                if(splitedLine[fleet_index_type].equals("TRUCK"))
+                {
+                    Constantes.coutCamion = Float.parseFloat(splitedLine[fleet_index_costsUsage]);
+                    Constantes.coutDureeCamion = Float.parseFloat(splitedLine[fleet_index_costsHour]);
+                    Constantes.coutTrajetCamion = Float.parseFloat(splitedLine[fleet_index_costsKm]);
+                    
+                }
+                else if(splitedLine[fleet_index_type].equals("SEMI_TRAILER"))
+                {
+                    Constantes.coutSecondeRemorque = Float.parseFloat(splitedLine[fleet_index_costsUsage]);
+                    Constantes.coutTrajetSecondeRemorque = Float.parseFloat(splitedLine[fleet_index_costsKm]);
+                }
+                else
+                {
+                    Constantes.capaciteMax = Float.parseFloat(splitedLine[fleet_index_capacity]);
+                    Constantes.dureeMaxTournee = Float.parseFloat(splitedLine[fleet_index_operatingTime]);
+                }
             }
+            
+            /*System.out.println(Constantes.coutCamion);
+            System.out.println(Constantes.coutDureeCamion);
+            System.out.println(Constantes.coutTrajetCamion);
+            System.out.println(Constantes.coutSecondeRemorque);
+            System.out.println(Constantes.coutTrajetSecondeRemorque);
+            System.out.println(Constantes.capaciteMax);
+            System.out.println(Constantes.dureeMaxTournee);*/
         } 
         
         catch (FileNotFoundException ex)

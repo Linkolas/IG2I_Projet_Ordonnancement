@@ -58,27 +58,52 @@ public class Algo {
         // on get tous les clients et leurs demandes
         Collection<CommandeClient> ccc = daoCommandeClient.findAll();
         
-        // On crée une liste de véhicule
-        List<Vehicule> lv = new ArrayList();
+        // On crée une liste de véhicule pour les clients camion
+        List<Vehicule> lvc = new ArrayList();
         
-        // On crée un Véhicule vide qui nous servira de point se stockage
-        Vehicule tmp_v = new Vehicule();
+        // On crée une liste de véhicule pour les clients train
+        List<Vehicule> lvt = new ArrayList();
+        
+        // On crée un Véhicule vide qui nous servira de point se stockage pour les clients camions
+        Vehicule tmp_vc = new Vehicule();
+        
+        // On crée un Véhicule vide qui nous servira de point se stockage pour les clients train
+        Vehicule tmp_vt = new Vehicule();
         
         //On boucle sur les commandes clients
         for (Iterator<CommandeClient> iter = ccc.iterator(); iter.hasNext(); ) {
             CommandeClient cc = iter.next();
-            if(tmp_v.getQuantity() + cc.getQuantiteVoulue() < Constantes.capaciteMax){
-                tmp_v.add(cc);
+            if(cc.getNombreRemorquesMax() == 1){
+                if(tmp_vc.getQuantity() + cc.getQuantiteVoulue() < Constantes.capaciteMax){
+                    tmp_vc.add(cc);
+                }
+                else{
+                    tmp_vc = new Vehicule();
+                    if(tmp_vc.getQuantity() + cc.getQuantiteVoulue() < Constantes.capaciteMax){
+                        tmp_vc.add(cc);
+                    }
+                    else{
+                        //CAS IMPOSSIBLE UN CLIENT CAMION NE PEUT COMMANDER PLUS QUE Q quantité
+                    }
+                    // On a une commande qui ne peut pas rentrer dans un seul swap body
+                    // On test donc si la commande peut rentrer dans 2 swap body
+//                    else if(tmp_vc.getQuantity() + cc.getQuantiteVoulue() < Constantes.capaciteMax*2){ 
+//                        tmp_vc.add(cc);
+//                    }
+                }
             }
             else{
-                tmp_v = new Vehicule();
-                if(tmp_v.getQuantity() + cc.getQuantiteVoulue() < Constantes.capaciteMax){
-                    tmp_v.add(cc);
+                if(tmp_vc.getQuantity() + cc.getQuantiteVoulue() < Constantes.capaciteMax*2){
+                    tmp_vc.add(cc);
                 }
-                // On a une commande qui ne peut pas rentrer dans un seul swap body
-                // On test donc si la commande peut rentrer dans 2 swap body
-                else if(tmp_v.getQuantity() + cc.getQuantiteVoulue() < Constantes.capaciteMax*2){ 
-                    tmp_v.add(cc);
+                else{
+                    tmp_vc = new Vehicule();
+                    if(tmp_vc.getQuantity() + cc.getQuantiteVoulue() < Constantes.capaciteMax*2){ 
+                        tmp_vc.add(cc);
+                    }
+                    else{
+                        //CAS IMPOSSIBLE UN CLIENT TRAIN NE PEUT COMMANDER PLUS QUE 2Q quantités
+                    }
                 }
             }
         }
@@ -169,5 +194,9 @@ public class Algo {
         if(Constantes.coutSecondeRemorque == -1){
             Constantes.coutSecondeRemorque = 1/5;
         }
+    }
+    
+    public static void main(String[] args) {
+        makeSolutionV1();
     }
 }
