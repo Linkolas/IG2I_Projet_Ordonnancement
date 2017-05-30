@@ -1,5 +1,10 @@
-﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@page import="ordo.data.entities.CommandeClient"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="ordo.data.entities.Vehicule"%>
+<%@page import="java.util.Collection"%>
+﻿<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 <!DOCTYPE html>
 <html>
 
@@ -16,6 +21,10 @@
 </head>
 
 <body>
+    <%
+    //Collection<Vehicule> vehicules = new ArrayList<>();
+    Collection<Vehicule> vehicules = (Collection<Vehicule>) request.getAttribute("vehicule");
+    %>
     <nav class="navbar navbar-default custom-header">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -49,9 +58,19 @@
             </thead>
             <tbody>
                 <c:forEach items="${vehicules}" var="vehicule">
-                    <tr>
-                        <td>Camion<c:if test="${vehicule.isTrain()}">-train</c:if> ${vehicule.id}</td>
-                    </tr>
+                <% Vehicule vehicule = (Vehicule) pageContext.getAttribute("vehicule"); %>
+                <tr>
+                    <td>Camion<c:if test="${vehicule.isTrain()}">-train</c:if> ${vehicule.id}</td>
+                    <td>
+                        <% 
+                        List<String> libellesCommandes = new ArrayList<String>();
+                        for(CommandeClient cc: vehicule.getCommandes()) {
+                            libellesCommandes.add(cc.getLibelle());
+                        }
+                        %>
+                        <%= String.join(", ", libellesCommandes) %>
+                    </td>
+                </tr>
                 </c:forEach>
                 <tr>
                     <td>Camion 1</td>

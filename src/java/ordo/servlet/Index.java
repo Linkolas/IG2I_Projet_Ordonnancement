@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import ordo.data.dao.jpa.JpaVehiculeDao;
+import ordo.data.entities.CommandeClient;
+import ordo.data.entities.SwapBody;
 import ordo.data.entities.Vehicule;
 
 /**
@@ -41,6 +43,28 @@ public class Index extends HttpServlet {
         Vehicule v2 = new Vehicule();
         v1.setId(1);
         v2.setId(2);
+        v2.addSwapBody(new SwapBody());
+        v2.addSwapBody(new SwapBody());
+        
+        v1.setDistanceParcourue(300000);
+        v1.setTempsTrajet(300);
+        v2.setDistanceParcourue(240000);
+        v2.setTempsTrajet(260);
+        
+        
+        CommandeClient cc1 = new CommandeClient();
+        CommandeClient cc2 = new CommandeClient();
+        CommandeClient cc3 = new CommandeClient();
+        cc1.setId(1);
+        cc2.setId(2);
+        cc3.setId(3);
+        cc1.setLibelle("Sopra-Steria");
+        cc2.setLibelle("Boulanger");
+        cc3.setLibelle("Engie");
+        
+        v1.add(cc1);
+        v1.add(cc2);
+        v2.add(cc3);
         
         vehicules.add(v1);
         vehicules.add(v2);
