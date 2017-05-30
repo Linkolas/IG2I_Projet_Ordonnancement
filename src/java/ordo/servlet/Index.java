@@ -6,12 +6,14 @@
 package ordo.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import ordo.data.dao.jpa.JpaLieuDao;
+import ordo.data.dao.jpa.JpaVehiculeDao;
+import ordo.data.entities.Vehicule;
 
 /**
  *
@@ -31,8 +33,19 @@ public class Index extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        JpaLieuDao daoLieu = JpaLieuDao.getInstance();
-        daoLieu.findAll();
+        JpaVehiculeDao daoVehicule = JpaVehiculeDao.getInstance();
+        //Collection<Vehicule> vehicules = daoVehicule.findAll();
+        Collection<Vehicule> vehicules = new ArrayList<>();
+        
+        Vehicule v1 = new Vehicule();
+        Vehicule v2 = new Vehicule();
+        v1.setId(1);
+        v2.setId(2);
+        
+        vehicules.add(v1);
+        vehicules.add(v2);
+        
+        request.setAttribute("vehicules", vehicules);
         
         getServletContext().getRequestDispatcher("/index.jsp").forward(request, response);
     }

@@ -6,6 +6,7 @@
 package ordo.data.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.persistence.Column;
@@ -26,7 +27,7 @@ public class Vehicule implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private long id;
     @Column
     private float distanceParcourue;
     @Column
@@ -34,32 +35,23 @@ public class Vehicule implements Serializable {
     @Column
     private float tempsTrajet;
     @OneToMany(mappedBy = "vehicule")
-    private List<SwapBody> swapBodies;
+    private List<SwapBody> swapBodies = new ArrayList<>();
     @OneToMany(mappedBy = "vehicule")
-    private List<CommandeClient> commandes;
+    private List<CommandeClient> commandes = new ArrayList<>();
     @OneToMany(mappedBy = "vehicule")
-    private List<VehiculeAction> actions;
+    private List<VehiculeAction> actions = new ArrayList<>();
     @ManyToOne
     private Solution solution;
     
     public Vehicule() {
     }
     
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
-    }
-
-    public List<SwapBody> getSwapBodies() {
-        return swapBodies;
-    }
-    
-    public void add(CommandeClient cc){
-        if(cc != null && !commandes.contains(cc))
-            commandes.add(cc);
     }
     
     public float getQuantity(){
@@ -71,8 +63,16 @@ public class Vehicule implements Serializable {
         return rtn;
     }
 
-    public void setSwapBodies(List<SwapBody> swapBodies) {
-        this.swapBodies = swapBodies;
+    public List<SwapBody> getSwapBodies() {
+        return swapBodies;
+    }
+    
+    public void addSwapBody(SwapBody swapBody) {
+        swapBodies.add(swapBody);
+    }
+    
+    public void delSwapBody(SwapBody swapBody) {
+        swapBodies.remove(swapBody);
     }
 
     public float getDistanceParcourue() {
@@ -102,17 +102,26 @@ public class Vehicule implements Serializable {
     public List<CommandeClient> getCommandes() {
         return commandes;
     }
-
-    public void setCommandes(List<CommandeClient> commandes) {
-        this.commandes = commandes;
+    
+    public void add(CommandeClient cc){
+        if(cc != null && !commandes.contains(cc))
+            commandes.add(cc);
+    }
+    
+    public void delCommande(CommandeClient cc) {
+        commandes.remove(cc);
     }
 
     public List<VehiculeAction> getActions() {
         return actions;
     }
-
-    public void setActions(List<VehiculeAction> actions) {
-        this.actions = actions;
+    
+    public void addAction(VehiculeAction action) {
+        actions.add(action);
+    }
+    
+    public void delAction(VehiculeAction action) {
+        actions.remove(action);
     }
 
     public Solution getSolution() {
@@ -123,25 +132,33 @@ public class Vehicule implements Serializable {
         this.solution = solution;
     }
     
+    public boolean isTrain() {
+        return (swapBodies.size() > 1);
+    }
 
     // <editor-fold defaultstate="collapsed" desc=".equals, .toString, ...">
     private static final long serialVersionUID = 1L;
-    
+
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        int hash = 5;
+        hash = 97 * hash + (int) (this.id ^ (this.id >>> 32));
         return hash;
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Vehicule)) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
-        Vehicule other = (Vehicule) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Vehicule other = (Vehicule) obj;
+        if (this.id != other.id) {
             return false;
         }
         return true;

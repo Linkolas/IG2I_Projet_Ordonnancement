@@ -1,4 +1,5 @@
 ﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 <!DOCTYPE html>
 <html>
 
@@ -26,7 +27,7 @@
                     <li role="presentation"><a href="#">Overview</a></li>
                     <li role="presentation"><a href="#">Surveys</a></li>
                     <li role="presentation"><a href="#">Reports</a></li>
-                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">Dropdown <span class="caret"></span></a>
+                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">Dropdown<span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
                             <li role="presentation"><a href="#">First Item</a></li>
                             <li role="presentation"><a href="#">Second Item</a></li>
@@ -47,6 +48,11 @@
                 </tr>
             </thead>
             <tbody>
+                <c:forEach items="${vehicules}" var="vehicule">
+                    <tr>
+                        <td>Camion<c:if test="${vehicule.isTrain()}">-train</c:if> ${vehicule.id}</td>
+                    </tr>
+                </c:forEach>
                 <tr>
                     <td>Camion 1</td>
                     <td>Sopra-Steria, Boulanger</td>
