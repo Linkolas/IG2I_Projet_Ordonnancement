@@ -3,25 +3,27 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ordo.servlet;
+package ordo.servlet.api;
 
+import com.google.gson.Gson;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.PrintWriter;
 import java.util.Collection;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import ordo.data.dao.jpa.JpaVehiculeDao;
+import ordo.data.dao.jpa.JpaCommandeClientDao;
+import ordo.data.dao.jpa.JpaLieuDao;
 import ordo.data.entities.CommandeClient;
-import ordo.data.entities.SwapBody;
-import ordo.data.entities.Vehicule;
+import ordo.data.entities.Depot;
+import ordo.data.entities.Lieu;
 
 /**
  *
  * @author Nicolas
  */
-public class Index extends HttpServlet {
+public class APILieuxController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,43 +37,30 @@ public class Index extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        JpaVehiculeDao daoVehicule = JpaVehiculeDao.getInstance();
-        Collection<Vehicule> vehicules = daoVehicule.findAll();
-        //Collection<Vehicule> vehicules = new ArrayList<>();
+        response.setContentType("application/json");
         
-        Vehicule v1 = new Vehicule();
-        Vehicule v2 = new Vehicule();
-        v1.setId(1);
-        v2.setId(2);
-        v2.addSwapBody(new SwapBody());
-        v2.addSwapBody(new SwapBody());
+        JpaLieuDao daoLieu = JpaLieuDao.getInstance();
+        Collection<Lieu> lieux = daoLieu.findAll();
         
-        v1.setDistanceParcourue(300000);
-        v1.setTempsTrajet(300);
-        v2.setDistanceParcourue(265000);
-        v2.setTempsTrajet(260);
+        CommandeClient c1 = new CommandeClient();
+        Depot c2 = new Depot();
+        c1.setId(1);
+        c1.setQuantiteVoulue(26);
+        c1.setCoordX(50.4291629f);
+        c1.setCoordY(2.8278697f);
+        c1.setLibelle("Sample Lieu");
         
+        c2.setId(2);
+        c2.setCoordX(50.5f);
+        c2.setCoordY(2.8278697f);
         
-        CommandeClient cc1 = new CommandeClient();
-        CommandeClient cc2 = new CommandeClient();
-        CommandeClient cc3 = new CommandeClient();
-        cc1.setId(1);
-        cc2.setId(2);
-        cc3.setId(3);
-        cc1.setLibelle("Sopra-Steria");
-        cc2.setLibelle("Boulanger");
-        cc3.setLibelle("Engie");
+        lieux.add(c1);
+        lieux.add(c2);
         
-        v1.add(cc1);
-        v1.add(cc2);
-        v2.add(cc3);
-        
-        vehicules.add(v1);
-        vehicules.add(v2);
-        
-        request.setAttribute("vehicules", vehicules);
-        
-        getServletContext().getRequestDispatcher("/index.jsp").forward(request, response);
+        String json = new Gson().toJson(lieux);
+        json = "{\"lieux\": " +json + "}";
+        PrintWriter out = response.getWriter();
+        out.print(json);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
