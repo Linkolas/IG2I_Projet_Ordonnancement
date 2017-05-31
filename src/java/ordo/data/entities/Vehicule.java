@@ -44,6 +44,7 @@ public class Vehicule implements Serializable {
     private Solution solution;
     
     public Vehicule() {
+        this.addSwapBody(new SwapBody()); // On creer au moins une remorque
     }
     
     public long getId() {

@@ -19,8 +19,12 @@ import ordo.data.dao.jpa.JpaSwapBodyDao;
 import ordo.data.dao.jpa.JpaTrajetDao;
 import ordo.data.dao.jpa.JpaVehiculeActionDao;
 import ordo.data.dao.jpa.JpaVehiculeDao;
+import ordo.data.entities.Colis;
 import ordo.data.entities.CommandeClient;
+import ordo.data.entities.SwapBody;
 import ordo.data.entities.Vehicule;
+import ordo.data.entities.Depot;
+import ordo.data.entities.VehiculeAction;
 
 /**
  *
@@ -37,7 +41,7 @@ public class Algo {
             // Si ce n'est pas le cas on affiche le message d'erreur en disant que l'on utilise un jeu de test
             System.out.println("DEV MODE ACTIVATED CREATING FAKE VALUES FOR TESTING");
             // Création des constantes manquantes
-            createFakeData();
+            createFakeConsts();
         }
         
         
@@ -54,61 +58,97 @@ public class Algo {
         
         // On dois lire les csv ici
             // TODO READ CSVS.
+        try{
+            CommandeClient cc_test = daoCommandeClient.findAll().iterator().next();
+        }
+        catch(Exception e){
+            System.out.println("Il n'y a aucune commandes client en base créations de fausses commande");
+            createFakeCmds();
+        }
+            
+        // On get le depot
+        Depot dp;
+        
+        try{
+            dp = daoDepot.findAll().iterator().next();
+        }
+        catch(Exception e){
+            System.out.println("Il n'y a encore aucun depot nous créeons donc un dépot avec des coordonnées aléatoires");
+            //Qui en fait ne sont pas si aléatoire
+            dp = new Depot();
+            dp.setCoordX((float)8.42227);
+            dp.setCoordY((float)49.45044);
+            dp.setCodePostal("67069");
+            dp.setNumeroLieu("D1");
+            dp.setVille("Lens");
+            daoDepot.create(dp);
+        }
             
         // on get tous les clients et leurs demandes
         Collection<CommandeClient> ccc = daoCommandeClient.findAll();
         
-        // On crée une liste de véhicule pour les clients camion
-        List<Vehicule> lvc = new ArrayList();
+        // On crée une liste de véhicule pour les clients
+        List<Vehicule> lv = new ArrayList();
         
-        // On crée une liste de véhicule pour les clients train
-        List<Vehicule> lvt = new ArrayList();
+        // On crée une liste de véhicule Action pour les clients
+        List<VehiculeAction> lva = new ArrayList();
         
-        // On crée un Véhicule vide qui nous servira de point se stockage pour les clients camions
-        Vehicule tmp_vc = new Vehicule();
+        // On crée un Véhicule vide qui nous servira de point se stockage pour les clients
+        Vehicule tmp_v;
         
-        // On crée un Véhicule vide qui nous servira de point se stockage pour les clients train
-        Vehicule tmp_vt = new Vehicule();
+        // On crée un Véhicule Action vide qui nous servira de point se stockage pour les clients
+        VehiculeAction tmp_va;
+        
+        // On crée un colis vide qui nous servira de point de stockage 
+        Colis tmp_c;
         
         //On boucle sur les commandes clients
         for (Iterator<CommandeClient> iter = ccc.iterator(); iter.hasNext(); ) {
             CommandeClient cc = iter.next();
-            if(cc.getNombreRemorquesMax() == 1){
-                if(tmp_vc.getQuantity() + cc.getQuantiteVoulue() < Constantes.capaciteMax){
-                    tmp_vc.add(cc);
-                }
-                else{
-                    tmp_vc = new Vehicule();
-                    if(tmp_vc.getQuantity() + cc.getQuantiteVoulue() < Constantes.capaciteMax){
-                        tmp_vc.add(cc);
-                    }
-                    else{
-                        //CAS IMPOSSIBLE UN CLIENT CAMION NE PEUT COMMANDER PLUS QUE Q quantité
-                    }
-                    // On a une commande qui ne peut pas rentrer dans un seul swap body
-                    // On test donc si la commande peut rentrer dans 2 swap body
-//                    else if(tmp_vc.getQuantity() + cc.getQuantiteVoulue() < Constantes.capaciteMax*2){ 
-//                        tmp_vc.add(cc);
-//                    }
-                }
+            tmp_v = new Vehicule();
+            if(cc.getQuantiteVoulue() > Constantes.capaciteMax){
+                tmp_c = new Colis();
+                
+                tmp_c.setCommande(cc);
+                tmp_c.setQuantite(Constantes.capaciteMax);
+                tmp_v.getSwapBodies().get(0).addColis(tmp_c); // On remplis le premier camion à bloc
+                
+                
+                // On fait un nouveau colis avec le restant de la commande
+                tmp_c = new Colis();
+                tmp_c.setCommande(cc);
+                tmp_c.setQuantite(cc.getQuantiteVoulue() - Constantes.capaciteMax);
+                tmp_v.addSwapBody(new SwapBody());
+                tmp_v.getSwapBodies().get(1).addColis(tmp_c);
+                tmp_v.add(cc);
             }
             else{
-                if(tmp_vc.getQuantity() + cc.getQuantiteVoulue() < Constantes.capaciteMax*2){
-                    tmp_vc.add(cc);
-                }
-                else{
-                    tmp_vc = new Vehicule();
-                    if(tmp_vc.getQuantity() + cc.getQuantiteVoulue() < Constantes.capaciteMax*2){ 
-                        tmp_vc.add(cc);
-                    }
-                    else{
-                        //CAS IMPOSSIBLE UN CLIENT TRAIN NE PEUT COMMANDER PLUS QUE 2Q quantités
-                    }
-                }
+                tmp_c = new Colis();
+                tmp_c.setCommande(cc);
+                tmp_c.setQuantite(cc.getQuantiteVoulue());
+                tmp_v.add(cc);
+                tmp_v.getSwapBodies().get(0).addColis(tmp_c);
             }
+            lv.add(tmp_v);
         }
         
-        // On effectue une solution triviale on va donc dans un premier temps 
+        //On effectue ensuite les tournees
+        for (Iterator<Vehicule> iter = lv.iterator(); iter.hasNext(); ) {
+            Vehicule v = iter.next();
+            tmp_va = new VehiculeAction();
+            tmp_va.setDepart(dp);
+            tmp_va.setArrivee(v.getCommandes().iterator().next());
+            v.addAction(tmp_va);
+            
+            tmp_va = new VehiculeAction();
+            tmp_va.setDepart(v.getCommandes().iterator().next());
+            tmp_va.setArrivee(dp);
+            v.addAction(tmp_va);
+            
+            // On persiste les véhicules
+            daoVehicule.create(v);
+        }
+        System.out.println(daoDepot.findAll());
     }
     
     private static boolean isInitialized(){
@@ -160,7 +200,7 @@ public class Algo {
         return rtn;
     }
     
-    private static void createFakeData(){
+    private static void createFakeConsts(){
         if(Constantes.capaciteMax == -1){
             Constantes.capaciteMax = 1000;
         }
@@ -194,6 +234,44 @@ public class Algo {
         if(Constantes.coutSecondeRemorque == -1){
             Constantes.coutSecondeRemorque = 1/5;
         }
+    }
+    
+    private static void createFakeCmds(){
+        //on get la dao
+        JpaCommandeClientDao    daoCommandeClient   = JpaCommandeClientDao.getInstance();
+        
+        CommandeClient cc = new CommandeClient();
+        cc.setCodePostal("75015");
+        cc.setCoordX((float)8.68674);
+        cc.setCoordY((float)49.03529);
+        cc.setDureeService(3000);
+        cc.setLibelle("C1");
+        cc.setNombreRemorquesMax(1);
+        cc.setQuantiteVoulue(400);
+        cc.setVille("Bretten-Rinklingen");
+        daoCommandeClient.create(cc);
+        
+        cc = new CommandeClient();
+        cc.setCodePostal("68199");
+        cc.setCoordX((float)8.51206);
+        cc.setCoordY((float)49.43919);
+        cc.setDureeService(2640);
+        cc.setLibelle("C2");
+        cc.setNombreRemorquesMax(1);
+        cc.setQuantiteVoulue(480);
+        cc.setVille("Mannheim");
+        daoCommandeClient.create(cc);
+        
+        cc = new CommandeClient();
+        cc.setCodePostal("55606");
+        cc.setCoordX((float)7.44494);
+        cc.setCoordY((float)49.79178);
+        cc.setDureeService(1980);
+        cc.setLibelle("C3");
+        cc.setNombreRemorquesMax(1);
+        cc.setQuantiteVoulue(250);
+        cc.setVille("Kirn");
+        daoCommandeClient.create(cc);
     }
     
     public static void main(String[] args) {
