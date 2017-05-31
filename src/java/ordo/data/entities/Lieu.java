@@ -22,7 +22,7 @@ import javax.persistence.NamedQuery;
 public class Lieu implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     
     @Column
