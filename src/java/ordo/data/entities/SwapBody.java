@@ -8,6 +8,7 @@ package ordo.data.entities;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -34,7 +35,7 @@ public class SwapBody implements Serializable {
     private Lieu lieu;
     @ManyToOne
     private Vehicule vehicule;
-    @OneToMany(mappedBy = "swapBody")
+    @OneToMany(mappedBy = "swapBody", cascade={CascadeType.PERSIST})
     private List<Colis> colis = new ArrayList<>();
 
     public SwapBody() {
@@ -108,10 +109,12 @@ public class SwapBody implements Serializable {
         return true;
     }
 
+    
+    // </editor-fold>
+
     @Override
     public String toString() {
-        return "ordo.data.entities.SwapBody[ id=" + id + " ]";
+        return "SwapBody{" + "id=" + id + ", quantite=" + quantite + ", lieu=" + lieu + ", vehicule=" + vehicule + ", colis=" + colis + "}\n";
     }
-    // </editor-fold>
 
 }

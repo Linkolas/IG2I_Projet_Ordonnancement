@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -34,11 +35,11 @@ public class Vehicule implements Serializable {
     private float distanceParcourue_train;
     @Column
     private float tempsTrajet;
-    @OneToMany(mappedBy = "vehicule")
+    @OneToMany(mappedBy = "vehicule", cascade={CascadeType.PERSIST})
     private List<SwapBody> swapBodies = new ArrayList<>();
-    @OneToMany(mappedBy = "vehicule")
+    @OneToMany(mappedBy = "vehicule", cascade={CascadeType.PERSIST})
     private List<CommandeClient> commandes = new ArrayList<>();
-    @OneToMany(mappedBy = "vehicule")
+    @OneToMany(mappedBy = "vehicule", cascade={CascadeType.PERSIST})
     private List<VehiculeAction> actions = new ArrayList<>();
     @ManyToOne
     private Solution solution;
@@ -178,10 +179,12 @@ public class Vehicule implements Serializable {
         return true;
     }
 
+    
+    // </editor-fold>
+
     @Override
     public String toString() {
-        return "ordo.data.entities.SwapBody[ id=" + id + " ]";
+        return "Vehicule{" + "id=" + id + ", distanceParcourue=" + distanceParcourue + ", distanceParcourue_train=" + distanceParcourue_train + ", tempsTrajet=" + tempsTrajet + ", swapBodies=" + swapBodies + ", commandes=" + commandes + ", actions=" + actions + ", solution=" + solution + '}';
     }
-    // </editor-fold>
 
 }

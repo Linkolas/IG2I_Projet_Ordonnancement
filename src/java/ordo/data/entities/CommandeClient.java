@@ -8,6 +8,7 @@ package ordo.data.entities;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -30,7 +31,7 @@ public class CommandeClient extends Lieu implements Serializable {
     private float dureeService;
     @ManyToOne
     private Vehicule vehicule;
-    @OneToMany(mappedBy = "commande")
+    @OneToMany(mappedBy = "commande", cascade={CascadeType.PERSIST})
     private List<Colis> colis  = new ArrayList<>();
     @Column
     private boolean isLivree = false;

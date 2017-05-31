@@ -146,6 +146,7 @@ public class Algo {
             v.addAction(tmp_va);
             
             // On persiste les véhicules
+            System.out.println(v);
             daoVehicule.create(v);
         }
         System.out.println(daoDepot.findAll());
