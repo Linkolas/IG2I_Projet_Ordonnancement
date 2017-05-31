@@ -77,6 +77,7 @@ public class SwapBody implements Serializable {
     }
 
     public void addColis(Colis colis) {
+        if(colis.getSwapBody() == null) colis.setSwapBody(this);
         this.colis.add(colis);
     }
     
