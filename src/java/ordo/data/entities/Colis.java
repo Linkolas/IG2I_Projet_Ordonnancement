@@ -20,7 +20,7 @@ import javax.persistence.ManyToOne;
 public class Colis implements Serializable {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     
     private float quantite;

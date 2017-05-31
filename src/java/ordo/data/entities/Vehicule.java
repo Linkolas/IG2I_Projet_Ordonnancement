@@ -27,7 +27,7 @@ import javax.persistence.OneToMany;
 public class Vehicule implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column
     private float distanceParcourue;
@@ -114,8 +114,10 @@ public class Vehicule implements Serializable {
     }
     
     public void add(CommandeClient cc){
-        if(cc != null && !commandes.contains(cc))
+        if(cc != null && !commandes.contains(cc)){
             commandes.add(cc);
+            cc.setVehicule(this);
+        }
     }
     
     public void delCommande(CommandeClient cc) {
