@@ -6,12 +6,13 @@
 package ordo.data.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -30,6 +31,10 @@ public class CommandeClient extends Lieu implements Serializable {
     private float dureeService;
     @ManyToOne
     private Vehicule vehicule;
+    @OneToMany(mappedBy = "commande", cascade={CascadeType.PERSIST})
+    private List<Colis> colis  = new ArrayList<>();
+    @Column
+    private boolean isLivree = false;
     
     public CommandeClient() {
     }
@@ -73,7 +78,26 @@ public class CommandeClient extends Lieu implements Serializable {
     public void setVehicule(Vehicule vehicule) {
         this.vehicule = vehicule;
     }
+
+    public List<Colis> getColis() {
+        return colis;
+    }
+
+    public void addColis(Colis colis) {
+        this.colis.add(colis);
+    }
     
+    public void delColis(Colis colis) {
+        this.colis.remove(colis);
+    }
+
+    public boolean isLivree() {
+        return isLivree;
+    }
+
+    public void setLivree(boolean isLivree) {
+        this.isLivree = isLivree;
+    }
     
     // <editor-fold defaultstate="collapsed" desc=".equals, .toString, ...">
     @Override

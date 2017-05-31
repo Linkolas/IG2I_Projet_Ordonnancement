@@ -6,8 +6,10 @@
 package ordo.data.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,53 +28,61 @@ public class Vehicule implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private long id;
     @Column
     private float distanceParcourue;
     @Column
     private float distanceParcourue_train;
     @Column
     private float tempsTrajet;
-    @OneToMany(mappedBy = "vehicule")
-    private List<SwapBody> swapBodies;
-    @OneToMany(mappedBy = "vehicule")
-    private List<CommandeClient> commandes;
-    @OneToMany(mappedBy = "vehicule")
-    private List<VehiculeAction> actions;
+    @OneToMany(mappedBy = "vehicule", cascade={CascadeType.PERSIST})
+    private List<SwapBody> swapBodies = new ArrayList<>();
+    @OneToMany(mappedBy = "vehicule", cascade={CascadeType.PERSIST})
+    private List<CommandeClient> commandes = new ArrayList<>();
+    @OneToMany(mappedBy = "vehicule", cascade={CascadeType.PERSIST})
+    private List<VehiculeAction> actions = new ArrayList<>();
     @ManyToOne
     private Solution solution;
     
     public Vehicule() {
+        this.addSwapBody(new SwapBody()); // On creer au moins une remorque
     }
     
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
+    }
+    
+    public float getQuantity(){
+        return getQuantity(false);
+    }
+    
+    public float getQuantity(boolean onlyNotLivre){
+        float rtn = 0;
+        for(SwapBody sb: swapBodies) {
+            for(Colis c: sb.getColis()) {
+                if(onlyNotLivre && c.getCommande().isLivree()) {
+                    continue;
+                }
+                rtn += c.getQuantite();
+            }
+        }
+        return rtn;
     }
 
     public List<SwapBody> getSwapBodies() {
         return swapBodies;
     }
     
-    public void add(CommandeClient cc){
-        if(cc != null && !commandes.contains(cc))
-            commandes.add(cc);
+    public void addSwapBody(SwapBody swapBody) {
+        swapBodies.add(swapBody);
     }
     
-    public float getQuantity(){
-        float rtn = 0;
-        for(Iterator<CommandeClient> iter = this.commandes.iterator(); iter.hasNext(); ){
-            CommandeClient cc = iter.next();
-            rtn+= cc.getQuantiteVoulue();
-        }
-        return rtn;
-    }
-
-    public void setSwapBodies(List<SwapBody> swapBodies) {
-        this.swapBodies = swapBodies;
+    public void delSwapBody(SwapBody swapBody) {
+        swapBodies.remove(swapBody);
     }
 
     public float getDistanceParcourue() {
@@ -102,17 +112,26 @@ public class Vehicule implements Serializable {
     public List<CommandeClient> getCommandes() {
         return commandes;
     }
-
-    public void setCommandes(List<CommandeClient> commandes) {
-        this.commandes = commandes;
+    
+    public void add(CommandeClient cc){
+        if(cc != null && !commandes.contains(cc))
+            commandes.add(cc);
+    }
+    
+    public void delCommande(CommandeClient cc) {
+        commandes.remove(cc);
     }
 
     public List<VehiculeAction> getActions() {
         return actions;
     }
-
-    public void setActions(List<VehiculeAction> actions) {
-        this.actions = actions;
+    
+    public void addAction(VehiculeAction action) {
+        actions.add(action);
+    }
+    
+    public void delAction(VehiculeAction action) {
+        actions.remove(action);
     }
 
     public Solution getSolution() {
@@ -123,34 +142,49 @@ public class Vehicule implements Serializable {
         this.solution = solution;
     }
     
+    public boolean isTrain() {
+        return (swapBodies.size() > 1);
+    }
+    
+    public boolean isCamion(){
+        return (this.swapBodies.size() == 1 );
+    }
+    
 
     // <editor-fold defaultstate="collapsed" desc=".equals, .toString, ...">
     private static final long serialVersionUID = 1L;
-    
+
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        int hash = 5;
+        hash = 97 * hash + (int) (this.id ^ (this.id >>> 32));
         return hash;
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Vehicule)) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
-        Vehicule other = (Vehicule) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Vehicule other = (Vehicule) obj;
+        if (this.id != other.id) {
             return false;
         }
         return true;
     }
 
+    
+    // </editor-fold>
+
     @Override
     public String toString() {
-        return "ordo.data.entities.SwapBody[ id=" + id + " ]";
+        return "Vehicule{" + "id=" + id + ", distanceParcourue=" + distanceParcourue + ", distanceParcourue_train=" + distanceParcourue_train + ", tempsTrajet=" + tempsTrajet + ", swapBodies=" + swapBodies + ", commandes=" + commandes + ", actions=" + actions + ", solution=" + solution + '}';
     }
-    // </editor-fold>
 
 }

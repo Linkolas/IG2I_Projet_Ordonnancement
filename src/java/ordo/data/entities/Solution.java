@@ -6,6 +6,7 @@
 package ordo.data.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,7 +31,7 @@ public class Solution implements Serializable {
     @Column
     private String libelle;
     @OneToMany(mappedBy = "solution")
-    private List<Vehicule> vehicules;
+    private List<Vehicule> vehicules  = new ArrayList<>();
     
     public Solution() {
     }

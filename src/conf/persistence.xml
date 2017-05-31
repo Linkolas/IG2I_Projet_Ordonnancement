@@ -11,6 +11,7 @@
     <class>ordo.data.entities.Vehicule</class>
     <class>ordo.data.entities.VehiculeAction</class>
     <class>ordo.data.entities.Solution</class>
+    <class>ordo.data.entities.Colis</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/Projet_Ordo"/>

@@ -6,6 +6,9 @@
 package ordo.data.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,6 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -31,6 +35,8 @@ public class SwapBody implements Serializable {
     private Lieu lieu;
     @ManyToOne
     private Vehicule vehicule;
+    @OneToMany(mappedBy = "swapBody", cascade={CascadeType.PERSIST})
+    private List<Colis> colis = new ArrayList<>();
 
     public SwapBody() {
     }
@@ -67,6 +73,18 @@ public class SwapBody implements Serializable {
         this.vehicule = vehicule;
     }
     
+    public List<Colis> getColis() {
+        return colis;
+    }
+
+    public void addColis(Colis colis) {
+        if(colis.getSwapBody() == null) colis.setSwapBody(this);
+        this.colis.add(colis);
+    }
+    
+    public void delColis(Colis colis) {
+        this.colis.remove(colis);
+    }
 
     // <editor-fold defaultstate="collapsed" desc=".equals, .toString, ...">
     private static final long serialVersionUID = 1L;
@@ -91,10 +109,12 @@ public class SwapBody implements Serializable {
         return true;
     }
 
+    
+    // </editor-fold>
+
     @Override
     public String toString() {
-        return "ordo.data.entities.SwapBody[ id=" + id + " ]";
+        return "SwapBody{" + "id=" + id + ", quantite=" + quantite + ", lieu=" + lieu + ", vehicule=" + vehicule + ", colis=" + colis + "}\n";
     }
-    // </editor-fold>
 
 }

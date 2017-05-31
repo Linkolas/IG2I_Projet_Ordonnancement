@@ -1,4 +1,10 @@
-﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="ordo.data.entities.CommandeClient"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="ordo.data.entities.Vehicule"%>
+<%@page import="java.util.Collection"%>
+﻿<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 <!DOCTYPE html>
 <html>
 
@@ -15,6 +21,10 @@
 </head>
 
 <body>
+    <%
+    //Collection<Vehicule> vehicules = new ArrayList<>();
+    Collection<Vehicule> vehicules = (Collection<Vehicule>) request.getAttribute("vehicule");
+    %>
     <nav class="navbar navbar-default custom-header">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -26,7 +36,7 @@
                     <li role="presentation"><a href="#">Overview</a></li>
                     <li role="presentation"><a href="#">Surveys</a></li>
                     <li role="presentation"><a href="#">Reports</a></li>
-                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">Dropdown <span class="caret"></span></a>
+                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">Dropdown<span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
                             <li role="presentation"><a href="#">First Item</a></li>
                             <li role="presentation"><a href="#">Second Item</a></li>
@@ -47,16 +57,57 @@
                 </tr>
             </thead>
             <tbody>
+                <c:forEach items="${vehicules}" var="vehicule">
+                <% Vehicule vehicule = (Vehicule) pageContext.getAttribute("vehicule"); %>
                 <tr>
-                    <td>Camion 1</td>
-                    <td>Sopra-Steria, Boulanger</td>
-                    <td>300 km ; 5 heures</td>
+                    <td>Camion<c:if test="${vehicule.isTrain()}">-train</c:if> ${vehicule.id}</td>
+                    <td>
+                        <% 
+                        List<String> libellesCommandes = new ArrayList<String>();
+                        for(CommandeClient cc: vehicule.getCommandes()) {
+                            libellesCommandes.add(cc.getLibelle());
+                        }
+                        %>
+                        <%= String.join(", ", libellesCommandes) %>
+                    </td>
+                    <td>
+                        <%= ((int) (vehicule.getDistanceParcourue() / 1000))%> km ; 
+                        <%
+                        int heures = ((int) (vehicule.getTempsTrajet() / 60));
+                        int minutes = ((int) vehicule.getTempsTrajet() - heures * 60);
+                        switch(heures) {
+                            case 0:
+                                break;
+                            case 1:
+                        %>
+                        1 heure
+                        <%
+                                break;
+                            default:
+                        %>
+                        <%= heures %> heures
+                        <%
+                                break;
+                        }
+
+                        switch(minutes) {
+                            case 0:
+                                break;
+                            case 1:
+                        %>
+                        1 minute
+                        <%
+                                break;
+                            default:
+                        %>
+                        <%= minutes %> minutes
+                        <%
+                                break;
+                        }
+                        %>
+                    </td>
                 </tr>
-                <tr>
-                    <td>Camion-train 2</td>
-                    <td>Engie </td>
-                    <td>265 km ; 4 heures 20 minutes</td>
-                </tr>
+                </c:forEach>
             </tbody>
         </table>
     </div>
