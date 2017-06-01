@@ -152,8 +152,7 @@ public class Algo {
         System.out.println(daoDepot.findAll());
     }
     
-    public static void testCascade(){
-        
+    public static void makeSolutionV2(){
         //On test si les constantes sont bien initialisées
         if(!isInitialized()){
             // Si ce n'est pas le cas on affiche le message d'erreur en disant que l'on utilise un jeu de test
@@ -161,6 +160,7 @@ public class Algo {
             // Création des constantes manquantes
             createFakeConsts();
         }
+        
         
         
         // Dans un premier temps on a besoin de récupérer les instances de chaques objets
@@ -173,6 +173,8 @@ public class Algo {
         JpaSwapBodyDao          daoSwapBodyDao      = JpaSwapBodyDao.getInstance();
         JpaTrajetDao            daoTrajet           = JpaTrajetDao.getInstance();
         
+        // On dois lire les csv ici
+            // TODO READ CSVS.
         try{
             CommandeClient cc_test = daoCommandeClient.findAll().iterator().next();
         }
@@ -199,17 +201,6 @@ public class Algo {
             daoDepot.create(dp);
         }
         
-        //On creer un Véhicule
-        Vehicule        tmp_v   = new Vehicule();
-        SwapBody        tmp_s   = new SwapBody();
-        CommandeClient  cc      = daoCommandeClient.findAll().iterator().next();
-        tmp_v.add(cc);
-//        SwapBody        tmp_s   = new SwapBody();
-//        CommandeClient
-//        Colis           colis1  = new Colis();
-//        Colis           colis2  = new Colis();
-
-        daoVehicule.create(tmp_v);
         
     }
     
