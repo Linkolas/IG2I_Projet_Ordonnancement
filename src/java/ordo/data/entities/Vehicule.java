@@ -7,6 +7,7 @@ package ordo.data.entities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -150,6 +151,14 @@ public class Vehicule implements Serializable {
     
     public boolean isCamion(){
         return (this.swapBodies.size() == 1 );
+    }
+    
+    public void addSmartly(CommandeClient cc){
+        for(CommandeClient _cc : this.getCommandes()){
+            if(_cc.isCloserThan(cc) >= 0){
+                
+            }
+        }
     }
     
 

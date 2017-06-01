@@ -7,7 +7,9 @@ package ordo.algo;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import static java.util.Collections.list;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import ordo.data.Constantes;
@@ -201,8 +203,32 @@ public class Algo {
             daoDepot.create(dp);
         }
         
+        Collection<CommandeClient> ccc = daoCommandeClient.findAll();
+        
+        for (Iterator<CommandeClient> iter = ccc.iterator(); iter.hasNext(); ) {
+            CommandeClient cc = iter.next();
+        }
+        
+        List<CommandeClient> lcc = new ArrayList(ccc);
+        
+        //On trie la liste du client le plus éloignée 
+        Collections.sort(lcc, new Comparator<CommandeClient>(){
+            @Override
+            public int compare(CommandeClient o1, CommandeClient o2) {
+                return o1.isFutherThan(o2);
+            }
+        });
+        
+        Vehicule tmp_v;
+        
+        for (CommandeClient cc : lcc){
+            tmp_v = new Vehicule();
+            tmp_v.add(cc);
+        }
         
     }
+    
+    
     
     private static boolean isInitialized(){
         boolean rtn = true;
