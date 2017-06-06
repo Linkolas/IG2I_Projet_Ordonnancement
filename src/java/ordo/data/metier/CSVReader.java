@@ -81,13 +81,17 @@ public class CSVReader
         readTrajets();
     }
     
-    public void readFleet()
+    public void readFleet() {
+        readFleet(System.getProperty("user.home")+"/Desktop/projet2017/large_normal/Fleet.csv");
+    }
+    
+    public void readFleet(String file_path)
     {
         BufferedReader fileReader = null;
         String currentLine = "";
         try
         {
-            String fileName = System.getProperty("user.home")+"/Desktop/projet2017/large_normal/Fleet.csv";
+            String fileName = file_path;
             fileReader = new BufferedReader(new FileReader(fileName));
             
             //On lit l'entête, que l'on connait déjà
@@ -145,7 +149,11 @@ public class CSVReader
         }
     }
     
-    public void readLocations()
+    public void readLocations() {
+        readLocations(System.getProperty("user.home")+"/Desktop/projet2017/large_normal/Locations.csv");
+    }
+    
+    public void readLocations(String file_path)
     {
         BufferedReader fileReader = null;
         String currentLine = "";
@@ -157,7 +165,7 @@ public class CSVReader
         
         try
         {
-            String fileName = System.getProperty("user.home")+"/Desktop/projet2017/large_normal/Locations.csv";
+            String fileName = file_path;
             fileReader = new BufferedReader(new FileReader(fileName));
             
             //On lit l'entête, que l'on connait déjà
@@ -229,13 +237,17 @@ public class CSVReader
         }
     }
     
-    public void readSwapActions()
+    public void readSwapActions() {
+        readSwapActions(System.getProperty("user.home")+"/Desktop/projet2017/large_normal/SwapActions.csv");
+    }
+    
+    public void readSwapActions(String file_path)
     {
         BufferedReader fileReader = null;
         String currentLine = "";
         try
         {
-            String fileName = System.getProperty("user.home")+"/Desktop/projet2017/large_normal/SwapActions.csv";
+            String fileName = file_path;
             fileReader = new BufferedReader(new FileReader(fileName));
             
             //On lit l'entête, que l'on connait déjà
