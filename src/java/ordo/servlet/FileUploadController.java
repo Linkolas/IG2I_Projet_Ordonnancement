@@ -114,17 +114,19 @@ public class FileUploadController extends HttpServlet {
         CSVReader csvReader = new CSVReader();
         switch(fileName) {
             case "Fleet.csv":
-                csvReader.readFleet(uploadFilePath + File.separator + fileName);
+                csvReader.readFleet();
                 break;
             case "Locations.csv":
-                csvReader.readLocations(uploadFilePath + File.separator + fileName);
+                csvReader.readLocations();
                 break;
             case "SwapActions.csv":
-                csvReader.readSwapActions(uploadFilePath + File.separator + fileName);
+                csvReader.readSwapActions();
                 break;
             case "DistanceTimesData.csv":
+                csvReader.readTrajets();
                 break;
             case "DistanceTimesCoordinates.csv":
+                csvReader.readTrajets();
                 break;
             default:
                 break;
