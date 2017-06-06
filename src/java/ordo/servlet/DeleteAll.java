@@ -7,6 +7,8 @@ package ordo.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -32,40 +34,29 @@ public class DeleteAll extends HttpServlet
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException
     {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter())
-        {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet DeleteAll</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet DeleteAll at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-            
-            JpaCommandeClientDao jpaCommandeClientDao = JpaCommandeClientDao.getInstance();
-            JpaDepotDao jpaDepotDao = JpaDepotDao.getInstance();
-            JpaLieuDao jpaLieuDao = JpaLieuDao.getInstance();
-            JpaSolutionDao jpaSolutionDao = JpaSolutionDao.getInstance();
-            JpaSwapBodyDao jpaSwapBodyDao = JpaSwapBodyDao.getInstance();
-            JpaSwapLocationDao jpaSwapLocationDao = JpaSwapLocationDao.getInstance();
-            JpaTrajetDao jpaTrajetDao = JpaTrajetDao.getInstance();
-            JpaVehiculeActionDao jpaVehiculeActionDao = JpaVehiculeActionDao.getInstance();
-            JpaVehiculeDao jpaVehiculeDao = JpaVehiculeDao.getInstance();
-            
-            jpaCommandeClientDao.deleteAll();
-            jpaDepotDao.deleteAll();
-            jpaLieuDao.deleteAll();
-            jpaSolutionDao.deleteAll();
-            jpaSwapBodyDao.deleteAll();
-            jpaSwapLocationDao.deleteAll();
-            jpaTrajetDao.deleteAll();
-            jpaVehiculeActionDao.deleteAll();
-            jpaVehiculeDao.deleteAll();
-        }
+        JpaCommandeClientDao jpaCommandeClientDao = JpaCommandeClientDao.getInstance();
+        JpaDepotDao jpaDepotDao = JpaDepotDao.getInstance();
+        JpaLieuDao jpaLieuDao = JpaLieuDao.getInstance();
+        JpaSolutionDao jpaSolutionDao = JpaSolutionDao.getInstance();
+        JpaSwapBodyDao jpaSwapBodyDao = JpaSwapBodyDao.getInstance();
+        JpaSwapLocationDao jpaSwapLocationDao = JpaSwapLocationDao.getInstance();
+        JpaTrajetDao jpaTrajetDao = JpaTrajetDao.getInstance();
+        JpaVehiculeActionDao jpaVehiculeActionDao = JpaVehiculeActionDao.getInstance();
+        JpaVehiculeDao jpaVehiculeDao = JpaVehiculeDao.getInstance();
+
+        jpaCommandeClientDao.deleteAll();
+        jpaDepotDao.deleteAll();
+        jpaLieuDao.deleteAll();
+        jpaSolutionDao.deleteAll();
+        jpaSwapBodyDao.deleteAll();
+        jpaSwapLocationDao.deleteAll();
+        jpaTrajetDao.deleteAll();
+        jpaVehiculeActionDao.deleteAll();
+        jpaVehiculeDao.deleteAll();
+        
+        ServletContext context= getServletContext();
+        RequestDispatcher rd= context.getRequestDispatcher("/Index");
+        rd.forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

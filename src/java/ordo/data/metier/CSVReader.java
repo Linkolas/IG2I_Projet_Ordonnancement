@@ -293,21 +293,12 @@ public class CSVReader
             }
         }
     }
-    
-    /**
-     * Cette fonction appelle la fonction readTrajets mais fournit les chemins des fichiers par défaut
-     */
-    public void readTrajets() 
-    {
-        String path = System.getProperty("user.home")+"/Desktop/projet2017/dima/";
-        readTrajets(path+"DistanceTimesCoordinates.csv", path+"DistanceTimesData.csv");
-    }
-    
+   
     /**
      * Cette fonction permet de lire les fichiers DistanceTimesData 
      * et d'ajouter les trajets en base
      */
-    public void readTrajets(String file_path_coordinates, String file_path_data)
+    public void readTrajets()
     {
         // Variables
         //  lieux comprendra les différents lieux qui correspondent aux coordonnees dans la variable coordonnees
@@ -316,6 +307,9 @@ public class CSVReader
         List<Lieu> lieux = new ArrayList<>();
         float coordX;
         float coordY;
+        
+        String file_path_coordinates = "web/assets/csv/DistanceTimesCoordinates.csv";
+        String file_path_data = "web/assets/csv/DistanceTimesData.csv";
         
         //On lit le premier fichier CSV : DistanceTimesCoordinates
         BufferedReader fileReader = null;
@@ -433,7 +427,7 @@ public class CSVReader
             }
             
             // On enregistre tous les trajets en base d'un seul coup
-            //jpaTrajetDao.create(trajets);
+            jpaTrajetDao.create(trajets);
         } 
         
         catch (FileNotFoundException ex)
