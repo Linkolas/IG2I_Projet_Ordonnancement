@@ -9,6 +9,10 @@
         <servlet-class>ordo.servlet.api.APILieuxController</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>DeleteAll</servlet-name>
+        <servlet-class>ordo.servlet.DeleteAll</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>FileUploadController</servlet-name>
         <servlet-class>ordo.servlet.FileUploadController</servlet-class>
     </servlet>
@@ -23,6 +27,10 @@
     <servlet-mapping>
         <servlet-name>FileUploadController</servlet-name>
         <url-pattern>/upload</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteAll</servlet-name>
+        <url-pattern>/delete</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
