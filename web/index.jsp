@@ -111,7 +111,7 @@
             </tbody>
         </table>
     </div>
-    <iframe allowfullscreen="" frameborder="0" width="100%" height="400" src="https://www.google.com/maps/embed/v1/place?key=+AIzaSyB4poIa8NWHgctl0F46-oOfjqTzX4iqU3g+&amp;q=Paris%2C+France&amp;zoom=11"></iframe>
+    <div id="map"></div>
     <footer>
         <div class="row">
             <div class="col-md-6 col-sm-8">
@@ -133,6 +133,8 @@
     </footer>
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/index.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB4poIa8NWHgctl0F46-oOfjqTzX4iqU3g"></script>
 </body>
 
 </html>

@@ -14,3 +14,7 @@ a.navbar-brand.navbar-link{
   line-height:20px;
 }
 
+#map {
+    height: 400px;
+    width: 100%;
+}
