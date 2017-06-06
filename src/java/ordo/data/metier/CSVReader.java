@@ -74,7 +74,8 @@ public class CSVReader
         String currentLine = "";
         try
         {
-            String fileName = System.getProperty("user.home")+"/Desktop/projet2017/large_normal/Fleet.csv";
+            //String fileName = System.getProperty("user.home")+"/Desktop/projet2017/large_normal/Fleet.csv";
+            String fileName = "web/assets/csv/Fleet.csv";
             fileReader = new BufferedReader(new FileReader(fileName));
             
             //On lit l'entête, que l'on connait déjà
