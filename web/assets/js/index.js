@@ -7,8 +7,8 @@ $(function() {
             var lieu = data.lieux[i];
             var marker = new google.maps.Marker({
                 position: {
-                    lat: lieu.coordX,
-                    lng: lieu.coordY
+                    lat: lieu.coordY,
+                    lng: lieu.coordX
                 },
                 title: lieu.libelle
             });

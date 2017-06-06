@@ -115,7 +115,7 @@
     <footer>
         <div class="row">
             <div class="col-md-6 col-sm-8">
-                <form class="form-inline bootstrap-form-with-validation" method="post">
+                <form class="form-inline bootstrap-form-with-validation" method="post" action="upload" enctype="multipart/form-data">
                     <p>Importer un fichier CSV</p>
                     <div class="form-group">
                         <input type="file" name="file-input">
