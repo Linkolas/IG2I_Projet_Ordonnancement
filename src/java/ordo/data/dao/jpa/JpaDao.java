@@ -1,6 +1,7 @@
 package ordo.data.dao.jpa;
 
 import java.util.Collection;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -72,6 +73,28 @@ public abstract class JpaDao<T> implements IDaoBase<T> {
         }
         
         return retour;
+    }
+    
+    public boolean create(List<T> objList)
+    {
+        int i=0;
+        try
+        {
+            et.begin();
+            for(T obj: objList)
+            {
+                System.out.println(i++);
+                em.persist(obj);
+            }
+            et.commit();
+        }
+        catch (Exception ex) 
+        {
+            et.rollback();
+            return false;
+        }
+        
+        return true;
     }
     
     @Override
