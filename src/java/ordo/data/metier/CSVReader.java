@@ -81,11 +81,7 @@ public class CSVReader
         readTrajets();
     }
     
-    public void readFleet() {
-        readFleet(System.getProperty("user.home")+"/Desktop/projet2017/large_normal/Fleet.csv");
-    }
-    
-    public void readFleet(String file_path)
+    public void readFleet()
     {
         BufferedReader fileReader = null;
         String currentLine = "";
@@ -150,14 +146,12 @@ public class CSVReader
         }
     }
     
-    public void readLocations() {
-        readLocations(System.getProperty("user.home")+"/Desktop/projet2017/large_normal/Locations.csv");
-    }
     
-    public void readLocations(String file_path)
+    public void readLocations()
     {
         BufferedReader fileReader = null;
         String currentLine = "";
+        String fileName = "web/assets/csv/Locations.csv";
         
         JpaDepotDao daoDepot = JpaDepotDao.getInstance();
         JpaSwapLocationDao daoSwapLocation = JpaSwapLocationDao.getInstance();
@@ -166,7 +160,7 @@ public class CSVReader
         
         try
         {
-            String fileName = file_path;
+            
             fileReader = new BufferedReader(new FileReader(fileName));
             
             //On lit l'entête, que l'on connait déjà
@@ -238,17 +232,15 @@ public class CSVReader
         }
     }
     
-    public void readSwapActions() {
-        readSwapActions(System.getProperty("user.home")+"/Desktop/projet2017/large_normal/SwapActions.csv");
-    }
     
-    public void readSwapActions(String file_path)
+    
+    public void readSwapActions()
     {
         BufferedReader fileReader = null;
         String currentLine = "";
+        String fileName = "web/assets/csv/SwapActions.csv";
         try
         {
-            String fileName = file_path;
             fileReader = new BufferedReader(new FileReader(fileName));
             
             //On lit l'entête, que l'on connait déjà
