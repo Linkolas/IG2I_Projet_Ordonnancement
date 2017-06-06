@@ -124,7 +124,7 @@
                 </form>
             </div>
             <div class="col-md-3 col-md-offset-3 col-sm-2 col-sm-offset-2">
-                <form class="form-inline bootstrap-form-with-validation" method="post">
+                <form class="form-inline bootstrap-form-with-validation" action="${pageContext.request.contextPath}/delete">
                     <p>Remettre à zéro</p>
                     <button class="btn btn-danger" type="submit">SUPPRIMER</button>
                 </form>

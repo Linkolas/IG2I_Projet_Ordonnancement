@@ -8,6 +8,10 @@
         <servlet-name>APILieuxController</servlet-name>
         <servlet-class>ordo.servlet.api.APILieuxController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DeleteAll</servlet-name>
+        <servlet-class>ordo.servlet.DeleteAll</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Index</servlet-name>
         <url-pattern>/Index</url-pattern>
@@ -15,6 +19,10 @@
     <servlet-mapping>
         <servlet-name>APILieuxController</servlet-name>
         <url-pattern>/api/lieux</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteAll</servlet-name>
+        <url-pattern>/delete</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

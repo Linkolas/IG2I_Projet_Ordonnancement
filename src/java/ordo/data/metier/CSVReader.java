@@ -439,12 +439,8 @@ public class CSVReader
                 System.out.println(i);
             }
             
-            System.out.println("Coucou");
-            
             // On enregistre tous les trajets en base d'un seul coup
-            jpaTrajetDao.create(trajets);
-            
-            System.out.println("Coucou");
+            //jpaTrajetDao.create(trajets);
         } 
         
         catch (FileNotFoundException ex)
