@@ -99,6 +99,20 @@ public class CommandeClient extends Lieu implements Serializable {
         this.isLivree = isLivree;
     }
     
+    public int isCloserThan(Lieu l){
+        //TODO Utiliser la notion de trajet pour comparer si un lieu est plus loin
+        return 0;
+    }
+    
+    public int isFutherThan(Lieu l){
+        return -1*isCloserThan(l);
+    }
+    
+    public float coutDuDetour(Lieu l1, Lieu l2){
+        //retourne le cout pour réaliser un détour
+        return 0;
+    }
+    
     // <editor-fold defaultstate="collapsed" desc=".equals, .toString, ...">
     @Override
     public String toString() {

@@ -7,7 +7,9 @@ package ordo.algo;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import static java.util.Collections.list;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import ordo.data.Constantes;
@@ -129,7 +131,7 @@ public class Algo {
                 tmp_v.add(cc);
                 tmp_v.getSwapBodies().get(0).addColis(tmp_c);
             }
-            lv.add(tmp_v);
+            daoVehicule.create(tmp_v);
         }
         
         //On effectue ensuite les tournees
@@ -151,6 +153,82 @@ public class Algo {
         }
         System.out.println(daoDepot.findAll());
     }
+    
+    public static void makeSolutionV2(){
+        //On test si les constantes sont bien initialisées
+        if(!isInitialized()){
+            // Si ce n'est pas le cas on affiche le message d'erreur en disant que l'on utilise un jeu de test
+            System.out.println("DEV MODE ACTIVATED CREATING FAKE VALUES FOR TESTING");
+            // Création des constantes manquantes
+            createFakeConsts();
+        }
+        
+        
+        
+        // Dans un premier temps on a besoin de récupérer les instances de chaques objets
+        JpaVehiculeDao          daoVehicule         = JpaVehiculeDao.getInstance();
+        JpaVehiculeActionDao    daoVehiculeAction   = JpaVehiculeActionDao.getInstance();
+        JpaLieuDao              daoLieu             = JpaLieuDao.getInstance();
+        JpaDepotDao             daoDepot            = JpaDepotDao.getInstance();
+        JpaCommandeClientDao    daoCommandeClient   = JpaCommandeClientDao.getInstance();
+        JpaSolutionDao          daoSolution         = JpaSolutionDao.getInstance();
+        JpaSwapBodyDao          daoSwapBodyDao      = JpaSwapBodyDao.getInstance();
+        JpaTrajetDao            daoTrajet           = JpaTrajetDao.getInstance();
+        
+        // On dois lire les csv ici
+            // TODO READ CSVS.
+        try{
+            CommandeClient cc_test = daoCommandeClient.findAll().iterator().next();
+        }
+        catch(Exception e){
+            System.out.println("Il n'y a aucune commandes client en base créations de fausses commande");
+            createFakeCmds();
+        }
+            
+        // On get le depot
+        Depot dp;
+        
+        try{
+            dp = daoDepot.findAll().iterator().next();
+        }
+        catch(Exception e){
+            System.out.println("Il n'y a encore aucun depot nous créeons donc un dépot avec des coordonnées aléatoires");
+            //Qui en fait ne sont pas si aléatoire
+            dp = new Depot();
+            dp.setCoordX((float)8.42227);
+            dp.setCoordY((float)49.45044);
+            dp.setCodePostal("67069");
+            dp.setNumeroLieu("D1");
+            dp.setVille("Lens");
+            daoDepot.create(dp);
+        }
+        
+        Collection<CommandeClient> ccc = daoCommandeClient.findAll();
+        
+        for (Iterator<CommandeClient> iter = ccc.iterator(); iter.hasNext(); ) {
+            CommandeClient cc = iter.next();
+        }
+        
+        List<CommandeClient> lcc = new ArrayList(ccc);
+        
+        //On trie la liste du client le plus éloignée 
+        Collections.sort(lcc, new Comparator<CommandeClient>(){
+            @Override
+            public int compare(CommandeClient o1, CommandeClient o2) {
+                return o1.isFutherThan(o2);
+            }
+        });
+        
+        Vehicule tmp_v;
+        
+        for (CommandeClient cc : lcc){
+            tmp_v = new Vehicule();
+            tmp_v.add(cc);
+        }
+        
+    }
+    
+    
     
     private static boolean isInitialized(){
         boolean rtn = true;
@@ -277,5 +355,6 @@ public class Algo {
     
     public static void main(String[] args) {
         makeSolutionV1();
+        //testCascade();
     }
 }

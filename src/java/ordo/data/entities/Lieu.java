@@ -11,16 +11,18 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 
 /**
  *
  * @author Nicolas
  */
 @Entity
+@NamedQuery(name="Lieu.findByCoordonnees", query="SELECT l FROM Lieu l WHERE l.coordX = :coordX AND l.coordY = :coordY") 
 public class Lieu implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     
     @Column

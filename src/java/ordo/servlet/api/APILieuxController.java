@@ -42,20 +42,22 @@ public class APILieuxController extends HttpServlet {
         JpaLieuDao daoLieu = JpaLieuDao.getInstance();
         Collection<Lieu> lieux = daoLieu.findAll();
         
-        CommandeClient c1 = new CommandeClient();
-        Depot c2 = new Depot();
-        c1.setId(1);
-        c1.setQuantiteVoulue(26);
-        c1.setCoordX(50.4291629f);
-        c1.setCoordY(2.8278697f);
-        c1.setLibelle("Sample Lieu");
-        
-        c2.setId(2);
-        c2.setCoordX(50.5f);
-        c2.setCoordY(2.8278697f);
-        
-        lieux.add(c1);
-        lieux.add(c2);
+        if(lieux.isEmpty()) {
+            CommandeClient c1 = new CommandeClient();
+            Depot c2 = new Depot();
+            c1.setId(1);
+            c1.setQuantiteVoulue(26);
+            c1.setCoordX(50.4291629f);
+            c1.setCoordY(2.8278697f);
+            c1.setLibelle("Sample Lieu");
+
+            c2.setId(2);
+            c2.setCoordX(50.5f);
+            c2.setCoordY(2.8278697f);
+
+            lieux.add(c1);
+            lieux.add(c2);
+        }
         
         String json = new Gson().toJson(lieux);
         json = "{\"lieux\": " +json + "}";

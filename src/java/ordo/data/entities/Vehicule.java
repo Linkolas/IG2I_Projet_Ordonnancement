@@ -7,6 +7,7 @@ package ordo.data.entities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -27,7 +28,7 @@ import javax.persistence.OneToMany;
 public class Vehicule implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column
     private float distanceParcourue;
@@ -114,8 +115,10 @@ public class Vehicule implements Serializable {
     }
     
     public void add(CommandeClient cc){
-        if(cc != null && !commandes.contains(cc))
+        if(cc != null && !commandes.contains(cc)){
             commandes.add(cc);
+            cc.setVehicule(this);
+        }
     }
     
     public void delCommande(CommandeClient cc) {
@@ -148,6 +151,14 @@ public class Vehicule implements Serializable {
     
     public boolean isCamion(){
         return (this.swapBodies.size() == 1 );
+    }
+    
+    public void addSmartly(CommandeClient cc){
+        for(CommandeClient _cc : this.getCommandes()){
+            if(_cc.isCloserThan(cc) >= 0){
+                
+            }
+        }
     }
     
 

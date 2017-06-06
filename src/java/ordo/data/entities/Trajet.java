@@ -21,13 +21,13 @@ import javax.persistence.ManyToOne;
 public class Trajet implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @Column
-    private float duree;
+    private int duree;
     @Column
-    private float distance;
+    private int distance;
     @ManyToOne
     private Lieu depart;
     @ManyToOne
@@ -48,7 +48,7 @@ public class Trajet implements Serializable {
         return duree;
     }
 
-    public void setDuree(float duree) {
+    public void setDuree(int duree) {
         this.duree = duree;
     }
 
@@ -56,7 +56,7 @@ public class Trajet implements Serializable {
         return distance;
     }
 
-    public void setDistance(float distance) {
+    public void setDistance(int distance) {
         this.distance = distance;
     }
 
