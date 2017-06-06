@@ -83,7 +83,6 @@ public abstract class JpaDao<T> implements IDaoBase<T> {
             et.begin();
             for(T obj: objList)
             {
-                System.out.println(i++);
                 em.persist(obj);
             }
             et.commit();

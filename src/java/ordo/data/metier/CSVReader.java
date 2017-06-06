@@ -302,10 +302,19 @@ public class CSVReader
     }
     
     /**
+     * Cette fonction appelle la fonction readTrajets mais fournit les chemins des fichiers par défaut
+     */
+    public void readTrajets() 
+    {
+        String path = System.getProperty("user.home")+"/Desktop/projet2017/dima/";
+        readTrajets(path+"DistanceTimesCoordinates.csv", path+"DistanceTimesData.csv");
+    }
+    
+    /**
      * Cette fonction permet de lire les fichiers DistanceTimesData 
      * et d'ajouter les trajets en base
      */
-    public void readTrajets()
+    public void readTrajets(String file_path_coordinates, String file_path_data)
     {
         // Variables
         //  lieux comprendra les différents lieux qui correspondent aux coordonnees dans la variable coordonnees
@@ -321,8 +330,7 @@ public class CSVReader
         try
         {
             // Ouverture du fichier
-            String fileName = System.getProperty("user.home")+"/Desktop/projet2017/dima/DistanceTimesCoordinates.csv";
-            fileReader = new BufferedReader(new FileReader(fileName));
+            fileReader = new BufferedReader(new FileReader(file_path_coordinates));
             
             //On lit la première ligne qui comprend les headers
             fileReader.readLine();
@@ -375,8 +383,7 @@ public class CSVReader
             int i=0, j;
             
             // On ouvre le fichier DistanceTimesData
-            String fileName = System.getProperty("user.home")+"/Desktop/projet2017/dima/DistanceTimesData.csv";
-            fileReader = new BufferedReader(new FileReader(fileName));
+            fileReader = new BufferedReader(new FileReader(file_path_data));
             
             // On lit l'entête, que l'on connait déjà
             fileReader.readLine();
@@ -405,7 +412,7 @@ public class CSVReader
             fileReader.close();
             
             // On lit la deuxième moitié du fichier DistanceTimesData
-            fileReader = new BufferedReader(new FileReader(fileName));
+            fileReader = new BufferedReader(new FileReader(file_path_data));
             
             // On lit l'entête, que l'on connait déjà
             fileReader.readLine();
