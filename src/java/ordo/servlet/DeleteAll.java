@@ -55,7 +55,7 @@ public class DeleteAll extends HttpServlet
         jpaVehiculeDao.deleteAll();
         
         ServletContext context= getServletContext();
-        RequestDispatcher rd= context.getRequestDispatcher("/Index");
+        RequestDispatcher rd= context.getRequestDispatcher("/index");
         rd.forward(request, response);
     }
 
