@@ -51,6 +51,7 @@
             </div>
         </div>
     </nav>
+    <div id="map"></div>
     <div class="table-responsive">
         <table class="table">
             <thead>
@@ -115,7 +116,6 @@
             </tbody>
         </table>
     </div>
-    <div id="map"></div>
     <footer>
         <div class="row">
             <div class="col-md-6 col-sm-8">
