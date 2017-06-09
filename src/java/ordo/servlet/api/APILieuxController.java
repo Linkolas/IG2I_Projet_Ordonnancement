@@ -5,7 +5,10 @@
  */
 package ordo.servlet.api;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
@@ -59,8 +62,26 @@ public class APILieuxController extends HttpServlet {
             lieux.add(c2);
         }
         
-        String json = new Gson().toJson(lieux);
-        json = "{\"lieux\": " +json + "}";
+        String json = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
+            @Override
+            public boolean shouldSkipField(FieldAttributes f) {
+                switch(f.getName()) {
+                    case "vehicule":
+                    case "colis":
+                        return true;
+                }
+                
+                return false;
+            }
+
+            @Override
+            public boolean shouldSkipClass(Class<?> clazz) {
+                return false;
+            }
+        })
+            .create()
+            .toJson(lieux);
+        json = "{\"lieux\": " + json + "}";
         PrintWriter out = response.getWriter();
         out.print(json);
     }
