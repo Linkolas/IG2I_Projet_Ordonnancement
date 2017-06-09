@@ -44,6 +44,10 @@
                         </ul>
                     </li>
                 </ul>
+                
+                <ul class="nav navbar-nav links" style="float: right;">
+                    <li role="presentation"><button class="btn btn-success" id="calculate">CALCULER</button></li>
+                </ul>
             </div>
         </div>
     </nav>
