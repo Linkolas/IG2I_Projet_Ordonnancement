@@ -1,5 +1,12 @@
 
 $(function() {
+    $("#calculate").click(function() {
+        $("#calculate").html("Calcul en cours...");
+        $.get("api/calculate", function(data) {
+            $("#calculate").html("CALCULER");
+        });
+    });
+    
     $.get("api/lieux", function(data) {
         
         var markers = [];
