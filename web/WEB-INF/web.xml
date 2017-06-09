@@ -16,6 +16,10 @@
         <servlet-name>FileUploadController</servlet-name>
         <servlet-class>ordo.servlet.FileUploadController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>APICalculateController</servlet-name>
+        <servlet-class>ordo.servlet.api.APICalculateController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Index</servlet-name>
         <url-pattern>/index</url-pattern>
@@ -31,6 +35,10 @@
     <servlet-mapping>
         <servlet-name>DeleteAll</servlet-name>
         <url-pattern>/delete</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>APICalculateController</servlet-name>
+        <url-pattern>/api/calculate</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

@@ -26,4 +26,6 @@ public abstract class Constantes {
     public static float coutSecondeRemorque = -1;
     public static float coutTrajetSecondeRemorque = -1;
     
+    /** True if the algorithm is running. */
+    public static boolean isCalculating = false;
 }
