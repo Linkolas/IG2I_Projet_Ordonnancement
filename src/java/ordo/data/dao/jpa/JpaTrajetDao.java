@@ -30,9 +30,17 @@ public class JpaTrajetDao extends JpaDao<Trajet> {
     }
     
     public Trajet find(Lieu depart, Lieu arrivee) {
-       Query query = em.createNamedQuery("Trajet.getTrajet");
-       query.setParameter("id_depart", depart.getId());
-       query.setParameter("id_destination", arrivee.getId());
-       return (Trajet) query.getSingleResult();
+        Query query = em.createNamedQuery("Trajet.getTrajet");
+        query.setParameter("id_depart", depart);
+        query.setParameter("id_destination", arrivee);
+
+        Trajet rtn = null;
+        try {
+            rtn = (Trajet) query.getSingleResult();
+        } catch (Exception e) {
+            //System.out.println(e);;
+        }
+        
+        return rtn;
    }
 }
