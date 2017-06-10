@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
+import ordo.data.dao.jpa.JpaTrajetDao;
 import ordo.data.metier.CSVReader;
 
 /**
@@ -64,6 +65,22 @@ public class FileUploadController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        String applicationPath = request.getServletContext().getRealPath("");
+        String uploadFilePath = applicationPath + File.separator + UPLOAD_DIR + File.separator;
+        JpaTrajetDao trajetDao = JpaTrajetDao.getInstance();
+        
+        CSVReader reader = new CSVReader();
+        reader.readFleet(uploadFilePath + "Fleet.csv");
+        reader.readSwapActions(uploadFilePath + "SwapActions.csv");
+        
+        if(trajetDao.findAll().size() <= 0) {
+            reader.readTrajets(uploadFilePath + "DistanceTimesData.csv", uploadFilePath + "DistanceTimesCoordinates.csv");
+        }
+        
+        reader.readLocations(uploadFilePath + "Locations.csv");
+        
+        
         response.sendRedirect("index");
     }
 
@@ -110,7 +127,7 @@ public class FileUploadController extends HttpServlet {
         File file = new File(temp.getAbsolutePath() + File.separator + fileName);
         file.renameTo(new File(uploadFilePath + File.separator + fileName));
         
-        
+        /*
         CSVReader csvReader = new CSVReader();
         switch(fileName) {
             case "Fleet.csv":
@@ -131,14 +148,15 @@ public class FileUploadController extends HttpServlet {
             default:
                 break;
         }
+        */
         
-        
+        /*
         request.setAttribute("message", fileName + " File uploaded successfully!");
         getServletContext().getRequestDispatcher("/index.jsp").forward(
                 request, response);
+        */
         
-        
-        //response.sendRedirect("index");
+        response.sendRedirect("index");
     }
  
     /**

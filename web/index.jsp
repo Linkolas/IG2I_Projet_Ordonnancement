@@ -127,6 +127,8 @@
                     </div>
                     <button class="btn btn-default" type="submit">Envoyer</button>
                 </form>
+                <p>Utiliser les fichiers CSV présents</p>
+                <button class="btn btn-default" id="loadData">Charger les données</button>
             </div>
             <div class="col-md-3 col-md-offset-3 col-sm-2 col-sm-offset-2">
                 <form class="form-inline bootstrap-form-with-validation" action="${pageContext.request.contextPath}/delete">

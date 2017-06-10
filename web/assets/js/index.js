@@ -4,6 +4,15 @@ $(function() {
         $("#calculate").html("Calcul en cours...");
         $.get("api/calculate", function(data) {
             $("#calculate").html("CALCULER");
+            location.reload();
+        });
+    });
+    
+    $("#loadData").click(function() {
+        $("#loadData").html("Chargement en cours...");
+        $.get("upload", function(data) {
+            $("#loadData").html("Charger les données");
+            location.reload();
         });
     });
     

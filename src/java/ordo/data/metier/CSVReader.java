@@ -82,14 +82,18 @@ public class CSVReader
         readLocations();
     }
     
-    public void readFleet()
+    public void readFleet() {
+        readFleet("web/assets/csv/Fleet.csv");
+    }
+    
+    public void readFleet(String filePath)
     {
         BufferedReader fileReader = null;
         String currentLine = "";
         try
         {
             //String fileName = System.getProperty("user.home")+"/Desktop/projet2017/large_normal/Fleet.csv";
-            String fileName = "web/assets/csv/Fleet.csv";
+            String fileName = filePath;
             fileReader = new BufferedReader(new FileReader(fileName));
             
             //On lit l'entête, que l'on connait déjà
@@ -140,11 +144,15 @@ public class CSVReader
     }
     
     
-    public void readLocations()
+    public void readLocations() {
+        readLocations("web/assets/csv/Locations.csv");
+    }
+    
+    public void readLocations(String filePath)
     {
         BufferedReader fileReader = null;
         String currentLine = "";
-        String fileName = "web/assets/csv/Locations.csv";
+        String fileName = filePath;
         
         JpaDepotDao daoDepot = JpaDepotDao.getInstance();
         JpaSwapLocationDao daoSwapLocation = JpaSwapLocationDao.getInstance();
@@ -238,12 +246,15 @@ public class CSVReader
     }
     
     
+    public void readSwapActions() {
+        readSwapActions("web/assets/csv/SwapActions.csv");
+    }
     
-    public void readSwapActions()
+    public void readSwapActions(String filePath)
     {
         BufferedReader fileReader = null;
         String currentLine = "";
-        String fileName = "web/assets/csv/SwapActions.csv";
+        String fileName = filePath;
         try
         {
             fileReader = new BufferedReader(new FileReader(fileName));
@@ -299,11 +310,16 @@ public class CSVReader
         }
     }
    
+    
+    public void readTrajets() {
+        readTrajets("web/assets/csv/DistanceTimesData.csv", "web/assets/csv/DistanceTimesCoordinates.csv");
+    }
+    
     /**
      * Cette fonction permet de lire les fichiers DistanceTimesData 
      * et d'ajouter les trajets en base
      */
-    public void readTrajets()
+    public void readTrajets(String dtdPath, String dtcPath)
     {
         // Variables
         //  lieux comprendra les différents lieux qui correspondent aux coordonnees dans la variable coordonnees
@@ -313,8 +329,8 @@ public class CSVReader
         float coordX;
         float coordY;
         
-        String file_path_coordinates = "web/assets/csv/DistanceTimesCoordinates.csv";
-        String file_path_data = "web/assets/csv/DistanceTimesData.csv";
+        String file_path_coordinates = dtcPath;
+        String file_path_data = dtdPath;
         
         //On lit le premier fichier CSV : DistanceTimesCoordinates
         BufferedReader fileReader = null;
