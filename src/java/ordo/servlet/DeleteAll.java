@@ -7,6 +7,7 @@ package ordo.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collection;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import ordo.data.dao.jpa.*;
+import ordo.data.entities.Lieu;
 
 /**
  *
@@ -44,17 +46,15 @@ public class DeleteAll extends HttpServlet
         JpaVehiculeActionDao jpaVehiculeActionDao = JpaVehiculeActionDao.getInstance();
         JpaVehiculeDao jpaVehiculeDao = JpaVehiculeDao.getInstance();
         JpaColisDao jpaColisDao = JpaColisDao.getInstance();
-
-        jpaTrajetDao.deleteAll();
+        
+        jpaSolutionDao.deleteAll();
         jpaColisDao.deleteAll();
         jpaVehiculeActionDao.deleteAll();
-        jpaCommandeClientDao.deleteAll();
-        jpaDepotDao.deleteAll();
-        jpaLieuDao.deleteAll();
-        jpaSolutionDao.deleteAll();
         jpaSwapBodyDao.deleteAll();
-        jpaSwapLocationDao.deleteAll();
+        jpaCommandeClientDao.deleteAll();
         jpaVehiculeDao.deleteAll();
+        jpaDepotDao.deleteAll();
+        jpaSwapLocationDao.deleteAll();
         
         response.sendRedirect("index");
     }
