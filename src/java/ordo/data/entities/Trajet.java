@@ -21,7 +21,7 @@ import javax.persistence.NamedQuery;
  */
 @Entity
 @NamedQueries({
-   @NamedQuery(name = "Trajet.getTrajet", query = "SELECT t FROM Trajet t WHERE t.depart = :id_depart AND t.destination = :id_destination")
+   @NamedQuery(name = "Trajet.getTrajet", query = "SELECT t FROM Trajet t WHERE t.depart.coordX = :departX AND t.depart.coordY = :departY AND t.destination.coordX = :destX AND t.destination.coordY = :destY")
 })
 public class Trajet implements Serializable {
 
