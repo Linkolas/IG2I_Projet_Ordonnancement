@@ -77,6 +77,10 @@ public class CommandeClient extends Lieu implements Serializable {
 
     public void setVehicule(Vehicule vehicule) {
         this.vehicule = vehicule;
+        
+        if(!vehicule.getCommandes().contains(this)) {
+            vehicule.add(this);
+        }
     }
 
     public List<Colis> getColis() {

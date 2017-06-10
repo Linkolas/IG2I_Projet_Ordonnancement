@@ -32,7 +32,7 @@ public class Vehicule implements Serializable {
     private long id;
     @OneToMany(mappedBy = "vehicule", cascade={CascadeType.PERSIST})
     private List<SwapBody> swapBodies = new ArrayList<>();
-    @OneToMany(mappedBy = "vehicule", cascade={CascadeType.PERSIST})
+    @OneToMany(mappedBy = "vehicule", cascade={CascadeType.MERGE})
     private List<CommandeClient> commandes = new ArrayList<>();
     @OneToMany(mappedBy = "vehicule", cascade={CascadeType.PERSIST})
     private List<VehiculeAction> actions = new ArrayList<>();
@@ -113,8 +113,9 @@ public class Vehicule implements Serializable {
     }
     
     public void add(CommandeClient cc){
-        if(cc != null && !commandes.contains(cc)){
-            commandes.add(cc);
+        commandes.add(cc);
+        
+        if(cc.getVehicule() != this){
             cc.setVehicule(this);
         }
     }
