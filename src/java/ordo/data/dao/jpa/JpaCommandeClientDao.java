@@ -5,6 +5,8 @@
  */
 package ordo.data.dao.jpa;
 
+import java.util.Collection;
+import javax.persistence.Query;
 import ordo.data.entities.*;
 
 /**
@@ -26,6 +28,30 @@ public class JpaCommandeClientDao extends JpaDao<CommandeClient> {
     
     private JpaCommandeClientDao() {
         super(CommandeClient.class);
+    }
+    
+    /**
+     * Get the list of all the CommandeClient pending : 
+     * isLivree = false and quantity > 0.
+     * @return 
+     */
+    @Override
+    public Collection<CommandeClient> findAll() {
+        return findAll(true);
+    }
+    
+    /**
+     * 
+     * @param pending Whether get only the pending orders or all of them.
+     * @return 
+     */
+    public Collection<CommandeClient> findAll(boolean pending) {
+        if(!pending) {
+            return super.findAll();
+        }
+        
+        Query createQuery = em.createQuery("select t from CommandeClient t where t.isLivree != true and t.quantiteVoulue > 0");
+        return createQuery.getResultList();
     }
     
 }
