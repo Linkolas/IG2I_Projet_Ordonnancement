@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 /**
@@ -21,6 +22,7 @@ import javax.persistence.OneToMany;
  * @author Nicolas
  */
 @Entity
+@NamedQuery(name="VehiculeAction.findByVehicule", query="SELECT va FROM VehiculeAction WHERE va.vehicule_id = :vehiculeId ") 
 public class VehiculeAction implements Serializable {
 
     @Id
