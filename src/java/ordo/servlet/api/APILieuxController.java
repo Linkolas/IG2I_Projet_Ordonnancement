@@ -11,13 +11,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Collection;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import ordo.data.dao.jpa.JpaCommandeClientDao;
+import ordo.data.dao.jpa.JpaDepotDao;
 import ordo.data.dao.jpa.JpaLieuDao;
+import ordo.data.dao.jpa.JpaSwapLocationDao;
 import ordo.data.entities.CommandeClient;
 import ordo.data.entities.Depot;
 import ordo.data.entities.Lieu;
@@ -42,8 +45,14 @@ public class APILieuxController extends HttpServlet {
         
         response.setContentType("application/json");
         
-        JpaLieuDao daoLieu = JpaLieuDao.getInstance();
-        Collection<Lieu> lieux = daoLieu.findAll();
+        JpaDepotDao daoDepot = JpaDepotDao.getInstance();
+        JpaSwapLocationDao daoSwapLocation = JpaSwapLocationDao.getInstance();
+        JpaCommandeClientDao daoCommandeClient = JpaCommandeClientDao.getInstance();
+        
+        Collection<Lieu> lieux = new ArrayList<>();
+        lieux.addAll(daoDepot.findAll());
+        lieux.addAll(daoSwapLocation.findAll());
+        lieux.addAll(daoCommandeClient.findAll(false));
         
         if(lieux.isEmpty()) {
             CommandeClient c1 = new CommandeClient();
