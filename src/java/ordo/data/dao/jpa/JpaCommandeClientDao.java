@@ -6,6 +6,7 @@
 package ordo.data.dao.jpa;
 
 import java.util.Collection;
+import java.util.List;
 import javax.persistence.Query;
 import ordo.data.entities.*;
 
@@ -54,4 +55,15 @@ public class JpaCommandeClientDao extends JpaDao<CommandeClient> {
         return createQuery.getResultList();
     }
     
+    public boolean resetCommandes()
+    {
+        List<CommandeClient> commandes = (List<CommandeClient>) this.findAll();
+        
+        for(CommandeClient commande: commandes)
+        {
+            commande.setQuantiteVoulue(0);
+        }
+        
+        return true;
+    }
 }
