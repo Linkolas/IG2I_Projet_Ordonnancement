@@ -19,7 +19,7 @@ import javax.persistence.NamedQuery;
  * @author Nicolas
  */
 @Entity
-@NamedQuery(name="VehiculeAction.findByVehicule", query="SELECT va FROM VehiculeAction WHERE va.vehicule_id = :vehiculeId ") 
+@NamedQuery(name="VehiculeAction.findByVehicule", query="SELECT va FROM VehiculeAction va WHERE va.vehicule = :vehicule ") 
 public class VehiculeAction implements Serializable {
 
     @Id

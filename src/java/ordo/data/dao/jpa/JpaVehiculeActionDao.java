@@ -33,7 +33,7 @@ public class JpaVehiculeActionDao extends JpaDao<VehiculeAction> {
     public List<VehiculeAction> findByVehicule(Vehicule vehicule)
     {
         Query query = this.em.createNamedQuery("VehiculeAction.findByVehicule");
-        query.setParameter("vehiculeId", vehicule.getId());
+        query.setParameter("vehicule", vehicule);   
         
         List<VehiculeAction> vehiculeActions = query.getResultList();
         
@@ -43,5 +43,11 @@ public class JpaVehiculeActionDao extends JpaDao<VehiculeAction> {
         }
         
         return vehiculeActions;
+    }
+    
+    public static void main(String[] args)
+    {
+        JpaVehiculeActionDao jpaVehiculeActionDao = getInstance();
+        
     }
 }
