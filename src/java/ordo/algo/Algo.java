@@ -26,6 +26,8 @@ import ordo.data.entities.CommandeClient;
 import ordo.data.entities.SwapBody;
 import ordo.data.entities.Vehicule;
 import ordo.data.entities.Depot;
+import ordo.data.entities.Lieu;
+import ordo.data.entities.Trajet;
 import ordo.data.entities.VehiculeAction;
 
 /**
@@ -69,15 +71,13 @@ public class Algo {
         }
             
         // On get le depot
-        Depot dp;
-        
         try{
-            dp = daoDepot.findAll().iterator().next();
+            Depot dp = daoDepot.findAll().iterator().next();
         }
         catch(Exception e){
             System.out.println("Il n'y a encore aucun depot nous créeons donc un dépot avec des coordonnées aléatoires");
             //Qui en fait ne sont pas si aléatoire
-            dp = new Depot();
+            Depot dp = new Depot();
             dp.setCoordX((float)8.42227);
             dp.setCoordY((float)49.45044);
             dp.setCodePostal("67069");
@@ -85,6 +85,8 @@ public class Algo {
             dp.setVille("Lens");
             daoDepot.create(dp);
         }
+        
+        Depot dp = daoDepot.findAll().iterator().next();
             
         // on get tous les clients et leurs demandes
         Collection<CommandeClient> ccc = daoCommandeClient.findAll();
@@ -132,24 +134,62 @@ public class Algo {
                 tmp_v.getSwapBodies().get(0).addColis(tmp_c);
             }
             daoVehicule.create(tmp_v);
+            
+            lv.add(tmp_v);
         }
         
         //On effectue ensuite les tournees
         for (Iterator<Vehicule> iter = lv.iterator(); iter.hasNext(); ) {
             Vehicule v = iter.next();
-            tmp_va = new VehiculeAction();
-            tmp_va.setDepart(dp);
-            tmp_va.setArrivee(v.getCommandes().iterator().next());
-            v.addAction(tmp_va);
             
-            tmp_va = new VehiculeAction();
-            tmp_va.setDepart(v.getCommandes().iterator().next());
-            tmp_va.setArrivee(dp);
-            v.addAction(tmp_va);
+            Lieu lieuClient = v.getCommandes().get(0);
+            
+            VehiculeAction va1 = new VehiculeAction();
+            va1.setDepart(dp);
+            va1.setArrivee(lieuClient);
+            va1.setEnumAction(VehiculeAction.EnumAction.DEPLACEMENT);
+            va1.setDistance(10000);
+            va1.setDuree(6);
+            
+            Trajet t1 = daoTrajet.find(dp, lieuClient);
+            if(t1 != null) {
+                va1.setDistance(t1.getDistance());
+                va1.setDuree(t1.getDuree());
+            }
+            
+            if(v.isTrain()) {
+                va1.setIsTrain(true);
+            }
+            
+            v.addAction(va1);
+            
+            VehiculeAction va2 = new VehiculeAction();
+            va2.setDepart(lieuClient);
+            va2.setArrivee(dp);
+            va2.setEnumAction(VehiculeAction.EnumAction.DEPLACEMENT);
+            va2.setDistance(10000);
+            va2.setDuree(6);
+            
+            Trajet t2 = daoTrajet.find(lieuClient, dp);
+            if(t2 != null) {
+                va1.setDistance(t2.getDistance());
+                va1.setDuree(t2.getDuree());
+            }
+            
+            if(v.isTrain()) {
+                va1.setIsTrain(true);
+            }
+            
+            v.addAction(va2);
             
             // On persiste les véhicules
             System.out.println(v);
             daoVehicule.create(v);
+            
+            for(CommandeClient cc: v.getCommandes()) {
+                cc.setLivree(true);
+                daoCommandeClient.update(cc);
+            }
         }
         System.out.println(daoDepot.findAll());
     }

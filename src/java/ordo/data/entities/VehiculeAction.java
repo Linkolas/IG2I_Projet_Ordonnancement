@@ -6,16 +6,13 @@
 package ordo.data.entities;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 
 /**
  *
@@ -41,6 +38,9 @@ public class VehiculeAction implements Serializable {
     private Lieu depart;
     @ManyToOne
     private Lieu arrivee;
+    @Column
+    private boolean isTrain = false;
+    
     
     public VehiculeAction() {
     }
@@ -83,6 +83,10 @@ public class VehiculeAction implements Serializable {
 
     public void setVehicule(Vehicule vehicule) {
         this.vehicule = vehicule;
+        
+        if(!vehicule.getActions().contains(this)) {
+            vehicule.addAction(this);
+        }
     }
 
     public Lieu getDepart() {
@@ -100,7 +104,14 @@ public class VehiculeAction implements Serializable {
     public void setArrivee(Lieu arrivee) {
         this.arrivee = arrivee;
     }
-    
+
+    public boolean isIsTrain() {
+        return isTrain;
+    }
+
+    public void setIsTrain(boolean isTrain) {
+        this.isTrain = isTrain;
+    }
 
     // <editor-fold defaultstate="collapsed" desc=".equals, .toString, ...">
     private static final long serialVersionUID = 1L;
