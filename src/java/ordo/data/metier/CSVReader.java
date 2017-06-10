@@ -76,9 +76,10 @@ public class CSVReader
     public void readAllCSV()
     {
         readFleet();
-        readLocations();
         readSwapActions();
+        
         readTrajets();
+        //readLocations();
     }
     
     public void readFleet()
@@ -322,6 +323,8 @@ public class CSVReader
             //On lit la première ligne qui comprend les headers
             fileReader.readLine();
             
+            Lieu lieu;
+            
             // On lit la première ligne du fichier DistanceTimesCoordinates (premier triangle en haut à droite)
             while ((currentLine = fileReader.readLine()) != null)
             {
@@ -333,7 +336,13 @@ public class CSVReader
                 
                 // On trouve le lieu en base relié à ces coordonnees
                 JpaLieuDao daoLieu = JpaLieuDao.getInstance();
-                lieux.add(daoLieu.findLieuByCoordonnees(coordX, coordY));
+                
+                lieu = new Lieu();
+                lieu.setCoordX(coordX);
+                lieu.setCoordY(coordY);
+                daoLieu.create(lieu);
+                
+                lieux.add(lieu);
             }
             
             System.out.println(lieux);
@@ -453,6 +462,6 @@ public class CSVReader
     public static void main(String[] args)
     {
         CSVReader csvReader = new CSVReader();
-        csvReader.readAllCSV();
+        csvReader.readAll();
     }
 }
