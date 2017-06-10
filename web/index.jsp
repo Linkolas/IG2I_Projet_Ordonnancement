@@ -78,8 +78,9 @@
                     <td>
                         <%= ((int) (vehicule.getDistanceParcourue() / 1000))%> km ; 
                         <%
-                        int heures = ((int) (vehicule.getTempsTrajet() / 60));
-                        int minutes = ((int) vehicule.getTempsTrajet() - heures * 60);
+                        long secondes = (long) vehicule.getTempsTrajet();
+                        int heures = ((int) (vehicule.getTempsTrajet() / 3600));
+                        int minutes = ((int) vehicule.getTempsTrajet()%3600 /60);
                         switch(heures) {
                             case 0:
                                 break;
