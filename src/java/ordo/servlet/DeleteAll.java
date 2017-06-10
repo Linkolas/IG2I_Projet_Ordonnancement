@@ -43,7 +43,9 @@ public class DeleteAll extends HttpServlet
         JpaTrajetDao jpaTrajetDao = JpaTrajetDao.getInstance();
         JpaVehiculeActionDao jpaVehiculeActionDao = JpaVehiculeActionDao.getInstance();
         JpaVehiculeDao jpaVehiculeDao = JpaVehiculeDao.getInstance();
+        JpaColisDao jpaColisDao = JpaColisDao.getInstance();
 
+        jpaColisDao.deleteAll();
         jpaCommandeClientDao.deleteAll();
         jpaDepotDao.deleteAll();
         jpaLieuDao.deleteAll();
