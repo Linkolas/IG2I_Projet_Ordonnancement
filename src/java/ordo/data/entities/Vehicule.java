@@ -27,6 +27,7 @@ import javax.persistence.OneToMany;
 @Entity
 public class Vehicule implements Serializable {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

@@ -12,12 +12,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 
 /**
  *
  * @author Nicolas
  */
 @Entity
+@NamedQuery(name="VehiculeAction.findByVehicule", query="SELECT va FROM VehiculeAction WHERE va.vehicule_id = :vehiculeId ") 
 public class VehiculeAction implements Serializable {
 
     @Id

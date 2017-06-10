@@ -5,6 +5,8 @@
  */
 package ordo.data.dao.jpa;
 
+import java.util.List;
+import javax.persistence.Query;
 import ordo.data.entities.*;
 
 /**
@@ -28,4 +30,18 @@ public class JpaVehiculeActionDao extends JpaDao<VehiculeAction> {
         super(VehiculeAction.class);
     }
     
+    public List<VehiculeAction> findByVehicule(Vehicule vehicule)
+    {
+        Query query = this.em.createNamedQuery("VehiculeAction.findByVehicule");
+        query.setParameter("vehiculeId", vehicule.getId());
+        
+        List<VehiculeAction> vehiculeActions = query.getResultList();
+        
+        if(vehiculeActions == null)
+        {
+            System.out.println("Il n'y a pas de liste d'actions lié à ce véhicule");
+        }
+        
+        return vehiculeActions;
+    }
 }
