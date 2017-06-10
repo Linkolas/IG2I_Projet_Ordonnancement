@@ -59,13 +59,13 @@ public class APILieuxController extends HttpServlet {
             Depot c2 = new Depot();
             c1.setId(1);
             c1.setQuantiteVoulue(26);
-            c1.setCoordX(50.4291629f);
-            c1.setCoordY(2.8278697f);
+            c1.setCoordY(50.4291629f);
+            c1.setCoordX(2.8278697f);
             c1.setLibelle("Sample Lieu");
 
             c2.setId(2);
-            c2.setCoordX(50.5f);
-            c2.setCoordY(2.8278697f);
+            c2.setCoordY(50.5f);
+            c2.setCoordX(2.8278697f);
 
             lieux.add(c1);
             lieux.add(c2);
