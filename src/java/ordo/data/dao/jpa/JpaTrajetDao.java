@@ -5,6 +5,7 @@
  */
 package ordo.data.dao.jpa;
 
+import javax.persistence.Query;
 import ordo.data.entities.*;
 
 /**
@@ -28,4 +29,10 @@ public class JpaTrajetDao extends JpaDao<Trajet> {
         super(Trajet.class);
     }
     
+    public Trajet find(Lieu depart, Lieu arrivee) {
+       Query query = em.createNamedQuery("Trajet.getTrajet");
+       query.setParameter("id_depart", depart.getId());
+       query.setParameter("id_destination", arrivee.getId());
+       return (Trajet) query.getSingleResult();
+   }
 }

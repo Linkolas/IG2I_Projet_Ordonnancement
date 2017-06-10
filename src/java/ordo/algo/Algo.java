@@ -27,6 +27,7 @@ import ordo.data.entities.SwapBody;
 import ordo.data.entities.Vehicule;
 import ordo.data.entities.Depot;
 import ordo.data.entities.Lieu;
+import ordo.data.entities.Trajet;
 import ordo.data.entities.VehiculeAction;
 
 /**
@@ -149,6 +150,13 @@ public class Algo {
             va1.setEnumAction(VehiculeAction.EnumAction.DEPLACEMENT);
             va1.setDistance(10000);
             va1.setDuree(6);
+            
+            Trajet t1 = daoTrajet.find(dp, lieuClient);
+            if(t1 != null) {
+                va1.setDistance(t1.getDistance());
+                va1.setDuree(t1.getDuree());
+            }
+            
             if(v.isTrain()) {
                 va1.setIsTrain(true);
             }
@@ -161,6 +169,13 @@ public class Algo {
             va2.setEnumAction(VehiculeAction.EnumAction.DEPLACEMENT);
             va2.setDistance(10000);
             va2.setDuree(6);
+            
+            Trajet t2 = daoTrajet.find(lieuClient, dp);
+            if(t2 != null) {
+                va1.setDistance(t2.getDistance());
+                va1.setDuree(t2.getDuree());
+            }
+            
             if(v.isTrain()) {
                 va1.setIsTrain(true);
             }

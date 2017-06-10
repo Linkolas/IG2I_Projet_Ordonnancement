@@ -12,12 +12,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 /**
  *
  * @author Nicolas
  */
 @Entity
+@NamedQueries({
+   @NamedQuery(name = "Trajet.getTrajet", query = "SELECT t FROM Trajet t WHERE t.depart = :id_depart AND t.destination = :id_destination")
+})
 public class Trajet implements Serializable {
 
     @Id
