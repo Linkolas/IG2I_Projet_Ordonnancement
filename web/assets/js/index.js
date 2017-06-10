@@ -17,7 +17,7 @@ $(function() {
                     lat: lieu.coordY,
                     lng: lieu.coordX
                 },
-                title: lieu.libelle
+                title: lieu.numeroLieu
             });
             markers.push(marker);
         }

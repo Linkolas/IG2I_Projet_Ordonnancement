@@ -70,7 +70,7 @@
                         <% 
                         List<String> libellesCommandes = new ArrayList<String>();
                         for(CommandeClient cc: vehicule.getCommandes()) {
-                            libellesCommandes.add(cc.getLibelle());
+                            libellesCommandes.add(cc.getNumeroLieu());
                         }
                         %>
                         <%= String.join(", ", libellesCommandes) %>
