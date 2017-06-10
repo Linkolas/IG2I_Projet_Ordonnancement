@@ -59,9 +59,9 @@ public class CSVWriter
                     SWAP_BODY_1_QUANTITY,
                     SWAP_BODY_2_QUANTITY;
             
+            Integer i = 1;
             for(Vehicule vehicule: vehicules)
             {
-                Integer i=1;
                 TOUR_ID = 'R'+ i.toString();
                 
                 vehiculeActions = jpaVehiculeActionDao.findByVehicule(vehicule);

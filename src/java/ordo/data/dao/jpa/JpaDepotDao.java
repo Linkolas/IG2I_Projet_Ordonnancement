@@ -5,6 +5,7 @@
  */
 package ordo.data.dao.jpa;
 
+import javax.persistence.Query;
 import ordo.data.entities.*;
 
 /**
@@ -27,5 +28,4 @@ public class JpaDepotDao extends JpaDao<Depot> {
     private JpaDepotDao() {
         super(Depot.class);
     }
-    
 }

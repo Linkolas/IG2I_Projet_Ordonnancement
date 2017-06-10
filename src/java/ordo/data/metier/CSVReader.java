@@ -79,7 +79,7 @@ public class CSVReader
         readSwapActions();
         
         readTrajets();
-        //readLocations();
+        readLocations();
     }
     
     public void readFleet()
@@ -117,14 +117,6 @@ public class CSVReader
                     Constantes.dureeMaxTournee = Float.parseFloat(splitedLine[fleet_index_operatingTime]);
                 }
             }
-            
-            /*System.out.println(Constantes.coutCamion);
-            System.out.println(Constantes.coutDureeCamion);
-            System.out.println(Constantes.coutTrajetCamion);
-            System.out.println(Constantes.coutSecondeRemorque);
-            System.out.println(Constantes.coutTrajetSecondeRemorque);
-            System.out.println(Constantes.capaciteMax);
-            System.out.println(Constantes.dureeMaxTournee);*/
         } 
         
         catch (FileNotFoundException ex)
@@ -157,11 +149,15 @@ public class CSVReader
         JpaDepotDao daoDepot = JpaDepotDao.getInstance();
         JpaSwapLocationDao daoSwapLocation = JpaSwapLocationDao.getInstance();
         JpaCommandeClientDao daoClient = JpaCommandeClientDao.getInstance();
+        JpaLieuDao daoLieu = JpaLieuDao.getInstance();
         
+        Float coordX, coordY;
+        daoClient.deleteAll();
+        daoDepot.deleteAll();
+        daoSwapLocation.deleteAll();
         
         try
         {
-            
             fileReader = new BufferedReader(new FileReader(fileName));
             
             //On lit l'entête, que l'on connait déjà
@@ -170,45 +166,53 @@ public class CSVReader
             while ((currentLine = fileReader.readLine()) != null)
             {
                 String[] splitedLine = currentLine.split(";");
-                //System.out.println(splitedLine[0] + " " + splitedLine[1] + " " + splitedLine[2] + " " + splitedLine[3] + " " + splitedLine[4] + " " + splitedLine[5] + " " + splitedLine[6] + " " + splitedLine[7] + " " + splitedLine[8]);
+                
+                coordX = Float.parseFloat(splitedLine[locations_index_Xcoord]);
+                coordY = Float.parseFloat(splitedLine[locations_index_Ycoord]);
                 if(splitedLine[0].equals("DEPOT"))
                 {
-                    Depot d = new Depot();
-                    d.setNumeroLieu(splitedLine[locations_index_id]);
-                    d.setCodePostal(splitedLine[locations_index_postCode]);
-                    d.setVille(splitedLine[locations_index_city]);
-                    d.setCoordX(Float.parseFloat(splitedLine[locations_index_Xcoord]));
-                    d.setCoordY(Float.parseFloat(splitedLine[locations_index_Ycoord]));
+                    Lieu lieu = daoLieu.findLieuByCoordonnees(coordX, coordY);
                     
-                    daoDepot.create(d);                   
+                    Depot depot = new Depot();
+                    depot.setNumeroLieu(splitedLine[locations_index_id]);
+                    depot.setCodePostal(splitedLine[locations_index_postCode]);
+                    depot.setVille(splitedLine[locations_index_city]);
+                    depot.setCoordX(coordX);
+                    depot.setCoordY(coordY);
+                    
+                    daoDepot.update(depot);
                 }
                 else if(splitedLine[0].equals("SWAP_LOCATION"))
                 {
-                    SwapLocation sl = new SwapLocation();
-                    sl.setNumeroLieu(splitedLine[locations_index_id]);
-                    sl.setCodePostal(splitedLine[locations_index_postCode]);
-                    sl.setVille(splitedLine[locations_index_city]);
-                    sl.setCoordX(Float.parseFloat(splitedLine[locations_index_Xcoord]));
-                    sl.setCoordY(Float.parseFloat(splitedLine[locations_index_Ycoord]));
+                    Lieu lieu = daoLieu.findLieuByCoordonnees(coordX, coordY);
                     
-                    daoSwapLocation.create(sl);
+                    SwapLocation swapLocation = new SwapLocation();
+                    swapLocation.setNumeroLieu(splitedLine[locations_index_id]);
+                    swapLocation.setCodePostal(splitedLine[locations_index_postCode]);
+                    swapLocation.setVille(splitedLine[locations_index_city]);
+                    swapLocation.setCoordX(coordX);
+                    swapLocation.setCoordY(coordY);
+                    
+                    daoSwapLocation.update(swapLocation);
                 }
                 else
                 {
-                    CommandeClient c = new CommandeClient();
-                    c.setNumeroLieu(splitedLine[locations_index_id]);
-                    c.setCodePostal(splitedLine[locations_index_postCode]);
-                    c.setVille(splitedLine[locations_index_city]);
-                    c.setCoordX(Float.parseFloat(splitedLine[locations_index_Xcoord]));
-                    c.setCoordY(Float.parseFloat(splitedLine[locations_index_Ycoord]));
-                    c.setQuantiteVoulue(Float.parseFloat(splitedLine[locations_index_quantity]));
+                    Lieu lieu = daoLieu.findLieuByCoordonnees(coordX, coordY);
+                    
+                    CommandeClient commande = new CommandeClient();
+                    commande.setNumeroLieu(splitedLine[locations_index_id]);
+                    commande.setCodePostal(splitedLine[locations_index_postCode]);
+                    commande.setVille(splitedLine[locations_index_city]);
+                    commande.setCoordX(coordX);
+                    commande.setCoordY(coordY);
+                    commande.setQuantiteVoulue(Float.parseFloat(splitedLine[locations_index_quantity]));
                     if(splitedLine[locations_index_trainPossible].equals("1"))
                     {
-                        c.setNombreRemorquesMax(2);
+                        commande.setNombreRemorquesMax(2);
                     }
-                    c.setDureeService(Float.parseFloat(splitedLine[locations_index_serviceTime]));
+                    commande.setDureeService(Float.parseFloat(splitedLine[locations_index_serviceTime]));
                     
-                    daoClient.create(c);
+                    daoClient.update(commande);
                 }
             }
         } 
@@ -461,7 +465,8 @@ public class CSVReader
     
     public static void main(String[] args)
     {
+        
         CSVReader csvReader = new CSVReader();
-        csvReader.readAll();
+        csvReader.readAllCSV();
     }
 }

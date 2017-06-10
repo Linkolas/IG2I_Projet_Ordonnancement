@@ -18,6 +18,7 @@ import ordo.data.dao.jpa.JpaDepotDao;
 import ordo.data.dao.jpa.JpaLieuDao;
 import ordo.data.dao.jpa.JpaSolutionDao;
 import ordo.data.dao.jpa.JpaSwapBodyDao;
+import ordo.data.dao.jpa.JpaSwapLocationDao;
 import ordo.data.dao.jpa.JpaTrajetDao;
 import ordo.data.dao.jpa.JpaVehiculeActionDao;
 import ordo.data.dao.jpa.JpaVehiculeDao;
@@ -29,6 +30,7 @@ import ordo.data.entities.Depot;
 import ordo.data.entities.Lieu;
 import ordo.data.entities.Trajet;
 import ordo.data.entities.VehiculeAction;
+import ordo.data.metier.CSVReader;
 
 /**
  *
@@ -401,7 +403,7 @@ public class Algo {
         daoCommandeClient.create(cc);
     }
     
-    public static void main(String[] args) {
+    public static void main(String[] args) {        
         makeSolutionV1();
         //testCascade();
     }

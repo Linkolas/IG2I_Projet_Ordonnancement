@@ -44,10 +44,4 @@ public class JpaVehiculeActionDao extends JpaDao<VehiculeAction> {
         
         return vehiculeActions;
     }
-    
-    public static void main(String[] args)
-    {
-        JpaVehiculeActionDao jpaVehiculeActionDao = getInstance();
-        
-    }
 }
