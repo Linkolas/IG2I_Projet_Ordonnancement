@@ -36,12 +36,16 @@ public class Vehicule implements Serializable {
     private float distanceParcourue_train;
     @Column
     private float tempsTrajet;
+    
     @OneToMany(mappedBy = "vehicule", cascade={CascadeType.PERSIST})
     private List<SwapBody> swapBodies = new ArrayList<>();
+    
     @OneToMany(mappedBy = "vehicule", cascade={CascadeType.PERSIST})
     private List<CommandeClient> commandes = new ArrayList<>();
+    
     @OneToMany(mappedBy = "vehicule", cascade={CascadeType.PERSIST})
     private List<VehiculeAction> actions = new ArrayList<>();
+    
     @ManyToOne
     private Solution solution;
     
