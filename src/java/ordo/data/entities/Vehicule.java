@@ -30,12 +30,6 @@ public class Vehicule implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column
-    private float distanceParcourue;
-    @Column
-    private float distanceParcourue_train;
-    @Column
-    private float tempsTrajet;
     @OneToMany(mappedBy = "vehicule", cascade={CascadeType.PERSIST})
     private List<SwapBody> swapBodies = new ArrayList<>();
     @OneToMany(mappedBy = "vehicule", cascade={CascadeType.PERSIST})
@@ -87,27 +81,31 @@ public class Vehicule implements Serializable {
     }
 
     public float getDistanceParcourue() {
-        return distanceParcourue;
-    }
-
-    public void setDistanceParcourue(float distanceParcourue) {
-        this.distanceParcourue = distanceParcourue;
+        float distance = 0;
+        for(VehiculeAction va: actions) {
+            distance += va.getDistance();
+        }
+        return distance;
     }
 
     public float getDistanceParcourue_train() {
-        return distanceParcourue_train;
+        
+        float distance = 0;
+        for(VehiculeAction va: actions) {
+            if(!va.isIsTrain()) {
+                continue;
+            }
+            distance += va.getDistance();
+        }
+        return distance;
     }
-
-    public void setDistanceParcourue_train(float distanceParcourue_train) {
-        this.distanceParcourue_train = distanceParcourue_train;
-    }
-
+    
     public float getTempsTrajet() {
-        return tempsTrajet;
-    }
-
-    public void setTempsTrajet(float tempsTrajet) {
-        this.tempsTrajet = tempsTrajet;
+        float temps = 0;
+        for(VehiculeAction va: actions) {
+            temps += va.getDuree();
+        }
+        return temps;
     }
 
     public List<CommandeClient> getCommandes() {
@@ -131,6 +129,10 @@ public class Vehicule implements Serializable {
     
     public void addAction(VehiculeAction action) {
         actions.add(action);
+        
+        if(action.getVehicule() != this) {
+            action.setVehicule(this);
+        }
     }
     
     public void delAction(VehiculeAction action) {
@@ -195,7 +197,7 @@ public class Vehicule implements Serializable {
 
     @Override
     public String toString() {
-        return "Vehicule{" + "id=" + id + ", distanceParcourue=" + distanceParcourue + ", distanceParcourue_train=" + distanceParcourue_train + ", tempsTrajet=" + tempsTrajet + ", swapBodies=" + swapBodies + ", commandes=" + commandes + ", actions=" + actions + ", solution=" + solution + '}';
+        return "Vehicule{" + "id=" + id + ", distanceParcourue=" + getDistanceParcourue() + ", distanceParcourue_train=" + getDistanceParcourue_train() + ", tempsTrajet=" + getTempsTrajet() + ", swapBodies=" + swapBodies + ", commandes=" + commandes + ", actions=" + actions + ", solution=" + solution + '}';
     }
 
 }

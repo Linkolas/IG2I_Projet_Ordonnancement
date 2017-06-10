@@ -12,7 +12,7 @@ public class Main {
      */
     public static void main(String[] args) {
         System.out.println("WORKS");
-        
+        /*
         JpaLieuDao daoLieu = JpaLieuDao.getInstance();
         daoLieu.findAll();
         
@@ -21,6 +21,8 @@ public class Main {
         JpaDepotDao daoDepot = JpaDepotDao.getInstance();
         daoDepot.create(d);
         daoDepot.findAll();
+        */
+        
         
     }
 }
