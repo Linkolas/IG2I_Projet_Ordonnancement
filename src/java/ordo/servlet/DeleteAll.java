@@ -46,6 +46,7 @@ public class DeleteAll extends HttpServlet
         JpaColisDao jpaColisDao = JpaColisDao.getInstance();
 
         jpaColisDao.deleteAll();
+        jpaVehiculeActionDao.deleteAll();
         jpaCommandeClientDao.deleteAll();
         jpaDepotDao.deleteAll();
         jpaLieuDao.deleteAll();
@@ -53,12 +54,9 @@ public class DeleteAll extends HttpServlet
         jpaSwapBodyDao.deleteAll();
         jpaSwapLocationDao.deleteAll();
         jpaTrajetDao.deleteAll();
-        jpaVehiculeActionDao.deleteAll();
         jpaVehiculeDao.deleteAll();
         
-        ServletContext context= getServletContext();
-        RequestDispatcher rd= context.getRequestDispatcher("/index");
-        rd.forward(request, response);
+        response.sendRedirect("index");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

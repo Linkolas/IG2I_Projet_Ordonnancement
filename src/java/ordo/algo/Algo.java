@@ -185,6 +185,11 @@ public class Algo {
             // On persiste les véhicules
             System.out.println(v);
             daoVehicule.create(v);
+            
+            for(CommandeClient cc: v.getCommandes()) {
+                cc.setLivree(true);
+                daoCommandeClient.update(cc);
+            }
         }
         System.out.println(daoDepot.findAll());
     }
