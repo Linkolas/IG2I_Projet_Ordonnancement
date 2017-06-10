@@ -142,16 +142,16 @@ public class Algo {
         for (Iterator<Vehicule> iter = lv.iterator(); iter.hasNext(); ) {
             Vehicule v = iter.next();
             
-            Lieu lieuClient = v.getCommandes().get(0);
+            CommandeClient client = v.getCommandes().get(0);
             
             VehiculeAction va1 = new VehiculeAction();
             va1.setDepart(dp);
-            va1.setArrivee(lieuClient);
+            va1.setArrivee(client);
             va1.setEnumAction(VehiculeAction.EnumAction.DEPLACEMENT);
             va1.setDistance(10000);
             va1.setDuree(6);
             
-            Trajet t1 = daoTrajet.find(dp, lieuClient);
+            Trajet t1 = daoTrajet.find(dp, client);
             if(t1 != null) {
                 va1.setDistance(t1.getDistance());
                 va1.setDuree(t1.getDuree());
@@ -163,14 +163,22 @@ public class Algo {
             
             v.addAction(va1);
             
+            VehiculeAction vt = new VehiculeAction();
+            vt.setDepart(client);
+            vt.setArrivee(client);
+            vt.setEnumAction(VehiculeAction.EnumAction.TRAITEMENT);
+            vt.setDistance(0);
+            vt.setDuree(client.getDureeService());
+            v.addAction(vt);
+            
             VehiculeAction va2 = new VehiculeAction();
-            va2.setDepart(lieuClient);
+            va2.setDepart(client);
             va2.setArrivee(dp);
             va2.setEnumAction(VehiculeAction.EnumAction.DEPLACEMENT);
             va2.setDistance(10000);
             va2.setDuree(6);
             
-            Trajet t2 = daoTrajet.find(lieuClient, dp);
+            Trajet t2 = daoTrajet.find(client, dp);
             if(t2 != null) {
                 va1.setDistance(t2.getDistance());
                 va1.setDuree(t2.getDuree());

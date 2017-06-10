@@ -144,6 +144,7 @@ public class VehiculeAction implements Serializable {
 
     public static enum EnumAction {
         DEPLACEMENT,
+        TRAITEMENT,
         PARK,
         PICKUP,
         SWAP,
