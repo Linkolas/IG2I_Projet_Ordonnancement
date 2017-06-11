@@ -74,6 +74,8 @@ public class Vehicule implements Serializable {
     }
     
     public void addSwapBody(SwapBody swapBody) {
+        if(swapBody.getVehicule() != this)
+            swapBody.setVehicule(this);
         swapBodies.add(swapBody);
     }
     
@@ -199,7 +201,7 @@ public class Vehicule implements Serializable {
 
     @Override
     public String toString() {
-        return "Vehicule{" + "id=" + id + ", distanceParcourue=" + getDistanceParcourue() + ", distanceParcourue_train=" + getDistanceParcourue_train() + ", tempsTrajet=" + getTempsTrajet() + ", swapBodies=" + swapBodies + ", commandes=" + commandes + ", actions=" + actions + ", solution=" + solution + '}';
+        return "Vehicule{" + "id=" + id + ", distanceParcourue=" + getDistanceParcourue() + ", distanceParcourue_train=" + getDistanceParcourue_train() + ", tempsTrajet=" + getTempsTrajet() + ", swapBodies=" + swapBodies.size() + ", commandes=" + commandes + ", actions=" + actions + ", solution=" + solution + '}';
     }
 
 }
