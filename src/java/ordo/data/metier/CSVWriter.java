@@ -228,7 +228,7 @@ public class CSVWriter
                     filewriter.append(SWAP_BODY_SEMI_TRAILER); filewriter.append(DELIMITEUR);
                     filewriter.append(SWAP_ACTION);             filewriter.append(DELIMITEUR);
                     filewriter.append(SWAP_BODY_1_QUANTITY);    filewriter.append(DELIMITEUR);
-                    filewriter.append(SWAP_BODY_2_QUANTITY);    filewriter.append(DELIMITEUR);
+                    filewriter.append(SWAP_BODY_2_QUANTITY);    
                     
                     filewriter.append(SEPARATEUR_LIGNE);
                     j++;
@@ -261,10 +261,10 @@ public class CSVWriter
                 filewriter.append(LOCATION_TYPE);           filewriter.append(DELIMITEUR);
                 filewriter.append(SEMI_TRAILER_ATTACHED);   filewriter.append(DELIMITEUR);
                 filewriter.append(SWAP_BODY_TRUCK);         filewriter.append(DELIMITEUR);
-                filewriter.append(SWAP_BODY_SEMI_TRAILER); filewriter.append(DELIMITEUR);
+                filewriter.append(SWAP_BODY_SEMI_TRAILER);  filewriter.append(DELIMITEUR);
                 filewriter.append(SWAP_ACTION);             filewriter.append(DELIMITEUR);
                 filewriter.append(SWAP_BODY_1_QUANTITY);    filewriter.append(DELIMITEUR);
-                filewriter.append(SWAP_BODY_2_QUANTITY);    filewriter.append(DELIMITEUR);
+                filewriter.append(SWAP_BODY_2_QUANTITY);
 
                 filewriter.append(SEPARATEUR_LIGNE);
                 
