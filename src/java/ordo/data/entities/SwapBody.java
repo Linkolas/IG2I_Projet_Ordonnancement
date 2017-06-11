@@ -71,6 +71,10 @@ public class SwapBody implements Serializable {
 
     public void setVehicule(Vehicule vehicule) {
         this.vehicule = vehicule;
+        
+        if(!vehicule.getSwapBodies().contains(this)) {
+            vehicule.addSwapBody(this);
+        }
     }
     
     public List<Colis> getColis() {
@@ -78,8 +82,11 @@ public class SwapBody implements Serializable {
     }
 
     public void addColis(Colis colis) {
-        if(colis.getSwapBody() == null) colis.setSwapBody(this);
         this.colis.add(colis);
+        
+        if(colis.getSwapBody() == null) {
+            colis.setSwapBody(this);
+        }
     }
     
     public void delColis(Colis colis) {

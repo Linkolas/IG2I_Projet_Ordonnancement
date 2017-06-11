@@ -74,9 +74,10 @@ public class Vehicule implements Serializable {
     }
     
     public void addSwapBody(SwapBody swapBody) {
+        swapBodies.add(swapBody);
+        
         if(swapBody.getVehicule() != this)
             swapBody.setVehicule(this);
-        swapBodies.add(swapBody);
     }
     
     public void delSwapBody(SwapBody swapBody) {
