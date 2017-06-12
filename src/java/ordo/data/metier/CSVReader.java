@@ -73,6 +73,9 @@ public class CSVReader
     {
     }
     
+    /**
+     * Lit tous les fichiers CSV nécessaires au bon fonctionnement de l'algorithme
+     */
     public void readAllCSV()
     {
         readFleet();
@@ -82,10 +85,18 @@ public class CSVReader
         readLocations();
     }
     
+    /**
+     * Appelle la fonction readFleet en précisant le chemin pour trouver le fichier Fleet.csv
+     */
     public void readFleet() {
         readFleet("web/assets/csv/Fleet.csv");
     }
     
+    /**
+     * Lit le fichier Fleet.csv
+     * Remplit l'instance de la classe Constantes
+     * @param filePath Chemin pour trouver le fichier Fleet.csv 
+     */
     public void readFleet(String filePath)
     {
         BufferedReader fileReader = null;
@@ -142,11 +153,18 @@ public class CSVReader
         }
     }
     
-    
+    /**
+     * Appelle la fonction readLocations en précisant le chemin pour trouver le fichier Locations.csv
+     */
     public void readLocations() {
         readLocations("web/assets/csv/Locations.csv");
     }
     
+    /**
+     * Lit le fichier Locations.csv 
+     * Remplit la base de données en conséquences
+     * @param filePath Chemin pour trouver le fichier Locations.csv 
+     */
     public void readLocations(String filePath)
     {
         BufferedReader fileReader = null;
@@ -243,11 +261,18 @@ public class CSVReader
         }
     }
     
-    
+    /**
+     * Appelle la fonction readSwapActions en précisant le chemin pour trouver le fichier SwapActions.csv
+     */
     public void readSwapActions() {
         readSwapActions("web/assets/csv/SwapActions.csv");
     }
     
+    /**
+     * Lit le fichier SwapActions.csv 
+     * Remplit l'instance de la classe Constantes en conséquence
+     * @param filePath Chemin pour trouver le fichier SwapActions.csv 
+     */
     public void readSwapActions(String filePath)
     {
         BufferedReader fileReader = null;
@@ -307,7 +332,9 @@ public class CSVReader
         }
     }
    
-    
+    /**
+     * Appelle la fonction readTrajets en précisant le chemin pour trouver les fichiers dima
+     */
     public void readTrajets() {
         readTrajets("web/assets/csv/DistanceTimesData.csv", "web/assets/csv/DistanceTimesCoordinates.csv");
     }
