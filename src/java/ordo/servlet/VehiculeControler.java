@@ -8,13 +8,18 @@ package ordo.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import ordo.data.dao.jpa.JpaVehiculeDao;
+import ordo.data.entities.CommandeClient;
 import ordo.data.entities.Vehicule;
+import ordo.data.entities.VehiculeAction;
 
 /**
  *
@@ -39,7 +44,14 @@ public class VehiculeControler extends HttpServlet {
         Vehicule v = daoVehicule.find(Long.parseLong(request.getParameter("id")));
         // On set le vehicule dans la requete
         request.setAttribute("clients", v.getCommandes());
-        
+        List<VehiculeAction> vas = v.getActions();
+        Collections.sort(vas, new Comparator<VehiculeAction>(){
+            @Override
+            public int compare(VehiculeAction o1, VehiculeAction o2) {
+                return (int) (o1.getId() - o2.getId());
+            }
+        });
+        request.setAttribute("vas", v.getActions());
         //On forward
         getServletContext().getRequestDispatcher("/vehicule.jsp").forward(request, response);
     }

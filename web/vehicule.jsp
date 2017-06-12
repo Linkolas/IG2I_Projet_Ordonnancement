@@ -37,6 +37,7 @@
     </nav>
     
     <div class="row">
+        <!-- TABLE DES CLIENTS -->
         <div class="col-lg-3">
             <table class="table table-striped">
                 <thead>
@@ -70,7 +71,56 @@
                 </tbody>
             </table>
         </div>
-        
+        <!-- TABLE DES VEHICULES ACTION -->
+        <div class="col-lg-5">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ACTION</th>
+                        <th>DEPART</th>
+                        <th>ARRIVEE</th>
+                        <th>TRAIN</th>
+                        <th>ACTION</th>
+                        <th>DUREE</th>
+                        <th>DISTANCE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <c:forEach items="${vas}" var="va">
+                        <tr>
+                            <td>
+                                <c:out value="${va.id}" />
+                            </td>
+                            <td>
+                                <c:out value="${va.depart.numeroLieu}" />
+                            </td>
+                            <td>
+                                <c:out value="${va.arrivee.numeroLieu}" />
+                            </td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${va.isTrain}">
+                                        Vrai
+                                    </c:when>    
+                                    <c:otherwise>
+                                        Faux
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
+                            <td>
+                                <c:out value="${va.enumAction}" />
+                            </td>
+                            <td>
+                                <c:out value="${va.duree}" />
+                            </td>
+                            <td>
+                                <c:out value="${va.distance}" />
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </tbody>
+            </table>
+        </div>
     </div>
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>

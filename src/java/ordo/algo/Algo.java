@@ -171,6 +171,11 @@ public class Algo {
             vt.setEnumAction(VehiculeAction.EnumAction.TRAITEMENT);
             vt.setDistance(0);
             vt.setDuree(client.getDureeService());
+            
+            if(v.isTrain()) {
+                vt.setIsTrain(true);
+            }
+            
             v.addAction(vt);
             
             VehiculeAction va2 = new VehiculeAction();
@@ -182,12 +187,12 @@ public class Algo {
             
             Trajet t2 = daoTrajet.find(client, dp);
             if(t2 != null) {
-                va1.setDistance(t2.getDistance());
-                va1.setDuree(t2.getDuree());
+                va2.setDistance(t2.getDistance());
+                va2.setDuree(t2.getDuree());
             }
             
             if(v.isTrain()) {
-                va1.setIsTrain(true);
+                va2.setIsTrain(true);
             }
             
             v.addAction(va2);
