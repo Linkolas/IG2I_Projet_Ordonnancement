@@ -49,8 +49,9 @@ public class CSVWriter
     {
     }
     
-    
-    
+    /**
+     * Fonction de génération du fichier CSV Solution
+     */
     public void WriteCSV()
     {
         try
@@ -181,6 +182,11 @@ public class CSVWriter
         }
     }
     
+    /**
+     * Ecrit la première VehiculeAction d'une tournée dans le CSV
+     * @param valeurs représente l'état actuel des valeurs qui seront inscrites dans le CSV
+     * @param vehicule représente la tournée que l'on traite actuellement
+     */
     public void ecrirePremiereAction(String valeurs[], Vehicule vehicule)
     {
         valeurs[INDEX_LOCATION_ID] = "D1";
@@ -202,6 +208,11 @@ public class CSVWriter
         valeurs[INDEX_SWAP_BODY_2_QUANTITY] = "0";
     }
     
+    /**
+     * Ecrit une VehiculeAction correspondant à une étape de swapaction d'une tournée dans le CSV
+     * @param valeurs représente l'état actuel des valeurs qui seront inscrites dans le CSV
+     * @param vehiculeAction représente le VehiculeAction que l'on traite actuellement
+     */
     public void ecritureSwapActions(String valeurs[], VehiculeAction vehiculeAction)
     {
         // Ici, on va changer l'ordre des swap_body en fonction de l'action réalisée
@@ -256,6 +267,11 @@ public class CSVWriter
         }
     }
     
+    /**
+     * Ecrit une VehiculeAction correspondant à une étape de livraison d'un client dans le CSV
+     * @param valeurs représente l'état actuel des valeurs qui seront inscrites dans le CSV
+     * @param vehiculeAction représente le VehiculeAction que l'on traite actuellement
+     */
     public void ecritureLivraisonClient(String valeurs[], VehiculeAction vehiculeAction)
     {
         JpaCommandeClientDao jpaCommandeClientDao = JpaCommandeClientDao.getInstance();
@@ -273,6 +289,11 @@ public class CSVWriter
         }
     }
     
+    /**
+     * Ecrit la dernière VehiculeAction d'une tournée dans le CSV
+     * @param valeurs représente l'état actuel des valeurs qui seront inscrites dans le CSV
+     * @param vehicule représente la tournée que l'on traite actuellement
+     */    
     public void ecrireDerniereAction(String valeurs[], Vehicule vehicule, FileWriter filewriter)
     {
         // Dernière action réalisée, retour au dépot
