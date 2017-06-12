@@ -6,6 +6,7 @@
 package ordo.data.entities;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -151,4 +152,20 @@ public class VehiculeAction implements Serializable {
         EXCHANGE,
     }
     
+    /**
+     * Permet de comparer deux VehiculeAction en fonction de leur ID
+     * Ceci permet lors de l'écriture du CSV de récupérer les VehiculeAction dans le bon ordre
+     */
+    public static Comparator<VehiculeAction> VehiculeActionIdComparator = new Comparator<VehiculeAction>() {
+        @Override
+        public int compare(VehiculeAction action1, VehiculeAction action2)
+        {
+            if(action1.getId() > action2.getId())
+            {
+                return 1;
+            }
+            return -1;
+        }
+
+    };
 }
