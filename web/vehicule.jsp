@@ -6,6 +6,7 @@
 <%@page import="java.util.Collection"%>
 ﻿<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 
@@ -45,7 +46,7 @@
                     <tr>
                         <th>Clients</th>
                         <th>Type</th>
-                        <th>Quantité Demandé</th>
+                        <th>Quantité Demandée</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -112,10 +113,24 @@
                                 <c:out value="${va.enumAction}" />
                             </td>
                             <td>
-                                <c:out value="${va.duree}" />
+                                <fmt:parseNumber var = "heures" type = "number" value = "${va.duree /3600}" />
+                                <fmt:parseNumber var = "minutes" type = "number" value = "${va.duree %3600 /60}" />
+                                <c:if test="${heures != 0}">
+                                    <c:out value="${heures}h"/>
+                                </c:if> 
+                                <c:if test="${minutes != 0}">
+                                    <c:out value="${minutes}m"/>
+                                </c:if>
+                                <c:if test="${heures == 0 && minutes == 0}">
+                                    <c:out value="< 0 m"/>
+                                </c:if>
                             </td>
                             <td>
-                                <c:out value="${va.distance}" />
+                                <fmt:parseNumber var = "km" type = "number" value = "${va.distance /1000}" />
+                                <c:if test="${km == 0}">
+                                    <c:out value="< "/>
+                                </c:if>
+                                <c:out value="${km} km" />
                             </td>
                         </tr>
                     </c:forEach>

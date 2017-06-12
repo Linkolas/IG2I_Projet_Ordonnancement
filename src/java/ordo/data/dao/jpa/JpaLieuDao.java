@@ -47,4 +47,28 @@ public class JpaLieuDao extends JpaDao<Lieu> {
         super(Lieu.class);
     }
     
+    public List<Lieu> findAllInstanciated() {
+        Query query = this.em.createNativeQuery("SELECT l.* FROM lieu l WHERE l.dtype != 'Lieu'", Lieu.class);
+        
+        @SuppressWarnings("unchecked")
+        List<Lieu> lieux = (List<Lieu>) query.getResultList();
+        return lieux;
+    }
+    
+    
+    /* WIP : Requête pour récupérer le client le plus proche en terme de temps de conduite.
+SELECT trajet.*
+FROM trajet
+WHERE 
+    trajet.DEPART_ID IN (
+        SELECT lieu.ID FROM lieu 
+        WHERE CAST(lieu.COORDX AS VARCHAR(20)) || CAST(lieu.COORDY AS VARCHAR(20)) IN (
+            SELECT CAST(lieu.COORDX AS VARCHAR(20)) || CAST(lieu.COORDY AS VARCHAR(20))
+            FROM lieu
+            WHERE lieu.ID IN (700, 701, 702)
+        )
+    )
+AND trajet.DESTINATION_ID = 1
+ORDER BY trajet.DUREE ASC;
+    */
 }
