@@ -31,8 +31,6 @@
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <ul class="nav navbar-nav links">
-                    <li role="presentation"><a href="index">Véhicules</a></li>
-                    <li role="presentation"><a href="index">Clients</a></li>
                 </ul>
             </div>
         </div>
@@ -42,6 +40,11 @@
         <!-- TABLE DES CLIENTS -->
         <div class="col-lg-3">
             <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th colspan="3" style="text-align: center;">Clients</th>
+                    </tr>
+                </thead>
                 <thead>
                     <tr>
                         <th>Clients</th>
@@ -76,6 +79,11 @@
         <!-- TABLE DES VEHICULES ACTION -->
         <div class="col-lg-5">
             <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th colspan="7" style="text-align: center;">Véhicule Action</th>
+                    </tr>
+                </thead>
                 <thead>
                     <tr>
                         <th>ACTION</th>

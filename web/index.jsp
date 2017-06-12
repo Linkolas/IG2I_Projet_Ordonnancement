@@ -33,8 +33,6 @@
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <ul class="nav navbar-nav links">
-                    <li role="presentation"><a href="index">Véhicules</a></li>
-                    <li role="presentation"><a href="index">Clients</a></li>
                 </ul>
                 
                 <ul class="nav navbar-nav links" style="float: right;">
