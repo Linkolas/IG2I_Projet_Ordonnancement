@@ -22,6 +22,7 @@ import ordo.data.entities.Depot;
 import ordo.data.entities.Lieu;
 import ordo.data.entities.Vehicule;
 import ordo.data.entities.VehiculeAction;
+import static ordo.data.entities.VehiculeAction.VehiculeActionIdComparator;
 
 /**
  *
@@ -110,18 +111,7 @@ public class CSVWriter
                 
                 // Récupération de toutes les actions de la tournée, qu'on trie par ordre dans la tournée
                 vehiculeActions = jpaVehiculeActionDao.findByVehicule(vehicule);
-                Collections.sort(vehiculeActions, new Comparator<VehiculeAction>()
-                {
-                    @Override
-                    public int compare(VehiculeAction action1, VehiculeAction action2)
-                    {
-                        if(action1.getId() > action2.getId())
-                        {
-                            return 1;
-                        }
-                        return -1;
-                    }
-                });
+                Collections.sort(vehiculeActions, VehiculeActionIdComparator);
                 
                 j=1;
                 
