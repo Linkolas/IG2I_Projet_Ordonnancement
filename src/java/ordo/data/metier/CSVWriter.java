@@ -33,6 +33,7 @@ public class CSVWriter
     private static final String DELIMITEUR = ";";
     private static final String SEPARATEUR_LIGNE = "\n";
     
+    // Index des colonnes sur le CSV créé
     private static final int INDEX_TOUR_ID = 0;
     private static final int INDEX_TOUR_POSITION = 1;
     private static final int INDEX_LOCATION_ID = 2;
@@ -48,6 +49,113 @@ public class CSVWriter
     {
     }
     
+    
+    
+    public void WriteCSV()
+    {
+        try
+        {
+            // On récupère les DAO
+            JpaVehiculeDao jpaVehiculeDao = JpaVehiculeDao.getInstance();
+            JpaVehiculeActionDao jpaVehiculeActionDao = JpaVehiculeActionDao.getInstance();
+            
+            //On génère le fichier nommé Solution.csv, situé à la racine du projet
+            FileWriter filewriter = new FileWriter("Solution.csv");
+            
+            //On inscrit le header qui respecte le format demandé
+            filewriter.append("TOUR_ID;TOUR_POSITION;LOCATION_ID;LOCATION_TYPE;SEMI_TRAILER_ATTACHED;SWAP_BODY_TRUCK;SWAP_BODY_SEMI_TRAILER;SWAP_ACTION;SWAP_BODY_1_QUANTITY;SWAP_BODY_2_QUANTITY");
+            filewriter.append(SEPARATEUR_LIGNE);
+            
+            // On récupère la liste de toutes les tournées
+            List<Vehicule> vehicules = (List<Vehicule>) jpaVehiculeDao.findAll();
+            List<VehiculeAction> vehiculeActions;
+            
+            // Création de toutes les variables qui seront les valeurs du CSV
+            String valeurs[] = {"","","","","","","","","",""};
+            
+            // i est l'itérateur de tournée
+            // j est l'itérateur d'actions
+            Integer i = 1, j;
+            Lieu depart;
+            
+            // On parcourt les tournées
+            for(Vehicule vehicule: vehicules)
+            {
+                valeurs[INDEX_TOUR_ID] = 'R'+ i.toString();
+                
+                // Récupération de toutes les actions de la tournée, qu'on trie par ordre dans la tournée
+                vehiculeActions = jpaVehiculeActionDao.findByVehicule(vehicule);
+                Collections.sort(vehiculeActions, VehiculeActionIdComparator);
+                
+                j=1;
+                
+                // On parcourt toutes les actions de la tournée
+                for(VehiculeAction vehiculeAction: vehiculeActions)
+                {
+                    valeurs[INDEX_TOUR_POSITION] = j.toString();
+                    
+                    // La première ligne concerne le départ du dépot, qui ne figure pas dans la BDD
+                    if(j == 1)
+                    {
+                        ecrirePremiereAction(valeurs, vehicule);
+                    }
+                    // Toutes les autres actions sauf le retour au dépôt
+                    else
+                    {
+                        depart = vehiculeAction.getDepart();
+                        valeurs[INDEX_LOCATION_ID] = depart.getNumeroLieu();
+                        
+                        // On passe par le dépôt
+                        if(depart instanceof Depot)
+                        {
+                            valeurs[INDEX_LOCATION_TYPE] = "DEPOT";
+                        }
+                        
+                        // On passe chez un client
+                        else if(depart instanceof CommandeClient)
+                        {                            
+                            // Dans ce cas, il s'agit d'un déplacement, ce ne doit pas figurer dans le CSV
+                            // On continue donc jusqu'à la prochaine itération
+                            if(vehiculeAction.getEnumAction() == VehiculeAction.EnumAction.DEPLACEMENT)
+                            {
+                                j++;
+                                continue;
+                            }
+                            
+                            // On livre un client
+                            else
+                            {
+                                ecritureLivraisonClient(valeurs, vehiculeAction);
+                            }
+                        }
+                        
+                        // On passe par une swap_location
+                        else
+                        {                            
+                            ecritureSwapActions(valeurs, vehiculeAction);
+                        }
+                    }
+                    
+                    ecrireLigne(valeurs, filewriter);
+                    j++;
+                }
+                
+                valeurs[INDEX_TOUR_POSITION] = Integer.toString(j-1);
+                ecrireDerniereAction(valeurs, vehicule, filewriter);
+                
+                i++;
+            }
+            
+            //On flush puis on ferme le fichier
+            filewriter.flush();
+            filewriter.close();
+        } 
+        catch (IOException ex)
+        {
+            Logger.getLogger(CSVWriter.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     /**
      * Ecrit une ligne dans le fichier actuellement ouvert
      * @param valeurs Tableau de valeurs qui représentent les valeurs à insérer dans le fichier
@@ -61,7 +169,10 @@ public class CSVWriter
             for(int valeur=0; valeur < valeurs.length; valeur++)
             {
                 filewriter.append(valeurs[valeur]);
-                filewriter.append(DELIMITEUR);
+                if(valeur != valeurs.length-1)
+                {
+                    filewriter.append(DELIMITEUR);
+                }
             }
             filewriter.append(SEPARATEUR_LIGNE);
         } catch (IOException ex)
@@ -70,8 +181,35 @@ public class CSVWriter
         }
     }
     
-    public String[] ecritureSwapActions(String valeurs[], VehiculeAction vehiculeAction)
+    public void ecrirePremiereAction(String valeurs[], Vehicule vehicule)
     {
+        valeurs[INDEX_LOCATION_ID] = "D1";
+        valeurs[INDEX_LOCATION_TYPE] = "DEPOT";
+        if(vehicule.isTrain())
+        {
+            valeurs[INDEX_SEMI_TRAILER_ATTACHED] = "1";
+            valeurs[INDEX_SWAP_BODY_TRUCK] = "1";
+            valeurs[INDEX_SWAP_BODY_SEMI_TRAILER] = "2";
+        }
+        else
+        {
+            valeurs[INDEX_SEMI_TRAILER_ATTACHED] = "0";
+            valeurs[INDEX_SWAP_BODY_TRUCK] = "1";
+            valeurs[INDEX_SWAP_BODY_SEMI_TRAILER] = "0";
+        }
+        valeurs[INDEX_SWAP_ACTION] = "NONE";
+        valeurs[INDEX_SWAP_BODY_1_QUANTITY] = "0";
+        valeurs[INDEX_SWAP_BODY_2_QUANTITY] = "0";
+    }
+    
+    public void ecritureSwapActions(String valeurs[], VehiculeAction vehiculeAction)
+    {
+        // Ici, on va changer l'ordre des swap_body en fonction de l'action réalisée
+        valeurs[INDEX_LOCATION_TYPE] = "SWAP_LOCATION";
+        valeurs[INDEX_SWAP_ACTION] = vehiculeAction.getEnumAction().toString();
+        valeurs[INDEX_SWAP_BODY_1_QUANTITY] = "0";
+        valeurs[INDEX_SWAP_BODY_2_QUANTITY] = "0";
+        
         VehiculeAction.EnumAction swapAction = vehiculeAction.getEnumAction();
         
         switch(swapAction)
@@ -116,171 +254,47 @@ public class CSVWriter
                 }
             break;
         }
-        
-        return valeurs;
     }
     
-    public void WriteCSV()
+    public void ecritureLivraisonClient(String valeurs[], VehiculeAction vehiculeAction)
     {
-        try
+        JpaCommandeClientDao jpaCommandeClientDao = JpaCommandeClientDao.getInstance();
+        
+        // Récupération de la liste des colis
+        // Afin d'indiquer les quantités livrées par chacun des swap_body
+        valeurs[INDEX_LOCATION_TYPE] = "CUSTOMER";
+        valeurs[INDEX_SWAP_ACTION] = "NONE";
+        CommandeClient commande = jpaCommandeClientDao.find(vehiculeAction.getArrivee().getId());
+        List<Colis> listeColis = commande.getColis();
+        valeurs[INDEX_SWAP_BODY_1_QUANTITY] = ""+listeColis.get(0).getQuantite();
+        if(listeColis.size()==2)
         {
-            // On récupère les DAO
-            JpaVehiculeDao jpaVehiculeDao = JpaVehiculeDao.getInstance();
-            JpaVehiculeActionDao jpaVehiculeActionDao = JpaVehiculeActionDao.getInstance();
-            JpaCommandeClientDao jpaCommandeClientDao = JpaCommandeClientDao.getInstance();
-            
-            //On génère le fichier nommé Solution.csv, situé à la racine du projet
-            FileWriter filewriter = null;           
-            filewriter = new FileWriter("Solution.csv");
-            
-            //On inscrit le header qui respecte le format demandé
-            filewriter.append("TOUR_ID;TOUR_POSITION;LOCATION_ID;LOCATION_TYPE;SEMI_TRAILER_ATTACHED;SWAP_BODY_TRUCK;SWAP_BODY_SEMI_TRAILER;SWAP_ACTION;SWAP_BODY_1_QUANTITY;SWAP_BODY_2_QUANTITY");
-            //Puis on passe à la ligne
-            filewriter.append(SEPARATEUR_LIGNE);
-            
-            // On récupère la liste de toutes les tournées
-            List<Vehicule> vehicules = (List<Vehicule>) jpaVehiculeDao.findAll();
-            List<VehiculeAction> vehiculeActions;
-            
-            // Création de toutes les variables qui seront les valeurs du CSV
-            
-            String valeurs[] = {"","","","","","","","","",""};
-            
-            // i est l'itérateur de tournée
-            // j est l'itérateur d'actions
-            Integer i = 1, j=1;
-            Lieu depart;
-            CommandeClient commande;
-            List<Colis> listeColis;
-            
-            // On parcourt les tournées
-            for(Vehicule vehicule: vehicules)
-            {
-                valeurs[INDEX_TOUR_ID] = 'R'+ i.toString();
-                
-                // Récupération de toutes les actions de la tournée, qu'on trie par ordre dans la tournée
-                vehiculeActions = jpaVehiculeActionDao.findByVehicule(vehicule);
-                Collections.sort(vehiculeActions, VehiculeActionIdComparator);
-                
-                j=1;
-                
-                // On parcourt toutes les actions de la tournée
-                for(VehiculeAction vehiculeAction: vehiculeActions)
-                {
-                    valeurs[INDEX_TOUR_POSITION] = j.toString();
-                    
-                    // La première ligne concerne le départ du dépot, qui ne figure pas dans la BDD
-                    if(j == 1)
-                    {
-                        valeurs[INDEX_LOCATION_ID] = "D1";
-                        valeurs[INDEX_LOCATION_TYPE] = "DEPOT";
-                        if(vehicule.isTrain())
-                        {
-                            valeurs[INDEX_SEMI_TRAILER_ATTACHED] = "1";
-                            valeurs[INDEX_SWAP_BODY_TRUCK] = "1";
-                            valeurs[INDEX_SWAP_BODY_SEMI_TRAILER] = "2";
-                        }
-                        else
-                        {
-                            valeurs[INDEX_SEMI_TRAILER_ATTACHED] = "0";
-                            valeurs[INDEX_SWAP_BODY_TRUCK] = "1";
-                            valeurs[INDEX_SWAP_BODY_SEMI_TRAILER] = "0";
-                        }
-                        valeurs[INDEX_SWAP_ACTION] = "NONE";
-                        valeurs[INDEX_SWAP_BODY_1_QUANTITY] = "0";
-                        valeurs[INDEX_SWAP_BODY_2_QUANTITY] = "0";
-                    }
-                    // Toutes les autres actions sauf le retour au dépôt
-                    else
-                    {
-                        depart = vehiculeAction.getDepart();
-                        valeurs[INDEX_LOCATION_ID] = depart.getNumeroLieu();
-                        
-                        // On passe par le dépôt
-                        if(depart instanceof Depot)
-                        {
-                            valeurs[INDEX_LOCATION_TYPE] = "DEPOT";
-                        }
-                        
-                        // On passe chez un client
-                        else if(depart instanceof CommandeClient)
-                        {
-                            valeurs[INDEX_LOCATION_TYPE] = "CUSTOMER";
-                            
-                            // Dans ce cas, il s'agit d'un déplacement, ce ne doit pas figurer dans le CSV
-                            // On continue donc jusqu'à la prochaine itération
-                            if(vehiculeAction.getEnumAction() == VehiculeAction.EnumAction.DEPLACEMENT)
-                            {
-                                j++;
-                                continue;
-                            }
-                            
-                            // On livre un client
-                            else
-                            {
-                                // Récupération de la liste des colis
-                                // Afin d'indiquer les quantités livrées par chacun des swap_body
-                                valeurs[INDEX_SWAP_ACTION] = "NONE";
-                                commande = jpaCommandeClientDao.find(vehiculeAction.getArrivee().getId());
-                                listeColis = commande.getColis();
-                                valeurs[INDEX_SWAP_BODY_1_QUANTITY] = ""+listeColis.get(0).getQuantite();
-                                if(listeColis.size()==2)
-                                {
-                                    valeurs[INDEX_SWAP_BODY_2_QUANTITY] = ""+listeColis.get(1).getQuantite();   
-                                }
-                            }
-                        }
-                        
-                        // On passe par une swap_location
-                        else
-                        {
-                            // Ici, on va changer l'ordre des swap_body en fonction de l'action réalisée
-                            valeurs[INDEX_LOCATION_TYPE] = "SWAP_LOCATION";
-                            valeurs[INDEX_SWAP_ACTION] = vehiculeAction.getEnumAction().toString();
-                            valeurs[INDEX_SWAP_BODY_1_QUANTITY] = "0";
-                            valeurs[INDEX_SWAP_BODY_2_QUANTITY] = "0";
-                            
-                            valeurs = ecritureSwapActions(valeurs, vehiculeAction);
-                        }
-                    }
-                    
-                    ecrireLigne(valeurs, filewriter);
-                    j++;
-                }
-                
-                // Dernière action réalisée, retour au dépot
-                valeurs[INDEX_TOUR_POSITION] = Integer.toString(j-1);
-                valeurs[INDEX_LOCATION_ID] = "D1";
-                valeurs[INDEX_LOCATION_TYPE] = "DEPOT";
-                if(vehicule.isTrain())
-                {
-                    valeurs[INDEX_SEMI_TRAILER_ATTACHED] = "1";
-                    valeurs[INDEX_SWAP_BODY_TRUCK] = "1";
-                    valeurs[INDEX_SWAP_BODY_SEMI_TRAILER] = "2";
-                }
-                else
-                {
-                    valeurs[INDEX_SEMI_TRAILER_ATTACHED] = "0";
-                    valeurs[INDEX_SWAP_BODY_TRUCK] = "1";
-                    valeurs[INDEX_SWAP_BODY_SEMI_TRAILER] = "0";
-                }
-                valeurs[INDEX_SWAP_ACTION] = "NONE";
-                valeurs[INDEX_SWAP_BODY_1_QUANTITY] = "0";
-                valeurs[INDEX_SWAP_BODY_2_QUANTITY] = "0";
-                
-                ecrireLigne(valeurs, filewriter);
-                
-                i++;
-            }
-            
-            //On flush puis on ferme le fichier
-            filewriter.flush();
-            filewriter.close();
-        } 
-        catch (IOException ex)
-        {
-            Logger.getLogger(CSVWriter.class.getName()).log(Level.SEVERE, null, ex);
+            valeurs[INDEX_SWAP_BODY_2_QUANTITY] = ""+listeColis.get(1).getQuantite();   
         }
+    }
+    
+    public void ecrireDerniereAction(String valeurs[], Vehicule vehicule, FileWriter filewriter)
+    {
+        // Dernière action réalisée, retour au dépot
+        valeurs[INDEX_LOCATION_ID] = "D1";
+        valeurs[INDEX_LOCATION_TYPE] = "DEPOT";
+        if(vehicule.isTrain())
+        {
+            valeurs[INDEX_SEMI_TRAILER_ATTACHED] = "1";
+            valeurs[INDEX_SWAP_BODY_TRUCK] = "1";
+            valeurs[INDEX_SWAP_BODY_SEMI_TRAILER] = "2";
+        }
+        else
+        {
+            valeurs[INDEX_SEMI_TRAILER_ATTACHED] = "0";
+            valeurs[INDEX_SWAP_BODY_TRUCK] = "1";
+            valeurs[INDEX_SWAP_BODY_SEMI_TRAILER] = "0";
+        }
+        valeurs[INDEX_SWAP_ACTION] = "NONE";
+        valeurs[INDEX_SWAP_BODY_1_QUANTITY] = "0";
+        valeurs[INDEX_SWAP_BODY_2_QUANTITY] = "0";
+
+        ecrireLigne(valeurs, filewriter);
     }
     
     public static void main(String[] args)
