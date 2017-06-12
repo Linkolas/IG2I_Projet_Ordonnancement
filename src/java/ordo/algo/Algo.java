@@ -198,7 +198,7 @@ public class Algo {
             v.addAction(va2);
             
             // On persiste les véhicules
-            System.out.println(v);
+            //System.out.println(v);
             daoVehicule.create(v);
             
             for(CommandeClient cc: v.getCommandes()) {
@@ -289,76 +289,213 @@ public class Algo {
         // Si on a aucune commandes dans le Véhicule
         if(v.getCommandes().size() == 0) return;
         
+        //On effectue une sauvegarde temporaire des VéhiculeAction
+        Collection<VehiculeAction> save_va;
+        save_va = v.getActions();
+        
         //On vide les anciens VehiculeAction
         v.getActions().clear();
         
         VehiculeAction va1;
         VehiculeAction vt;
-        for(CommandeClient cc : v.getCommandes()){
-            // si c'est la première commande de la liste on précise que l'on démarre du dépot
-            if(v.getCommandes().indexOf(cc) == 0){
-
-                // On démarre du dépot
-                // On regarde si le premier client que l'on doit visiter est un client camion
-                // Sauf que le véhicule est en mode Train
-                if(cc.getNombreRemorquesMax() == 1 && v.getSwapBodies().size() == 2){
-                    // On doit forcément aller à un swapBody pour déposer la commande
-                    //park(v, cc);
-                }
-                va1 = new VehiculeAction();
-                va1.setDepart(dp);
-                va1.setArrivee(cc);
-                va1.setEnumAction(VehiculeAction.EnumAction.DEPLACEMENT);
-                Trajet t1 = daoTrajet.find(dp, cc);
-                // On get le trajet qui est dans la bdd
-                if(t1 != null) {
-                    va1.setDistance(t1.getDistance());
-                    va1.setDuree(t1.getDuree());
-                }
-//                if(v.isTrain()) {
-//                    va1.setIsTrain(true);
-//                }
-                
-                v.addAction(va1);
-
-
-                // On dépose la commande chez le client
-                vt = new VehiculeAction();
-                vt.setDepart(cc);
-                vt.setArrivee(cc);
-                vt.setEnumAction(VehiculeAction.EnumAction.TRAITEMENT);
-                vt.setDistance(0);
-                vt.setDuree(cc.getDureeService());
-                v.addAction(vt);
-            }
-            else{
-                // On démarre de chez la position suivante
-                va1 = new VehiculeAction();
-                va1.setDepart(dp);
-                va1.setArrivee(cc);
-                va1.setEnumAction(VehiculeAction.EnumAction.DEPLACEMENT);
-                Trajet t1 = daoTrajet.find(dp, cc);
-                // On get le trajet qui est dans la bdd
-                if(t1 != null) {
-                    va1.setDistance(t1.getDistance());
-                    va1.setDuree(t1.getDuree());
-                }
-                if(v.isTrain()) {
-                    va1.setIsTrain(true);
-                }
-                v.addAction(va1);
-
-
-                // On dépose la commande chez le client
-                vt = new VehiculeAction();
-                vt.setDepart(cc);
-                vt.setArrivee(cc);
-                vt.setEnumAction(VehiculeAction.EnumAction.TRAITEMENT);
-                vt.setDistance(0);
-                vt.setDuree(cc.getDureeService());
-                v.addAction(vt);
-            }
-        }
+        
+        // <editor-fold defaultstate="collapsed" desc="Description Algo de placage des véhicules">
+        
+        // @author Nicolas Hansse
+        
+        //On creer une matrice qui à la forme suivante
+        //
+        //      |  D1  |  C1  |  C2  |  C3  |
+        //  D1  |  00  |  10  |  20  |  15  |
+        //  C1  |  10  |  00  |  08  |  12  |
+        //  C2  |  20  |  07  |  00  |  10  |
+        //  C3  |  15  |  12  |  10  |  00  |
+        //
+        // On suppose que les lignes sont les départ et les colones les arrivées
+        // On lit donc que pour aller de C1 -> C2 cela coute 8
+        // Les valeurs dans la matrice correpondent au temps pour aller d'un lieu (row) à un autre (col)
+        // Le but de l'algo ici et de trouver le chemin le plus rapide pour deservir tout les clients
+        // On pourrait tester tous les chemins mais cela serait une factorielle proportionelle au nombres de clients dans le véhicule
+        // Rien qu'ici pour 3 clients et le dépot on arrive à 24 possibilité
+        // Et le simple fait de monter à 10 clients dans la commande fait grimper ce nombre à 3 628 800 combinaisons
+        
+        // Pour éviter que cela n'arrive on va se baser sur cet algo qui est plutôt simple mais efficace
+        
+        // 1ère étape, on prend chaques ligne de la matrice et on repère la plus petite valeur (OR 0)
+        // On obtient donc les relations suivantes
+        // pour marquer les esprits on note notre relation la matrice "tomate"
+        //
+        //  D1 -> C1 (10)
+        //  C1 -> C2 (8)
+        //  C2 -> C1 (7)
+        //  C3 -> C2 (10)
+        
+        // On pose alors la question, y a t'il, dans la liste des relation Cx -> Cy | Cy -> Cx
+        // Si oui, pour chacun des couple on test lequel est le moins cher
+        // Ici nous avons :
+        
+        //  C1 -> C2 (8)
+        //  C2 -> C1 (7)
+        
+        // Donc on garde que le moins cher à savoir la deuxième C2 -> C1 (7)
+        // En ce qui concerne la deuxième relation C1 -> C2 (8)
+        // On va regarder quel est la deuxième relation la moins cher
+        // A savoir C1 -> D1 (10)
+        
+        //On met donc notre "tomate" à jour
+        //
+        //  D1 -> C1 (10)
+        //  C1 -> D1 (10)
+        //  C2 -> C1 (7)
+        //  C3 -> C2 (10)
+        
+        //On recommence l'étape 1, y a t'il, dans la liste des relation Cx -> Cy | Cy -> Cx
+        //On constate que non, (on peut le detecter en regardant si on ne demmare pas plusieurs fois du même client)
+        
+        // On pose alors la question numero 2
+        // Es-ce que l'on a des relations Cy -> Cx | Cz -> Cx (plusieurs fois le même client en destination)
+        // Oui c'est actuellement notre cas. Alors on fait la démarche suivante
+        // Pour chaque relation Cx -> Cy | Cz -> Cx on regarde laquelle et la plus économique
+        // On a donc :
+        
+        //  D1 -> C1 (10)
+        //  C2 -> C1 (7)
+        
+        // On concerve donc C2 -> C1 (7)
+        // Pour D1 -> C1 (10) on cherche la liason la moins cher après (10) en partant de D1
+        // On tombe sur D1 -> C3 (15)
+        
+        // Notre tomate ressemble donc à cela maintenant
+        //  D1 -> C3 (15)
+        //  C1 -> D1 (10)
+        //  C2 -> C1 (7)
+        //  C3 -> C2 (10)
+        
+        // On pose donc la question suivante, y a t'il, dans la liste des relation Cx -> Cy | Cy -> Cx ?
+        // Non ? alors es-ce que l'on a des relations Cy -> Cx | Cz -> Cx (plusieurs fois le même client en destination)
+        // Non ? alors félication nous avons fini l'algo.
+        
+        // Nous savons donc que la meilleure route est D1 -> C3 -> C2 -> C1 -> D1
+        
+        // Voilà pour la version "simplifié" de l'algo
+        // en effet nous ne tenons pas compte des clients camion ou train ni des swapBodies
+        
+        // Voici donc l'algo prenant cette fois si les swapBodies
+        // On suppose dans cette version que l'on ne prendra que un seul swapLocation pour toute la tournée
+        // Une perspective d'évolution serait de pouvoir en utliser plusieurs si l'on peut
+        // Pour récuperer notre swapLocation on récupère le plus proche de tout les clients camion présents dans la liste
+        // Pour voir le fonctionnement regarder : //TODO METTRE NOM method calcul swap body
+        // Une fois que l'on a notre swapLocation, voici comment est modifiée l'algo
+        
+        // On creer une matrice qui à la forme suivante (la même que la précedente)
+        //
+        //      |  D1  |  C1  |  C2  |  C3  |  S1  |
+        //  D1  |  00  |  10  |  20  |  15  |  15  |
+        //  C1  |  10  |  00  |  08  |  12  |  06  |
+        //  C2  |  20  |  07  |  00  |  10  |  05  |
+        //  C3  |  15  |  12  |  10  |  00  |  06  |
+        //  S1  |  15  |  06  |  05  |  06  |  00  |
+        
+        // Sauf qu'ici nous n'avons pas qu'une seule matrice
+        // Nous avons la matrice que nous appelerons carotte
+        // Cette matrice à la particularité de fournir 3 informations
+        // Si la valeur vaut -1 le client doit enlever une remorque (train -> camion )
+        // Si la valeur vaut 0 pas besoin de passer par un swapLocation ( camion -> train || train -> train || camion -> camion)
+        // Si la valeur vaut 1 le client doit prendre obligatoirement le swapbody (revenir au depot par exemple, ou commande client > Capacité max)
+        
+        // On suppose C1 Camion, C2 train, C3 camion
+        // donc
+        
+        //      |  D1  |  C1  |  C2  |  C3  |
+        //  D1  |  00  |  -1  |  00  |  -1  |
+        //  C1  |  01  |  00  |  01  |  00  |
+        //  C2  |  01  |  -1  |  00  |  00  |
+        //  C3  |  01  |  -1  |  01  |  00  |
+        
+        // On prend également en compte la quantité a livrer pour chaque clients
+        
+        //      |  C1  |  C2  |  C3  |
+        //   Q  | 0100 | 0400 | 0100 |
+        
+        // En pose pour l'exemple la régle suivante:
+        // Capacité max : 300
+        
+        // Nous avons maintenant toutes les informations pour pouvoir faire nos routes
+        // Comme avant on réalise notre "tomate"
+        // On prend les clients et les dépots au niveau des lignes et on cherche le moins cher
+        // Comme les données n'ont pas changé on réobtient cette tomate
+        
+        //  D1 -> C1 (10)
+        //  C1 -> C2 (8)
+        //  C2 -> C1 (7)
+        //  C3 -> C2 (10)
+        
+        // On exécute l'algo précedent et on obtient donc les relations suivantes :
+        
+        //  D1 -> C3 (15)
+        //  C1 -> D1 (10)
+        //  C2 -> C1 (7)
+        //  C3 -> C2 (10)
+        
+        //Maitenant on pose une nouvelle question, Parmi les relations Cx -> Cy une relation demande forcément de passer par un swapLocation ?
+        
+        // On a donc les relations qui ressortent:
+        
+        //  D1 -> C3 (15)
+        //  C1 -> D1 (10)
+        //  C3 -> C2 (10)
+        
+        // Pour chaques relations on passe par le swapbody
+        // Donc :
+        
+        //  D1 -> C3 (15)
+        
+        //  Devient
+        
+        //  D1 -> S1 (15)
+        //  S1 -> C3 (15)
+        
+        // Et
+        
+        //  C3 -> C2 (10)
+        
+        //  Devient
+        
+        //  C3 -> S1 (10)
+        //  S1 -> C2 (10)
+        
+        // Il subsiste une exception, c'est le retour en entrepot
+        // On lit depuis la Fin de la boucle et on remonte progressivement les clients
+        // Si un client est camion on effectue le passage par le swapbody
+        // Dès que l'on rencontre un client train, on leve un flag
+        //    On continue de consulter la liste les clients.
+        //    Si on tombe sur sur swap on lache le flag on fait rien (on suppose que l'on a get la deuxième remorque donc pas la peine de passer par un swap)
+        //    Si on tombe sur un Client camion on effectue le swap en dernière étape comme si contre:
+        
+        //  C1 -> D1 (10)
+        
+        //  Devient
+        
+        //  C1 -> S1 (06)
+        //  S1 -> D1 (15)
+        
+        // Ce qui n'est pas notre cas ici donc on n'effectue pas le passage par un swapLocation pour C1 -> D1 (10)
+        
+        //Notre tomate devient donc
+        
+        //  D1 -> S1 (15)
+        //  S1 -> C3 (15)
+        //  C1 -> D1 (10)
+        //  C2 -> C1 (7)
+        //  C3 -> S1 (10)
+        //  S1 -> C2 (10)
+        
+        // Maintenant nous avons besoin de prendre en compte un autre souci, c'est le placement des colis dans le camion
+        
+        // 
+        
+        // </editor-fold>
+        
     }
     
     private static void generateColis(Vehicule v, CommandeClient cc){
