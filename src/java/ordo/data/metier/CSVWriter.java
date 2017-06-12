@@ -71,6 +71,56 @@ public class CSVWriter
         }
     }
     
+    public String[] ecritureSwapActions(String valeurs[], VehiculeAction vehiculeAction)
+    {
+        VehiculeAction.EnumAction swapAction = vehiculeAction.getEnumAction();
+        
+        switch(swapAction)
+        {
+            case EXCHANGE: 
+                // C'est un exchange, on récupère donc l'autre swap_body
+                // Et on laisse l'autre au swap_location
+                valeurs[INDEX_SEMI_TRAILER_ATTACHED] = "0";
+                if(valeurs[INDEX_SWAP_BODY_TRUCK].equals("1"))
+                {
+                    valeurs[INDEX_SWAP_BODY_TRUCK] = "2";
+                    valeurs[INDEX_SWAP_BODY_SEMI_TRAILER]= "1";
+                }
+                else
+                {
+                    valeurs[INDEX_SWAP_BODY_TRUCK] = "1";
+                    valeurs[INDEX_SWAP_BODY_SEMI_TRAILER] = "2";
+                }
+            break;
+            
+            case PARK:
+                // On gare le deuxième swap_body au swap_location
+                valeurs[INDEX_SEMI_TRAILER_ATTACHED] = "0";
+            break;
+            
+            case PICKUP:
+                // On récupère le deuxième swap_body
+                valeurs[INDEX_SEMI_TRAILER_ATTACHED] = "1";
+            break;
+            
+            case SWAP:
+                // On échange les deux swap_body
+                if("1".equals(valeurs[INDEX_SWAP_BODY_SEMI_TRAILER]))
+                {
+                    valeurs[INDEX_SWAP_BODY_TRUCK] = "1";
+                    valeurs[INDEX_SWAP_BODY_SEMI_TRAILER] = "2";
+                }
+                else
+                {
+                    valeurs[INDEX_SWAP_BODY_SEMI_TRAILER] = "1";
+                    valeurs[INDEX_SWAP_BODY_TRUCK] = "2";
+                }
+            break;
+        }
+        
+        return valeurs;
+    }
+    
     public void WriteCSV()
     {
         try
@@ -191,46 +241,7 @@ public class CSVWriter
                             valeurs[INDEX_SWAP_BODY_1_QUANTITY] = "0";
                             valeurs[INDEX_SWAP_BODY_2_QUANTITY] = "0";
                             
-                            if(vehiculeAction.getEnumAction() == VehiculeAction.EnumAction.EXCHANGE)
-                            {
-                                // C'est un exchange, on récupère donc l'autre swap_body
-                                // Et on laisse l'autre au swap_location
-                                valeurs[INDEX_SEMI_TRAILER_ATTACHED] = "0";
-                                if(valeurs[INDEX_SWAP_BODY_TRUCK].equals("1"))
-                                {
-                                    valeurs[INDEX_SWAP_BODY_TRUCK] = "2";
-                                    valeurs[INDEX_SWAP_BODY_SEMI_TRAILER]= "1";
-                                }
-                                else
-                                {
-                                    valeurs[INDEX_SWAP_BODY_TRUCK] = "1";
-                                    valeurs[INDEX_SWAP_BODY_SEMI_TRAILER] = "2";
-                                }
-                            }
-                            else if (vehiculeAction.getEnumAction() == VehiculeAction.EnumAction.PARK)
-                            {
-                                // On gare le deuxième swap_body au swap_location
-                                valeurs[INDEX_SEMI_TRAILER_ATTACHED] = "0";
-                            }
-                            else if (vehiculeAction.getEnumAction() == VehiculeAction.EnumAction.PICKUP)
-                            {
-                                // On récupère le deuxième swap_body
-                                valeurs[INDEX_SEMI_TRAILER_ATTACHED] = "1";
-                            }
-                            else if (vehiculeAction.getEnumAction() == VehiculeAction.EnumAction.SWAP)
-                            {
-                                // On échange les deux swap_body
-                                if("1".equals(valeurs[INDEX_SWAP_BODY_SEMI_TRAILER]))
-                                {
-                                    valeurs[INDEX_SWAP_BODY_TRUCK] = "1";
-                                    valeurs[INDEX_SWAP_BODY_SEMI_TRAILER] = "2";
-                                }
-                                else
-                                {
-                                    valeurs[INDEX_SWAP_BODY_SEMI_TRAILER] = "1";
-                                    valeurs[INDEX_SWAP_BODY_TRUCK] = "2";
-                                }
-                            }
+                            valeurs = ecritureSwapActions(valeurs, vehiculeAction);
                         }
                     }
                     

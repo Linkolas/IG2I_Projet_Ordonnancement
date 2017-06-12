@@ -152,6 +152,10 @@ public class VehiculeAction implements Serializable {
         EXCHANGE,
     }
     
+    /**
+     * Permet de comparer deux VehiculeAction en fonction de leur ID
+     * Ceci permet lors de l'écriture du CSV de récupérer les VehiculeAction dans le bon ordre
+     */
     public static Comparator<VehiculeAction> VehiculeActionIdComparator = new Comparator<VehiculeAction>() {
         @Override
         public int compare(VehiculeAction action1, VehiculeAction action2)
