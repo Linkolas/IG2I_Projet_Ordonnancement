@@ -48,22 +48,21 @@ public class CSVWriter
     {
     }
     
+    /**
+     * Ecrit une ligne dans le fichier actuellement ouvert
+     * @param valeurs Tableau de valeurs qui représentent les valeurs à insérer dans le fichier
+     * @param filewriter la variable qui représente le fichier actuellement ouvert
+     */
     public void ecrireLigne(String valeurs[], FileWriter filewriter)
     {    
         try
         {
-            // Ecriture de la ligne sur le CSV
-            filewriter.append(valeurs[INDEX_TOUR_ID]);                 filewriter.append(DELIMITEUR);
-            filewriter.append(valeurs[INDEX_TOUR_POSITION]);           filewriter.append(DELIMITEUR);
-            filewriter.append(valeurs[INDEX_LOCATION_ID]);             filewriter.append(DELIMITEUR);
-            filewriter.append(valeurs[INDEX_LOCATION_TYPE]);           filewriter.append(DELIMITEUR);
-            filewriter.append(valeurs[INDEX_SEMI_TRAILER_ATTACHED]);   filewriter.append(DELIMITEUR);
-            filewriter.append(valeurs[INDEX_SWAP_BODY_TRUCK]);         filewriter.append(DELIMITEUR);
-            filewriter.append(valeurs[INDEX_SWAP_BODY_SEMI_TRAILER]);  filewriter.append(DELIMITEUR);
-            filewriter.append(valeurs[INDEX_SWAP_ACTION]);             filewriter.append(DELIMITEUR);
-            filewriter.append(valeurs[INDEX_SWAP_BODY_1_QUANTITY]);    filewriter.append(DELIMITEUR);
-            filewriter.append(valeurs[INDEX_SWAP_BODY_2_QUANTITY]);
-            
+            // Chaque itération de boucle correspond à une cellule
+            for(int valeur=0; valeur < valeurs.length; valeur++)
+            {
+                filewriter.append(valeurs[valeur]);
+                filewriter.append(DELIMITEUR);
+            }
             filewriter.append(SEPARATEUR_LIGNE);
         } catch (IOException ex)
         {
