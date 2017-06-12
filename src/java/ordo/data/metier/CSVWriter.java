@@ -32,8 +32,42 @@ public class CSVWriter
     private static final String DELIMITEUR = ";";
     private static final String SEPARATEUR_LIGNE = "\n";
     
+    private static final int INDEX_TOUR_ID = 0;
+    private static final int INDEX_TOUR_POSITION = 1;
+    private static final int INDEX_LOCATION_ID = 2;
+    private static final int INDEX_LOCATION_TYPE = 3;
+    private static final int INDEX_SEMI_TRAILER_ATTACHED = 4;
+    private static final int INDEX_SWAP_BODY_TRUCK = 5;
+    private static final int INDEX_SWAP_BODY_SEMI_TRAILER = 6;
+    private static final int INDEX_SWAP_ACTION = 7;
+    private static final int INDEX_SWAP_BODY_1_QUANTITY = 8;
+    private static final int INDEX_SWAP_BODY_2_QUANTITY = 9;
+    
     public CSVWriter()
     {
+    }
+    
+    public void ecrireLigne(String valeurs[], FileWriter filewriter)
+    {    
+        try
+        {
+            // Ecriture de la ligne sur le CSV
+            filewriter.append(valeurs[INDEX_TOUR_ID]);                 filewriter.append(DELIMITEUR);
+            filewriter.append(valeurs[INDEX_TOUR_POSITION]);           filewriter.append(DELIMITEUR);
+            filewriter.append(valeurs[INDEX_LOCATION_ID]);             filewriter.append(DELIMITEUR);
+            filewriter.append(valeurs[INDEX_LOCATION_TYPE]);           filewriter.append(DELIMITEUR);
+            filewriter.append(valeurs[INDEX_SEMI_TRAILER_ATTACHED]);   filewriter.append(DELIMITEUR);
+            filewriter.append(valeurs[INDEX_SWAP_BODY_TRUCK]);         filewriter.append(DELIMITEUR);
+            filewriter.append(valeurs[INDEX_SWAP_BODY_SEMI_TRAILER]);  filewriter.append(DELIMITEUR);
+            filewriter.append(valeurs[INDEX_SWAP_ACTION]);             filewriter.append(DELIMITEUR);
+            filewriter.append(valeurs[INDEX_SWAP_BODY_1_QUANTITY]);    filewriter.append(DELIMITEUR);
+            filewriter.append(valeurs[INDEX_SWAP_BODY_2_QUANTITY]);
+            
+            filewriter.append(SEPARATEUR_LIGNE);
+        } catch (IOException ex)
+        {
+            Logger.getLogger(CSVWriter.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public void WriteCSV()
@@ -59,28 +93,20 @@ public class CSVWriter
             List<VehiculeAction> vehiculeActions;
             
             // Création de toutes les variables qui seront les valeurs du CSV
-            String TOUR_ID = "", 
-                    TOUR_POSITION = "", 
-                    LOCATION_ID = "", 
-                    LOCATION_TYPE = "", 
-                    SEMI_TRAILER_ATTACHED = "", 
-                    SWAP_BODY_TRUCK = "", 
-                    SWAP_BODY_SEMI_TRAILER = "",
-                    SWAP_ACTION = "",
-                    SWAP_BODY_1_QUANTITY = "",
-                    SWAP_BODY_2_QUANTITY = "";
+            
+            String valeurs[] = {"","","","","","","","","",""};
             
             // i est l'itérateur de tournée
             // j est l'itérateur d'actions
             Integer i = 1, j=1;
-            Lieu depart, arrivee;
+            Lieu depart;
             CommandeClient commande;
             List<Colis> listeColis;
             
             // On parcourt les tournées
             for(Vehicule vehicule: vehicules)
             {
-                TOUR_ID = 'R'+ i.toString();
+                valeurs[INDEX_TOUR_ID] = 'R'+ i.toString();
                 
                 // Récupération de toutes les actions de la tournée, qu'on trie par ordre dans la tournée
                 vehiculeActions = jpaVehiculeActionDao.findByVehicule(vehicule);
@@ -102,45 +128,45 @@ public class CSVWriter
                 // On parcourt toutes les actions de la tournée
                 for(VehiculeAction vehiculeAction: vehiculeActions)
                 {
-                    TOUR_POSITION = j.toString();
+                    valeurs[INDEX_TOUR_POSITION] = j.toString();
                     
                     // La première ligne concerne le départ du dépot, qui ne figure pas dans la BDD
                     if(j == 1)
                     {
-                        LOCATION_ID = "D1";
-                        LOCATION_TYPE = "DEPOT";
+                        valeurs[INDEX_LOCATION_ID] = "D1";
+                        valeurs[INDEX_LOCATION_TYPE] = "DEPOT";
                         if(vehicule.isTrain())
                         {
-                            SEMI_TRAILER_ATTACHED = "1";
-                            SWAP_BODY_TRUCK = "1";
-                            SWAP_BODY_SEMI_TRAILER = "2";
+                            valeurs[INDEX_SEMI_TRAILER_ATTACHED] = "1";
+                            valeurs[INDEX_SWAP_BODY_TRUCK] = "1";
+                            valeurs[INDEX_SWAP_BODY_SEMI_TRAILER] = "2";
                         }
                         else
                         {
-                            SEMI_TRAILER_ATTACHED = "0";
-                            SWAP_BODY_TRUCK = "1";
-                            SWAP_BODY_SEMI_TRAILER = "0";
+                            valeurs[INDEX_SEMI_TRAILER_ATTACHED] = "0";
+                            valeurs[INDEX_SWAP_BODY_TRUCK] = "1";
+                            valeurs[INDEX_SWAP_BODY_SEMI_TRAILER] = "0";
                         }
-                        SWAP_ACTION = "NONE";
-                        SWAP_BODY_1_QUANTITY = "0";
-                        SWAP_BODY_2_QUANTITY = "0";
+                        valeurs[INDEX_SWAP_ACTION] = "NONE";
+                        valeurs[INDEX_SWAP_BODY_1_QUANTITY] = "0";
+                        valeurs[INDEX_SWAP_BODY_2_QUANTITY] = "0";
                     }
                     // Toutes les autres actions sauf le retour au dépôt
                     else
                     {
                         depart = vehiculeAction.getDepart();
-                        LOCATION_ID = depart.getNumeroLieu();
+                        valeurs[INDEX_LOCATION_ID] = depart.getNumeroLieu();
                         
                         // On passe par le dépôt
                         if(depart instanceof Depot)
                         {
-                            LOCATION_TYPE = "DEPOT";
+                            valeurs[INDEX_LOCATION_TYPE] = "DEPOT";
                         }
                         
                         // On passe chez un client
                         else if(depart instanceof CommandeClient)
                         {
-                            LOCATION_TYPE = "CUSTOMER";
+                            valeurs[INDEX_LOCATION_TYPE] = "CUSTOMER";
                             
                             // Dans ce cas, il s'agit d'un déplacement, ce ne doit pas figurer dans le CSV
                             // On continue donc jusqu'à la prochaine itération
@@ -155,13 +181,13 @@ public class CSVWriter
                             {
                                 // Récupération de la liste des colis
                                 // Afin d'indiquer les quantités livrées par chacun des swap_body
-                                SWAP_ACTION = "NONE";
+                                valeurs[INDEX_SWAP_ACTION] = "NONE";
                                 commande = jpaCommandeClientDao.find(vehiculeAction.getArrivee().getId());
                                 listeColis = commande.getColis();
-                                SWAP_BODY_1_QUANTITY = ""+listeColis.get(0).getQuantite();
+                                valeurs[INDEX_SWAP_BODY_1_QUANTITY] = ""+listeColis.get(0).getQuantite();
                                 if(listeColis.size()==2)
                                 {
-                                    SWAP_BODY_2_QUANTITY = ""+listeColis.get(1).getQuantite();   
+                                    valeurs[INDEX_SWAP_BODY_2_QUANTITY] = ""+listeColis.get(1).getQuantite();   
                                 }
                             }
                         }
@@ -170,107 +196,82 @@ public class CSVWriter
                         else
                         {
                             // Ici, on va changer l'ordre des swap_body en fonction de l'action réalisée
-                            LOCATION_TYPE = "SWAP_LOCATION";
-                            SWAP_ACTION = vehiculeAction.getEnumAction().toString();
-                            SWAP_BODY_1_QUANTITY = "0";
-                            SWAP_BODY_2_QUANTITY = "0";
+                            valeurs[INDEX_LOCATION_TYPE] = "SWAP_LOCATION";
+                            valeurs[INDEX_SWAP_ACTION] = vehiculeAction.getEnumAction().toString();
+                            valeurs[INDEX_SWAP_BODY_1_QUANTITY] = "0";
+                            valeurs[INDEX_SWAP_BODY_2_QUANTITY] = "0";
                             
                             if(vehiculeAction.getEnumAction() == VehiculeAction.EnumAction.EXCHANGE)
                             {
                                 // C'est un exchange, on récupère donc l'autre swap_body
                                 // Et on laisse l'autre au swap_location
-                                SEMI_TRAILER_ATTACHED = "0";
-                                if(SWAP_BODY_TRUCK.equals("1"))
+                                valeurs[INDEX_SEMI_TRAILER_ATTACHED] = "0";
+                                if(valeurs[INDEX_SWAP_BODY_TRUCK].equals("1"))
                                 {
-                                    SWAP_BODY_TRUCK = "2";
-                                    SWAP_BODY_SEMI_TRAILER= "1";
+                                    valeurs[INDEX_SWAP_BODY_TRUCK] = "2";
+                                    valeurs[INDEX_SWAP_BODY_SEMI_TRAILER]= "1";
                                 }
                                 else
                                 {
-                                    SWAP_BODY_TRUCK = "1";
-                                    SWAP_BODY_SEMI_TRAILER = "2";
+                                    valeurs[INDEX_SWAP_BODY_TRUCK] = "1";
+                                    valeurs[INDEX_SWAP_BODY_SEMI_TRAILER] = "2";
                                 }
                             }
                             else if (vehiculeAction.getEnumAction() == VehiculeAction.EnumAction.PARK)
                             {
                                 // On gare le deuxième swap_body au swap_location
-                                SEMI_TRAILER_ATTACHED = "0";
+                                valeurs[INDEX_SEMI_TRAILER_ATTACHED] = "0";
                             }
                             else if (vehiculeAction.getEnumAction() == VehiculeAction.EnumAction.PICKUP)
                             {
                                 // On récupère le deuxième swap_body
-                                SEMI_TRAILER_ATTACHED = "1";
+                                valeurs[INDEX_SEMI_TRAILER_ATTACHED] = "1";
                             }
                             else if (vehiculeAction.getEnumAction() == VehiculeAction.EnumAction.SWAP)
                             {
                                 // On échange les deux swap_body
-                                if(SWAP_BODY_SEMI_TRAILER == "1")
+                                if("1".equals(valeurs[INDEX_SWAP_BODY_SEMI_TRAILER]))
                                 {
-                                    SWAP_BODY_TRUCK = "1";
-                                    SWAP_BODY_SEMI_TRAILER = "2";
+                                    valeurs[INDEX_SWAP_BODY_TRUCK] = "1";
+                                    valeurs[INDEX_SWAP_BODY_SEMI_TRAILER] = "2";
                                 }
                                 else
                                 {
-                                    SWAP_BODY_SEMI_TRAILER = "1";
-                                    SWAP_BODY_TRUCK = "2";
+                                    valeurs[INDEX_SWAP_BODY_SEMI_TRAILER] = "1";
+                                    valeurs[INDEX_SWAP_BODY_TRUCK] = "2";
                                 }
                             }
                         }
                     }
                     
-                    // Ecriture de la ligne sur le CSV
-                    filewriter.append(TOUR_ID);                 filewriter.append(DELIMITEUR);
-                    filewriter.append(TOUR_POSITION);           filewriter.append(DELIMITEUR);
-                    filewriter.append(LOCATION_ID);             filewriter.append(DELIMITEUR);
-                    filewriter.append(LOCATION_TYPE);           filewriter.append(DELIMITEUR);
-                    filewriter.append(SEMI_TRAILER_ATTACHED);   filewriter.append(DELIMITEUR);
-                    filewriter.append(SWAP_BODY_TRUCK);         filewriter.append(DELIMITEUR);
-                    filewriter.append(SWAP_BODY_SEMI_TRAILER); filewriter.append(DELIMITEUR);
-                    filewriter.append(SWAP_ACTION);             filewriter.append(DELIMITEUR);
-                    filewriter.append(SWAP_BODY_1_QUANTITY);    filewriter.append(DELIMITEUR);
-                    filewriter.append(SWAP_BODY_2_QUANTITY);    
-                    
-                    filewriter.append(SEPARATEUR_LIGNE);
+                    ecrireLigne(valeurs, filewriter);
                     j++;
                 }
                 
                 // Dernière action réalisée, retour au dépot
-                TOUR_POSITION = Integer.toString(j-1);
-                LOCATION_ID = "D1";
-                LOCATION_TYPE = "DEPOT";
+                valeurs[INDEX_TOUR_POSITION] = Integer.toString(j-1);
+                valeurs[INDEX_LOCATION_ID] = "D1";
+                valeurs[INDEX_LOCATION_TYPE] = "DEPOT";
                 if(vehicule.isTrain())
                 {
-                    SEMI_TRAILER_ATTACHED = "1";
-                    SWAP_BODY_TRUCK = "1";
-                    SWAP_BODY_SEMI_TRAILER = "2";
+                    valeurs[INDEX_SEMI_TRAILER_ATTACHED] = "1";
+                    valeurs[INDEX_SWAP_BODY_TRUCK] = "1";
+                    valeurs[INDEX_SWAP_BODY_SEMI_TRAILER] = "2";
                 }
                 else
                 {
-                    SEMI_TRAILER_ATTACHED = "0";
-                    SWAP_BODY_TRUCK = "1";
-                    SWAP_BODY_SEMI_TRAILER = "0";
+                    valeurs[INDEX_SEMI_TRAILER_ATTACHED] = "0";
+                    valeurs[INDEX_SWAP_BODY_TRUCK] = "1";
+                    valeurs[INDEX_SWAP_BODY_SEMI_TRAILER] = "0";
                 }
-                SWAP_ACTION = "NONE";
-                SWAP_BODY_1_QUANTITY = "0";
-                SWAP_BODY_2_QUANTITY = "0";
+                valeurs[INDEX_SWAP_ACTION] = "NONE";
+                valeurs[INDEX_SWAP_BODY_1_QUANTITY] = "0";
+                valeurs[INDEX_SWAP_BODY_2_QUANTITY] = "0";
                 
-                // On écrit cette dernière ligne 
-                filewriter.append(TOUR_ID);                 filewriter.append(DELIMITEUR);
-                filewriter.append(TOUR_POSITION);           filewriter.append(DELIMITEUR);
-                filewriter.append(LOCATION_ID);             filewriter.append(DELIMITEUR);
-                filewriter.append(LOCATION_TYPE);           filewriter.append(DELIMITEUR);
-                filewriter.append(SEMI_TRAILER_ATTACHED);   filewriter.append(DELIMITEUR);
-                filewriter.append(SWAP_BODY_TRUCK);         filewriter.append(DELIMITEUR);
-                filewriter.append(SWAP_BODY_SEMI_TRAILER);  filewriter.append(DELIMITEUR);
-                filewriter.append(SWAP_ACTION);             filewriter.append(DELIMITEUR);
-                filewriter.append(SWAP_BODY_1_QUANTITY);    filewriter.append(DELIMITEUR);
-                filewriter.append(SWAP_BODY_2_QUANTITY);
-
-                filewriter.append(SEPARATEUR_LIGNE);
+                ecrireLigne(valeurs, filewriter);
                 
                 i++;
             }
-            
             
             //On flush puis on ferme le fichier
             filewriter.flush();
