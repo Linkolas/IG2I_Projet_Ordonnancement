@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
+import ordo.data.dao.jpa.JpaTrajetDao;
 
 /**
  *
@@ -87,6 +88,12 @@ public class Lieu implements Serializable {
         this.coordY = coordY;
     }
     
+    public float distanceToGoTo(Lieu o1){
+        JpaTrajetDao    daoTrajet   = JpaTrajetDao.getInstance();
+        Trajet t = daoTrajet.find(this, o1);
+        return t.getDistance();
+    }
+    
     // <editor-fold defaultstate="collapsed" desc=".equals, .toString, ...">
     private static final long serialVersionUID = 1L;
 
@@ -115,9 +122,11 @@ public class Lieu implements Serializable {
         return true;
     }
 
+    
+    // </editor-fold>
+
     @Override
     public String toString() {
-        return "ordo.data.entities.Lieu[ id=" + id + " ]";
+        return "Lieu{" + "id=" + id + ", codePostal=" + codePostal + ", ville=" + ville + ", coordX=" + coordX + ", coordY=" + coordY + ", numeroLieu=" + numeroLieu + "}\n";
     }
-    // </editor-fold>
 }

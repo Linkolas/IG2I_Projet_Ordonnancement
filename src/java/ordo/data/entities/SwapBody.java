@@ -50,7 +50,12 @@ public class SwapBody implements Serializable {
     }
     
     public float getQuantite() {
-        return quantite;
+        //return quantite;
+        float rtn = 0;
+        for(Colis c : this.colis){
+            rtn += c.getQuantite();
+        }
+        return rtn;
     }
 
     public void setQuantite(float quantite) {

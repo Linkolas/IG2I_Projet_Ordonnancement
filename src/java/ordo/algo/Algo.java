@@ -201,7 +201,6 @@ public class Algo {
                 daoCommandeClient.update(cc);
             }
         }
-        System.out.println(daoDepot.findAll());
     }
     
     public static void makeSolutionV2(){
@@ -236,22 +235,7 @@ public class Algo {
         }
             
         // On get le depot
-        Depot dp;
-        
-        try{
-            dp = daoDepot.findAll().iterator().next();
-        }
-        catch(Exception e){
-            System.out.println("Il n'y a encore aucun depot nous créeons donc un dépot avec des coordonnées aléatoires");
-            //Qui en fait ne sont pas si aléatoire
-            dp = new Depot();
-            dp.setCoordX((float)8.42227);
-            dp.setCoordY((float)49.45044);
-            dp.setCodePostal("67069");
-            dp.setNumeroLieu("D1");
-            dp.setVille("Lens");
-            daoDepot.create(dp);
-        }
+        final Depot dp = getDepot();
         
         Collection<CommandeClient> ccc = daoCommandeClient.findAll();
         
@@ -265,20 +249,159 @@ public class Algo {
         Collections.sort(lcc, new Comparator<CommandeClient>(){
             @Override
             public int compare(CommandeClient o1, CommandeClient o2) {
-                return o1.isFutherThan(o2);
+                return (int) (dp.distanceToGoTo(o2) - dp.distanceToGoTo(o1));
             }
         });
         
-        Vehicule tmp_v;
-        
-        for (CommandeClient cc : lcc){
-            tmp_v = new Vehicule();
-            tmp_v.add(cc);
+        for(CommandeClient cc: lcc){
+            //On prend le client le plus éloigné.
+            //On fait ensuite la liste des clients les plus proches de ce dernier
+            List<CommandeClient> liste_client_proche = new ArrayList();
+            Collections.sort(liste_client_proche, new Comparator<CommandeClient>(){
+                @Override
+                public int compare(CommandeClient o1, CommandeClient o2) {
+                    return (int) (cc.distanceToGoTo(o1) - dp.distanceToGoTo(o2));
+                }
+            });
+            
+            
+            Vehicule v = new Vehicule(); // On créer un véhicule
+            v.add(cc); // On y met la commande cliente
+            
+            //Pour chaque autre client proche de se dernier on test si leurs commandes peuvent être mises dans le véhicule
+            for(CommandeClient ccp : liste_client_proche){
+                // Si la commande dépasse ce que peut supporter le véhicule on passe à la commande suivante
+                if(v.getQuantity() + ccp.getQuantiteVoulue() > Constantes.capaciteMax *2)continue;
+                // Si 
+            }
         }
         
     }
     
+    private static void generateVéhiculeAction(Vehicule v){
+        JpaTrajetDao    daoTrajet   = JpaTrajetDao.getInstance();
+        Depot dp = getDepot();
+        // Si on a aucune commandes dans le Véhicule
+        if(v.getCommandes().size() == 0) return;
+        
+        //On vide les anciens VehiculeAction
+        v.getActions().clear();
+        
+        VehiculeAction va1;
+        VehiculeAction vt;
+        for(CommandeClient cc : v.getCommandes()){
+            // si c'est la première commande de la liste on précise que l'on démarre du dépot
+            if(v.getCommandes().indexOf(cc) == 0){
+
+                // On démarre du dépot
+                // On regarde si le premier client que l'on doit visiter est un client camion
+                // Sauf que le véhicule est en mode Train
+                if(cc.getNombreRemorquesMax() == 1 && v.getSwapBodies().size() == 2){
+                    // On doit forcément aller à un swapBody pour déposer la commande
+                    //park(v, cc);
+                }
+                va1 = new VehiculeAction();
+                va1.setDepart(dp);
+                va1.setArrivee(cc);
+                va1.setEnumAction(VehiculeAction.EnumAction.DEPLACEMENT);
+                Trajet t1 = daoTrajet.find(dp, cc);
+                // On get le trajet qui est dans la bdd
+                if(t1 != null) {
+                    va1.setDistance(t1.getDistance());
+                    va1.setDuree(t1.getDuree());
+                }
+//                if(v.isTrain()) {
+//                    va1.setIsTrain(true);
+//                }
+                
+                v.addAction(va1);
+
+
+                // On dépose la commande chez le client
+                vt = new VehiculeAction();
+                vt.setDepart(cc);
+                vt.setArrivee(cc);
+                vt.setEnumAction(VehiculeAction.EnumAction.TRAITEMENT);
+                vt.setDistance(0);
+                vt.setDuree(cc.getDureeService());
+                v.addAction(vt);
+            }
+            else{
+                // On démarre de chez la position suivante
+                va1 = new VehiculeAction();
+                va1.setDepart(dp);
+                va1.setArrivee(cc);
+                va1.setEnumAction(VehiculeAction.EnumAction.DEPLACEMENT);
+                Trajet t1 = daoTrajet.find(dp, cc);
+                // On get le trajet qui est dans la bdd
+                if(t1 != null) {
+                    va1.setDistance(t1.getDistance());
+                    va1.setDuree(t1.getDuree());
+                }
+                if(v.isTrain()) {
+                    va1.setIsTrain(true);
+                }
+                v.addAction(va1);
+
+
+                // On dépose la commande chez le client
+                vt = new VehiculeAction();
+                vt.setDepart(cc);
+                vt.setArrivee(cc);
+                vt.setEnumAction(VehiculeAction.EnumAction.TRAITEMENT);
+                vt.setDistance(0);
+                vt.setDuree(cc.getDureeService());
+                v.addAction(vt);
+            }
+        }
+    }
     
+    private static void generateColis(Vehicule v, CommandeClient cc){
+        Colis c; // On creer un objet Colis
+        //On test si on peut mettre la commande dans le premier swap body
+        if(cc.getQuantiteVoulue() > Constantes.capaciteMax){
+            c = new Colis();
+            c.setCommande(cc);
+            c.setQuantite(Constantes.capaciteMax);
+            v.getSwapBodies().get(0).addColis(c); // On remplis le premier camion à bloc
+
+
+            // On fait un nouveau colis avec le restant de la commande
+            c = new Colis();
+            c.setCommande(cc);
+            c.setQuantite(cc.getQuantiteVoulue() - Constantes.capaciteMax);
+            v.addSwapBody(new SwapBody());
+            v.getSwapBodies().get(1).addColis(c);
+        }
+        else{
+            c = new Colis();
+            c.setCommande(cc);
+            c.setQuantite(cc.getQuantiteVoulue());
+            v.add(cc);
+            v.getSwapBodies().get(0).addColis(c);
+        }
+    }
+    
+    private static Depot getDepot(){
+        JpaDepotDao daoDepot    = JpaDepotDao.getInstance();
+        
+        try{
+            return daoDepot.findAll().iterator().next();
+        }
+        catch(Exception e){
+            Depot dp;
+            System.out.println("Il n'y a encore aucun depot nous créeons donc un dépot avec des coordonnées aléatoires");
+            //Qui en fait ne sont pas si aléatoire
+            dp = new Depot();
+            dp.setCoordX((float)8.42227);
+            dp.setCoordY((float)49.45044);
+            dp.setCodePostal("67069");
+            dp.setNumeroLieu("D1");
+            dp.setVille("Lens");
+            daoDepot.create(dp);
+            return dp;
+        }
+    }
     
     private static boolean isInitialized(){
         boolean rtn = true;
@@ -403,8 +526,13 @@ public class Algo {
         daoCommandeClient.create(cc);
     }
     
+    private void park(Vehicule v, CommandeClient cc) {
+        //for(CommandeClient cc, v.ge)
+    }
+    
     public static void main(String[] args) {        
-        makeSolutionV1();
+        //makeSolutionV1();
+        makeSolutionV2();
         //testCascade();
     }
 }

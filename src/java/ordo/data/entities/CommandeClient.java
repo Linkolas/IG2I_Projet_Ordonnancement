@@ -118,9 +118,11 @@ public class CommandeClient extends Lieu implements Serializable {
     }
     
     // <editor-fold defaultstate="collapsed" desc=".equals, .toString, ...">
+    
+    // </editor-fold>
+
     @Override
     public String toString() {
-        return "ordo.data.entities.Lieu[ id=" + getId() + " ]";
+        return "CommandeClient{" + "NUMERO LIEU" + this.getNumeroLieu() + ", libelle=" + libelle + ", nombreRemorquesMax=" + nombreRemorquesMax + ", quantiteVoulue=" + quantiteVoulue + ", dureeService=" + dureeService + ", vehicule=" + vehicule.getId() + ", colis=" + colis + ", isLivree=" + isLivree + "}\n";
     }
-    // </editor-fold>
 }
