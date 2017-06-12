@@ -89,7 +89,7 @@ public class CSVReader
     public void readFleet(String filePath)
     {
         BufferedReader fileReader = null;
-        String currentLine = "";
+        String currentLine;
         try
         {
             //String fileName = System.getProperty("user.home")+"/Desktop/projet2017/large_normal/Fleet.csv";
@@ -103,22 +103,21 @@ public class CSVReader
             {
                 String[] splitedLine = currentLine.split(";");
                 
-                if(splitedLine[fleet_index_type].equals("TRUCK"))
+                switch (splitedLine[fleet_index_type])
                 {
-                    Constantes.coutCamion = Float.parseFloat(splitedLine[fleet_index_costsUsage]);
-                    Constantes.coutDureeCamion = Float.parseFloat(splitedLine[fleet_index_costsHour]);
-                    Constantes.coutTrajetCamion = Float.parseFloat(splitedLine[fleet_index_costsKm]);
-                    
-                }
-                else if(splitedLine[fleet_index_type].equals("SEMI_TRAILER"))
-                {
-                    Constantes.coutSecondeRemorque = Float.parseFloat(splitedLine[fleet_index_costsUsage]);
-                    Constantes.coutTrajetSecondeRemorque = Float.parseFloat(splitedLine[fleet_index_costsKm]);
-                }
-                else
-                {
-                    Constantes.capaciteMax = Float.parseFloat(splitedLine[fleet_index_capacity]);
-                    Constantes.dureeMaxTournee = Float.parseFloat(splitedLine[fleet_index_operatingTime]);
+                    case "TRUCK":
+                        Constantes.coutCamion = Float.parseFloat(splitedLine[fleet_index_costsUsage]);
+                        Constantes.coutDureeCamion = Float.parseFloat(splitedLine[fleet_index_costsHour]);
+                        Constantes.coutTrajetCamion = Float.parseFloat(splitedLine[fleet_index_costsKm]);
+                        break;
+                    case "SEMI_TRAILER":
+                        Constantes.coutSecondeRemorque = Float.parseFloat(splitedLine[fleet_index_costsUsage]);
+                        Constantes.coutTrajetSecondeRemorque = Float.parseFloat(splitedLine[fleet_index_costsKm]);
+                        break;
+                    default:
+                        Constantes.capaciteMax = Float.parseFloat(splitedLine[fleet_index_capacity]);
+                        Constantes.dureeMaxTournee = Float.parseFloat(splitedLine[fleet_index_operatingTime]);
+                        break;
                 }
             }
         } 
@@ -151,7 +150,7 @@ public class CSVReader
     public void readLocations(String filePath)
     {
         BufferedReader fileReader = null;
-        String currentLine = "";
+        String currentLine;
         String fileName = filePath;
         
         JpaDepotDao daoDepot = JpaDepotDao.getInstance();
@@ -177,50 +176,49 @@ public class CSVReader
                 
                 coordX = Float.parseFloat(splitedLine[locations_index_Xcoord]);
                 coordY = Float.parseFloat(splitedLine[locations_index_Ycoord]);
-                if(splitedLine[0].equals("DEPOT"))
+                switch (splitedLine[0])
                 {
-                    Lieu lieu = daoLieu.findLieuByCoordonnees(coordX, coordY);
-                    
-                    Depot depot = new Depot();
-                    depot.setNumeroLieu(splitedLine[locations_index_id]);
-                    depot.setCodePostal(splitedLine[locations_index_postCode]);
-                    depot.setVille(splitedLine[locations_index_city]);
-                    depot.setCoordX(coordX);
-                    depot.setCoordY(coordY);
-                    
-                    daoDepot.update(depot);
-                }
-                else if(splitedLine[0].equals("SWAP_LOCATION"))
-                {
-                    Lieu lieu = daoLieu.findLieuByCoordonnees(coordX, coordY);
-                    
-                    SwapLocation swapLocation = new SwapLocation();
-                    swapLocation.setNumeroLieu(splitedLine[locations_index_id]);
-                    swapLocation.setCodePostal(splitedLine[locations_index_postCode]);
-                    swapLocation.setVille(splitedLine[locations_index_city]);
-                    swapLocation.setCoordX(coordX);
-                    swapLocation.setCoordY(coordY);
-                    
-                    daoSwapLocation.update(swapLocation);
-                }
-                else
-                {
-                    Lieu lieu = daoLieu.findLieuByCoordonnees(coordX, coordY);
-                    
-                    CommandeClient commande = new CommandeClient();
-                    commande.setNumeroLieu(splitedLine[locations_index_id]);
-                    commande.setCodePostal(splitedLine[locations_index_postCode]);
-                    commande.setVille(splitedLine[locations_index_city]);
-                    commande.setCoordX(coordX);
-                    commande.setCoordY(coordY);
-                    commande.setQuantiteVoulue(Float.parseFloat(splitedLine[locations_index_quantity]));
-                    if(splitedLine[locations_index_trainPossible].equals("1"))
-                    {
-                        commande.setNombreRemorquesMax(2);
-                    }
-                    commande.setDureeService(Float.parseFloat(splitedLine[locations_index_serviceTime]));
-                    
-                    daoClient.update(commande);
+                    case "DEPOT":
+                        {
+                            Lieu lieu = daoLieu.findLieuByCoordonnees(coordX, coordY);
+                            Depot depot = new Depot();
+                            depot.setNumeroLieu(splitedLine[locations_index_id]);
+                            depot.setCodePostal(splitedLine[locations_index_postCode]);
+                            depot.setVille(splitedLine[locations_index_city]);
+                            depot.setCoordX(coordX);
+                            depot.setCoordY(coordY);
+                            daoDepot.update(depot);
+                            break;
+                        }
+                    case "SWAP_LOCATION":
+                        {
+                            Lieu lieu = daoLieu.findLieuByCoordonnees(coordX, coordY);
+                            SwapLocation swapLocation = new SwapLocation();
+                            swapLocation.setNumeroLieu(splitedLine[locations_index_id]);
+                            swapLocation.setCodePostal(splitedLine[locations_index_postCode]);
+                            swapLocation.setVille(splitedLine[locations_index_city]);
+                            swapLocation.setCoordX(coordX);
+                            swapLocation.setCoordY(coordY);
+                            daoSwapLocation.update(swapLocation);
+                            break;
+                        }
+                    default:
+                        {
+                            Lieu lieu = daoLieu.findLieuByCoordonnees(coordX, coordY);
+                            CommandeClient commande = new CommandeClient();
+                            commande.setNumeroLieu(splitedLine[locations_index_id]);
+                            commande.setCodePostal(splitedLine[locations_index_postCode]);
+                            commande.setVille(splitedLine[locations_index_city]);
+                            commande.setCoordX(coordX);
+                            commande.setCoordY(coordY);
+                            commande.setQuantiteVoulue(Float.parseFloat(splitedLine[locations_index_quantity]));
+                            if(splitedLine[locations_index_trainPossible].equals("1"))
+                            {
+                                commande.setNombreRemorquesMax(2);
+                            }       commande.setDureeService(Float.parseFloat(splitedLine[locations_index_serviceTime]));
+                            daoClient.update(commande);
+                            break;
+                        }
                 }
             }
         } 
@@ -253,7 +251,7 @@ public class CSVReader
     public void readSwapActions(String filePath)
     {
         BufferedReader fileReader = null;
-        String currentLine = "";
+        String currentLine;
         String fileName = filePath;
         try
         {
@@ -266,21 +264,20 @@ public class CSVReader
             {
                 String[] splitedLine = currentLine.split(";");
                 System.out.println(splitedLine[0] + " " + splitedLine[1]);
-                if(splitedLine[swapActions_index_action].equals("PARK"))
+                switch (splitedLine[swapActions_index_action])
                 {
-                    Constantes.dureePark = Float.parseFloat(splitedLine[swapActions_index_duration]);
-                }
-                else if(splitedLine[swapActions_index_action].equals("SWAP"))
-                {
-                    Constantes.dureeSwap = Float.parseFloat(splitedLine[swapActions_index_duration]);
-                }
-                else if(splitedLine[swapActions_index_action].equals("EXCHANGE"))
-                {
-                    Constantes.dureeExchange = Float.parseFloat(splitedLine[swapActions_index_duration]);
-                }
-                else
-                {
-                    Constantes.dureePickup = Float.parseFloat(splitedLine[swapActions_index_duration]);
+                    case "PARK":
+                        Constantes.dureePark = Float.parseFloat(splitedLine[swapActions_index_duration]);
+                        break;
+                    case "SWAP":
+                        Constantes.dureeSwap = Float.parseFloat(splitedLine[swapActions_index_duration]);
+                        break;
+                    case "EXCHANGE":
+                        Constantes.dureeExchange = Float.parseFloat(splitedLine[swapActions_index_duration]);
+                        break;
+                    default:
+                        Constantes.dureePickup = Float.parseFloat(splitedLine[swapActions_index_duration]);
+                        break;
                 }
                 
                 System.out.println(Constantes.dureePark);
@@ -318,6 +315,8 @@ public class CSVReader
     /**
      * Cette fonction permet de lire les fichiers DistanceTimesData 
      * et d'ajouter les trajets en base
+     * @param dtdPath Chemin qui permet d'accéder au fichier de DistanceTimesData
+     * @param dtcPath Chemin qui permet d'accéder au fichier de DistanceTimesCoordinates
      */
     public void readTrajets(String dtdPath, String dtcPath)
     {
