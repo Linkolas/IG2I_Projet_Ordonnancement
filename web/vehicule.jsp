@@ -2,6 +2,7 @@
 <%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="ordo.data.entities.Vehicule"%>
+<%@page import="ordo.data.entities.Colis"%>
 <%@page import="java.util.Collection"%>
 ﻿<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
@@ -121,6 +122,79 @@
                 </tbody>
             </table>
         </div>
+        <!-- TABLE DU SWAPBODY1 -->
+        <c:choose>
+            <c:when test="${colis2 == null}">
+                <div class="col-lg-4">
+            </c:when>    
+            <c:otherwise>
+                <div class="col-lg-2">
+            </c:otherwise>
+        </c:choose>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th colspan="3" style="text-align: center;">SwapBody 1</th>
+                    </tr>
+                </thead>
+                <thead>
+                    <tr>
+                        <th>Colis</th>
+                        <th>Client</th>
+                        <th>Quantité</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <c:forEach items="${colis}" var="c">
+                        <tr>
+                            <td>
+                                <c:out value="${c.id}" />
+                            </td>
+                            <td>
+                                <c:out value="${c.commande.numeroLieu}" />
+                            </td>
+                            <td>
+                                <c:out value="${c.quantite}" />
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </tbody>
+            </table>
+        </div>
+        <c:if test="${colis2 != null}">
+            <!-- TABLE DU SWAPBODY2 -->
+            <div class="col-lg-2">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th colspan="3" style="text-align: center;">SwapBody 2</th>
+                        </tr>
+                    </thead>
+                    <thead>
+                        <tr>
+                            <th>Colis</th>
+                            <th>Client</th>
+                            <th>Quantité</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach items="${colis2}" var="c">
+                            <tr>
+                                <td>
+                                    <c:out value="${c.id}" />
+                                </td>
+                                <td>
+                                    <c:out value="${c.commande.numeroLieu}" />
+                                </td>
+                                <td>
+                                    <c:out value="${c.quantite}" />
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+        </c:if> 
     </div>
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>

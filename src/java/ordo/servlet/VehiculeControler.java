@@ -52,6 +52,14 @@ public class VehiculeControler extends HttpServlet {
             }
         });
         request.setAttribute("vas", v.getActions());
+        
+        // On récupère les Colis du swapBody 1 
+        request.setAttribute("colis", v.getSwapBodies().get(0).getColis());
+        if(v.getSwapBodies().size() > 1)
+            request.setAttribute("colis2", v.getSwapBodies().get(1).getColis());
+        else
+            request.setAttribute("colis2", null);
+        
         //On forward
         getServletContext().getRequestDispatcher("/vehicule.jsp").forward(request, response);
     }
