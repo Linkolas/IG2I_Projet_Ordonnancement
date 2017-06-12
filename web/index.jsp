@@ -28,21 +28,13 @@
     <nav class="navbar navbar-default custom-header">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand navbar-link" href="#"><img class="img-responsive" src="assets/img/ecllogob.png"> </a>
+                <a class="navbar-brand navbar-link" href="index "><img class="img-responsive" src="assets/img/ecllogob.png"> </a>
                 <button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <ul class="nav navbar-nav links">
-                    <li role="presentation"><a href="#">Overview</a></li>
-                    <li role="presentation"><a href="#">Surveys</a></li>
-                    <li role="presentation"><a href="#">Reports</a></li>
-                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">Dropdown<span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li role="presentation"><a href="#">First Item</a></li>
-                            <li role="presentation"><a href="#">Second Item</a></li>
-                            <li role="presentation"><a href="#">Third Item</a></li>
-                        </ul>
-                    </li>
+                    <li role="presentation"><a href="index">Véhicules</a></li>
+                    <li role="presentation"><a href="index">Clients</a></li>
                 </ul>
                 
                 <ul class="nav navbar-nav links" style="float: right;">
@@ -65,7 +57,7 @@
                 <c:forEach items="${vehicules}" var="vehicule">
                 <% Vehicule vehicule = (Vehicule) pageContext.getAttribute("vehicule"); %>
                 <tr>
-                    <td>Camion<c:if test="${vehicule.isTrain()}">-train</c:if> ${vehicule.id}</td>
+                    <td><a href="vehiculeControler?id=${vehicule.id}">Camion<c:if test="${vehicule.isTrain()}">-train</c:if> ${vehicule.id}</a></td>
                     <td>
                         <% 
                         List<String> libellesCommandes = new ArrayList<String>();

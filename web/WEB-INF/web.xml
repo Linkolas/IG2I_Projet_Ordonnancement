@@ -5,6 +5,10 @@
         <servlet-class>ordo.servlet.Index</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>VehiculeControler</servlet-name>
+        <servlet-class>ordo.servlet.VehiculeControler</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>APILieuxController</servlet-name>
         <servlet-class>ordo.servlet.api.APILieuxController</servlet-class>
     </servlet>
@@ -23,6 +27,10 @@
     <servlet-mapping>
         <servlet-name>Index</servlet-name>
         <url-pattern>/index</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VehiculeControler</servlet-name>
+        <url-pattern>/vehiculeControler</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>APILieuxController</servlet-name>
