@@ -175,12 +175,16 @@ public class Tomate {
         return lc;
     }
     
+    /**
+     * Est-ce qu'il y a des liasons Cx -> Cy
+     * @return 
+     */
     private List<Chemin> containsTwins(){
         List<Chemin> lc = new ArrayList(); 
         for(Chemin c : this.chemins){
             for(Chemin c2 : this.chemins){
                 if( c == c2) continue;
-                if(c.isOpositeOf(c2))
+                if(c.getArrivee() == c2.getArrivee())
                    lc.add(c);
             }
         }
