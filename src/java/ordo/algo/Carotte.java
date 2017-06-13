@@ -98,6 +98,12 @@ public class Carotte {
         }
     }
     
+    public boolean needSwapLocation(Lieu l1, Lieu l2){
+        if(this.matrice.get(l1.getNumeroLieu()).get(l2.getNumeroLieu()) == 0)
+            return false;
+        return true;
+    }
+    
     private void none(Lieu start, Lieu end){
         this.matrice.get(start.getNumeroLieu()).put(end.getNumeroLieu(), (float)0);
     }
