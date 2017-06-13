@@ -11,8 +11,13 @@ import ilog.concert.IloNumVar;
 import ilog.concert.IloObjective;
 import ilog.concert.IloRange;
 import ilog.cplex.IloCplex;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import ordo.data.entities.CommandeClient;
+import ordo.data.entities.Depot;
+import ordo.data.entities.SwapLocation;
 
 /**
  *
@@ -21,13 +26,64 @@ import java.util.logging.Logger;
 public class CplexSolve {
     
     public static void main(String[] args) {
+        List<CplexTournee> tournees = generateTournees();
+        
         try {
             IloCplex cplex = new IloCplex();
+            
+            
             
             
         } catch (Exception ex) {
             Logger.getLogger(CplexSolve.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public static List<CplexTournee> generateTournees() {
+        List<CplexTournee> tournees = new ArrayList<>();
+        
+        Depot d = new Depot();
+        SwapLocation sl = new SwapLocation();
+        CommandeClient c1 = new CommandeClient();
+        CommandeClient c2 = new CommandeClient();
+        
+        CplexTournee t1 = new CplexTournee();
+        CplexTournee t2 = new CplexTournee();
+        CplexTournee t3 = new CplexTournee();
+        CplexTournee t4 = new CplexTournee();
+        
+        t1.addLieu(d);
+        t2.addLieu(d);
+        t3.addLieu(d);
+        t4.addLieu(d);
+        
+        t1.addLieu(c1);
+        t2.addLieu(c2);
+        
+        t3.addLieu(c1);
+        t3.addLieu(sl);
+        t3.addLieu(c2);
+        
+        t4.addLieu(c2);
+        t4.addLieu(sl);
+        t4.addLieu(c1);
+        
+        t1.addLieu(d);
+        t2.addLieu(d);
+        t3.addLieu(d);
+        t4.addLieu(d);
+        
+        t1.setCost(10);
+        t2.setCost(15);
+        t3.setCost(16);
+        t4.setCost(19);
+        
+        tournees.add(t1);
+        tournees.add(t2);
+        tournees.add(t3);
+        tournees.add(t4);
+        
+        return tournees;
     }
     
     /**
