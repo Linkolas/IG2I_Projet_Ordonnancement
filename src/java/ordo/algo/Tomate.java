@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import ordo.data.Constantes;
+import ordo.data.dao.jpa.JpaCommandeClientDao;
 import ordo.data.dao.jpa.JpaLieuDao;
 import ordo.data.dao.jpa.JpaSwapLocationDao;
 import ordo.data.dao.jpa.JpaTrajetDao;
@@ -20,6 +21,7 @@ import ordo.data.entities.SwapBody;
 import ordo.data.entities.SwapLocation;
 import ordo.data.entities.Trajet;
 import ordo.data.entities.Vehicule;
+import ordo.data.entities.VehiculeAction;
 
 /**
  *
@@ -47,9 +49,10 @@ public class Tomate {
 
         @Override
         public int hashCode() {
-            int hash = 5;
-            hash = 43 * hash + Objects.hashCode(this.depart);
-            hash = 43 * hash + Objects.hashCode(this.arrivee);
+            int hash = 7;
+            hash = 71 * hash + Objects.hashCode(this.depart);
+            hash = 71 * hash + Objects.hashCode(this.arrivee);
+            hash = 71 * hash + Float.floatToIntBits(this.cost);
             return hash;
         }
 
@@ -65,6 +68,9 @@ public class Tomate {
                 return false;
             }
             final Chemin other = (Chemin) obj;
+            if (Float.floatToIntBits(this.cost) != Float.floatToIntBits(other.cost)) {
+                return false;
+            }
             if (!Objects.equals(this.depart, other.depart)) {
                 return false;
             }
@@ -73,7 +79,12 @@ public class Tomate {
             }
             return true;
         }
+
         
+
+        public float getCost() {
+            return cost;
+        }
         
         
         private float calcCost(){
@@ -166,7 +177,7 @@ public class Tomate {
      * est-ce qu'il y a des liaisons Cx -> Cy | Cy -> Cx ?
      * @return La liste des chemins ayant des snakes
      */
-    private List<Chemin> containsSnakes(){
+    public List<Chemin> containsSnakes(){
         List<Chemin> lc = new ArrayList(); 
         for(Chemin c : this.chemins){
             for(Chemin c2 : this.chemins){
@@ -182,7 +193,7 @@ public class Tomate {
      * Est-ce qu'il y a des liasons Cx -> Cy
      * @return 
      */
-    private List<Chemin> containsTwins(){
+    public List<Chemin> containsTwins(){
         List<Chemin> lc = new ArrayList(); 
         for(Chemin c : this.chemins){
             for(Chemin c2 : this.chemins){
@@ -200,6 +211,43 @@ public class Tomate {
         }
         else
             System.out.println("ERROR CHEMIN NULL");
+    }
+    
+    public List<VehiculeAction> generateVehiculeAction(){
+        List<VehiculeAction> va = new ArrayList();
+        VehiculeAction va_temp;
+        for(Chemin c : this.chemins){
+            va_temp = new VehiculeAction();
+            va_temp.setDepart(c.depart);
+            va_temp.setArrivee(c.arrivee);
+            Trajet t = JpaTrajetDao.getInstance().find(c.depart, c.arrivee);
+            va_temp.setDuree(t.getDuree());
+            va_temp.setDistance(t.getDistance());
+            va_temp.setEnumAction(VehiculeAction.EnumAction.DEPLACEMENT);
+            va_temp.setIsTrain(c.isNeedSwap());
+            va.add(va_temp);
+            
+            if(c.arrivee instanceof CommandeClient){
+                va_temp = new VehiculeAction();
+                va_temp.setDepart(c.arrivee);
+                va_temp.setArrivee(c.arrivee);
+                va_temp.setDuree(((CommandeClient)c.arrivee).getDureeService() );
+                va_temp.setDistance(0);
+                va_temp.setEnumAction(VehiculeAction.EnumAction.TRAITEMENT);
+                va_temp.setIsTrain(c.isNeedSwap());
+                va.add(va_temp);
+            }
+        }
+        return va;
+    } 
+    
+    public void replace(Chemin c1, Chemin c2){
+        int index = this.getChemins().indexOf(c1);
+        int index2 = chemins.indexOf(chemins.get(0));
+        int index3 = chemins.indexOf(chemins.get(1));
+        int index4 = chemins.indexOf(chemins.get(2));
+        this.getChemins().remove(c1);
+        this.getChemins().add(index, c2);
     }
     
     public static void main(String[] args) {
