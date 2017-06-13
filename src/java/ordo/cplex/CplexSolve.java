@@ -31,8 +31,136 @@ public class CplexSolve {
         try {
             IloCplex cplex = new IloCplex();
             
+            generateEquationsV2(cplex);
+            
+            cplex.exportModel("file_name.lp");
+            
+            if(cplex.solve()) {
+                System.out.println("");
+                System.out.println("Solution status: " + cplex.getStatus());
+                System.out.println("\tCost = " + cplex.getObjValue()); 
+            }
+            
+        } catch (Exception ex) {
+            Logger.getLogger(CplexSolve.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    
+    
+    public static void generateEquationsV1(IloCplex cplex) {
+/*
+  x1 * (c1 * a + 10 * COST)
++ x2 * (c2 * b + 12 * COST)
++ x3 * (c1 * c + c2 * d + 18 * COST)
++ x4 * (c2 * e + c1 * f + 16 * COST)
+
+a + c + f = 1
+b + d + e = 1
+
+min(COST)
+*/
+        try {
+            IloNumVar cost = cplex.numVar(0, Double.MAX_VALUE, "cost");
+            IloNumVar a = cplex.boolVar();
+            IloNumVar b = cplex.boolVar();
+            IloNumVar c = cplex.boolVar();
+            IloNumVar d = cplex.boolVar();
+            IloNumVar e = cplex.boolVar();
+            IloNumVar f = cplex.boolVar();
             
             
+            IloLinearNumExpr objExpr = cplex.linearNumExpr();
+            
+            // Cas de test
+            IloLinearNumExpr expr1 = cplex.linearNumExpr();
+            expr1.addTerm(a, 1);
+            expr1.addTerm(cost, 10);
+            
+            IloLinearNumExpr expr2 = cplex.linearNumExpr();
+            expr2.addTerm(b, 1);
+            expr2.addTerm(cost, 12);
+            
+            IloLinearNumExpr expr3 = cplex.linearNumExpr();
+            expr3.addTerm(c, 1);
+            expr3.addTerm(d, 1);
+            expr3.addTerm(cost, 18);
+            
+            IloLinearNumExpr expr4 = cplex.linearNumExpr();
+            expr4.addTerm(e, 1);
+            expr4.addTerm(f, 1);
+            expr4.addTerm(cost, 16);
+            
+            objExpr.add(expr1);
+            objExpr.add(expr2);
+            objExpr.add(expr3);
+            objExpr.add(expr4);
+            
+            
+            // CONTRAINTES
+            IloLinearNumExpr contr1 = cplex.linearNumExpr();
+            contr1.addTerm(a, 1);
+            contr1.addTerm(c, 1);
+            contr1.addTerm(f, 1);
+            
+            IloLinearNumExpr contr2 = cplex.linearNumExpr();
+            contr2.addTerm(b, 1);
+            contr2.addTerm(d, 1);
+            contr2.addTerm(e, 1);
+            
+            cplex.addEq(contr1, 1);
+            cplex.addEq(contr2, 1);
+            
+            
+            // OBJECTIF
+            IloObjective objective = cplex.addMinimize(objExpr);
+        } catch (Exception ex) {
+            Logger.getLogger(CplexSolve.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private static void generateEquationsV2(IloCplex cplex) {
+/*
+    10 * a
++   12 * b
++   18 * c
++   16 * d
+
+a + c + d = 1
+b + c + d = 1
+
+min ()
+*/
+        try {
+            // Cas de test
+            IloNumVar a = cplex.boolVar();
+            IloNumVar b = cplex.boolVar();
+            IloNumVar c = cplex.boolVar();
+            IloNumVar d = cplex.boolVar();
+            
+            IloLinearNumExpr expr = cplex.linearNumExpr();
+            expr.addTerm(a, 10);
+            expr.addTerm(b, 12);
+            expr.addTerm(c, 18);
+            expr.addTerm(d, 16);
+            
+            // OBJECTIF
+            cplex.addMinimize(expr);
+            
+            // CONTRAINTES
+            IloLinearNumExpr contr1 = cplex.linearNumExpr();
+            IloLinearNumExpr contr2 = cplex.linearNumExpr();
+            
+            contr1.addTerm(a, 1);
+            contr1.addTerm(c, 1);
+            contr1.addTerm(d, 1);
+            
+            contr2.addTerm(b, 1);
+            contr2.addTerm(c, 1);
+            contr2.addTerm(d, 1);
+            
+            cplex.addEq(contr1, 1);
+            cplex.addEq(contr2, 1);
             
         } catch (Exception ex) {
             Logger.getLogger(CplexSolve.class.getName()).log(Level.SEVERE, null, ex);
@@ -132,5 +260,5 @@ public class CplexSolve {
             Logger.getLogger(CplexSolve.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
 }
