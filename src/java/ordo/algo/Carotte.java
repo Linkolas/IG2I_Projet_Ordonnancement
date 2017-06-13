@@ -137,6 +137,7 @@ public class Carotte {
             for(CommandeClient cc_col : lcc){
                none(cc_row, cc_col);
             }
+            this.matrice.get(cc_row.getNumeroLieu()).put("D1", (float)0);
         }
     }
 
@@ -186,7 +187,7 @@ public class Carotte {
         List<CommandeClient> lcc = new ArrayList();
         
         Vehicule v = new Vehicule();
-        v.addSwapBody(new SwapBody());
+        //v.addSwapBody(new SwapBody());
         
         CommandeClient cc = new CommandeClient();
         cc.setCodePostal("75015");
@@ -210,8 +211,8 @@ public class Carotte {
         cc.setDureeService(2640);
         cc.setLibelle("C2");
         cc.setNumeroLieu("C2");
-        cc.setNombreRemorquesMax(2);
-        cc.setQuantiteVoulue(600);
+        cc.setNombreRemorquesMax(1);
+        cc.setQuantiteVoulue(100);
         cc.setVille("Mannheim");
         lcc.add(cc);
         v.add(cc);
