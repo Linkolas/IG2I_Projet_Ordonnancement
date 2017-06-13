@@ -56,6 +56,7 @@ public class Radis {
         this.dp     =   dp;
         this.lcc    =   lcc;
         this.sl     =   getNearestSwapLocation(lcc);
+        this.c      =   generateCarotte(lcc, dp);
     }
     
     /**

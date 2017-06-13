@@ -9,14 +9,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import ordo.data.Constantes;
 import ordo.data.dao.jpa.JpaLieuDao;
 import ordo.data.dao.jpa.JpaSwapLocationDao;
 import ordo.data.dao.jpa.JpaTrajetDao;
 import ordo.data.entities.CommandeClient;
 import ordo.data.entities.Depot;
 import ordo.data.entities.Lieu;
+import ordo.data.entities.SwapBody;
 import ordo.data.entities.SwapLocation;
 import ordo.data.entities.Trajet;
+import ordo.data.entities.Vehicule;
 
 /**
  *
@@ -37,8 +40,8 @@ public class Tomate {
             this.arrivee = arrivee;
             this.needSwap = needSwap;
             this.cost = cost;
-            if(cost == Float.NaN)
-                cost = calcCost();
+            if(Float.isNaN(cost))
+                this.cost = calcCost();
             
         }
 
@@ -200,6 +203,90 @@ public class Tomate {
     }
     
     public static void main(String[] args) {
+        SwapLocation sl = JpaSwapLocationDao.getInstance().find(0);
         
+        List<CommandeClient> lcc = new ArrayList();
+        
+        Vehicule v = new Vehicule();
+        v.addSwapBody(new SwapBody());
+        
+        CommandeClient cc = new CommandeClient();
+        cc.setCodePostal("75015");
+        cc.setCoordX((float)8.68674);
+        cc.setCoordY((float)49.03529);
+        cc.setDureeService(3000);
+        cc.setLibelle("C1");
+        cc.setNumeroLieu("C1");
+        cc.setNombreRemorquesMax(1);
+        cc.setQuantiteVoulue(400);
+        cc.setVille("Bretten-Rinklingen");
+        lcc.add(cc);
+        v.add(cc);
+        
+        System.out.println(cc.getNumeroLieu() + " : " + cc.getQuantiteVoulue());
+        
+        cc = new CommandeClient();
+        cc.setCodePostal("68199");
+        cc.setCoordX((float)8.51206);
+        cc.setCoordY((float)49.43919);
+        cc.setDureeService(2640);
+        cc.setLibelle("C2");
+        cc.setNumeroLieu("C2");
+        cc.setNombreRemorquesMax(2);
+        cc.setQuantiteVoulue(600);
+        cc.setVille("Mannheim");
+        lcc.add(cc);
+        v.add(cc);
+        
+        System.out.println(cc.getNumeroLieu() + " : " + cc.getQuantiteVoulue());
+        
+        cc = new CommandeClient();
+        cc.setCodePostal("55606");
+        cc.setCoordX((float)7.44494);
+        cc.setCoordY((float)49.79178);
+        cc.setDureeService(1980);
+        cc.setLibelle("C3");
+        cc.setNumeroLieu("C3");
+        cc.setNombreRemorquesMax(1);
+        cc.setQuantiteVoulue(250);
+        cc.setVille("Kirn");
+        lcc.add(cc);
+        v.add(cc);
+        
+        System.out.println(cc.getNumeroLieu() + " : " + cc.getQuantiteVoulue());
+        
+        Algo.createFakeConsts();
+        Constantes.capaciteMax = 500;
+        
+        System.out.println("Taille max remorques : " + Constantes.capaciteMax);
+        
+        Depot dp = Algo.getDepot();
+        
+        Tomate t = new Tomate(sl);
+        
+        // On simule un snake
+        Chemin c = new Chemin(v.getCommandes().get(0), v.getCommandes().get(1), true, Float.NaN);
+        t.addChemin(c);
+        c = new Chemin(v.getCommandes().get(1), v.getCommandes().get(0), true, Float.NaN);
+        t.addChemin(c);
+        
+        // C1 -> C2 (4230.0)
+	// C2 -> C1 (4050.0)
+        
+        System.out.print("La tomate contient un snake ? : ");
+        
+        if(!t.containsSnakes().isEmpty())
+            System.out.println("OUI");
+        else
+            System.out.println("NON");
+        
+        System.out.print("La tomate contient des jumaux ? : ");
+        
+        if(!t.containsTwins().isEmpty())
+            System.out.println("OUI");
+        else
+            System.out.println("NON");
+        
+        System.out.println(t);
     }
 }
