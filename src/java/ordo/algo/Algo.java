@@ -423,76 +423,114 @@ public class Algo {
         // Nous avons maintenant toutes les informations pour pouvoir faire nos routes
         // Comme avant on réalise notre "tomate"
         // On prend les clients et les dépots au niveau des lignes et on cherche le moins cher
-        // Comme les données n'ont pas changé on réobtient cette tomate
+        // Sauf qu'ici par moins cher on prend en compte notre "carotte"
+        // Donc quand on regarde une relation Cx -> Cy dans la matrice tomate
+        // On regarde si la valeur de la relation Cx -> Cy dans la matrice carotte est dif de 0
+        // Quand cette valeur est différente de 1 cela veut dire que l'on a forcément besoin de passer au swapLocation (pour park ou pickup)
+        // Donc si c'est le cas,
+        // Pour une relation Cx -> Cy demandant un passage par un swapLocation
+        // Son cout sera donc de Cx -> Sx + Sx -> Cy
         
-        //  D1 -> C1 (10)
-        //  C1 -> C2 (8)
-        //  C2 -> C1 (7)
-        //  C3 -> C2 (10)
+        // On change donc quelques données dans l'algo de départ
+        //      |  D1  |  C1  |  C2  |  C3  |  S1  |
+        //  D1  |  00  |  10  |  20  |  15  |  15  |
+        //  C1  |  10  |  00  |  08  |  13  |  06  |
+        //  C2  |  20  |  07  |  00  |  10  |  06  |
+        //  C3  |  15  |  12  |  10  |  00  |  06  |
+        //  S1  |  15  |  06  |  05  |  06  |  00  |
         
-        // On exécute l'algo précedent et on obtient donc les relations suivantes :
+        //On obtient donc la tomate suivante en tennant compte de la carrote
         
-        //  D1 -> C3 (15)
-        //  C1 -> D1 (10)
-        //  C2 -> C1 (7)
-        //  C3 -> C2 (10)
+        //  D1 -> C2 (20)
+        //  C1 -> C2 (11)
+        //  C2 -> C1 (12)
+        //  C3 -> C1 (12)
         
-        //Maitenant on pose une nouvelle question, Parmi les relations Cx -> Cy une relation demande forcément de passer par un swapLocation ?
+        // On pose alors la question, y a t'il, dans la liste des relation Cx -> Cy | Cy -> Cx
+        // Si oui, pour chacun des couple on test lequel est le moins cher
+        // Ici nous avons :
         
-        // On a donc les relations qui ressortent:
+        //  C1 -> C2 (11)
+        //  C2 -> C1 (12)
         
-        //  D1 -> C3 (15)
-        //  C1 -> D1 (10)
-        //  C3 -> C2 (10)
+        // Donc on garde que le moins cher à savoir la deuxième C1 -> C2 (11)
+        // En ce qui concerne la deuxième relation C2 -> C1 (12)
+        // On va regarder quel est la deuxième relation la moins cher
+        // A savoir C2 -> C3 (12)
         
-        // Pour chaques relations on passe par le swapbody
-        // Donc :
+        // On a donc la matrice suivante
         
-        //  D1 -> C3 (15)
+        //  D1 -> C2 (20)
+        //  C1 -> C2 (11)
+        //  C2 -> C3 (12)
+        //  C3 -> C1 (12)
         
-        //  Devient
+        //On recommence l'étape 1, y a t'il, dans la liste des relation Cx -> Cy | Cy -> Cx
+        //On constate que non, (on peut le detecter en regardant si on ne demmare pas plusieurs fois du même client)
         
-        //  D1 -> S1 (15)
-        //  S1 -> C3 (15)
+        // On pose alors la question numero 2
+        // Es-ce que l'on a des relations Cy -> Cx | Cz -> Cx (plusieurs fois le même client en destination)
+        // Oui c'est actuellement notre cas. Alors on fait la démarche suivante
+        // Pour chacune de ces relations, existe t'il une relation dont le départ n'est dans aucune arrivée de l'ensemble des relations du système.
+        //      Ce qui est le cas ici, D1 n'apparait jamais en arrivé.
+        //      Donc si c'est le cas, on retire notre relation de la liste.
+        // Sinon
+        // Pour chaque relation Cx -> Cy | Cz -> Cx on regarde laquelle et la plus économique
+        // On a donc :
         
-        // Et
+        //  D1 -> C2 (20)
+        //  C1 -> C2 (11)
         
-        //  C3 -> C2 (10)
+        // sauf que D1 -> C2 (20) est supprimé
         
-        //  Devient
+        // il nous reste alors que 
         
-        //  C3 -> S1 (10)
-        //  S1 -> C2 (10)
+        // C1 -> C2 (11)
+        // Le client ayant le plus bas cout après C2 est :
         
-        // Il subsiste une exception, c'est le retour en entrepot
-        // On lit depuis la Fin de la boucle et on remonte progressivement les clients
-        // Si un client est camion on effectue le passage par le swapbody
-        // Dès que l'on rencontre un client train, on leve un flag
-        //    On continue de consulter la liste les clients.
-        //    Si on tombe sur sur swap on lache le flag on fait rien (on suppose que l'on a get la deuxième remorque donc pas la peine de passer par un swap)
-        //    Si on tombe sur un Client camion on effectue le swap en dernière étape comme si contre:
+        // C1 -> C3 (13)
         
-        //  C1 -> D1 (10)
+        // On se retrouve donc avec la tomate suivante
         
-        //  Devient
         
-        //  C1 -> S1 (06)
-        //  S1 -> D1 (15)
+        //  D1 -> C2 (20)
+        //  C1 -> C3 (13)
+        //  C2 -> C3 (12)
+        //  C3 -> C1 (12)
         
-        // Ce qui n'est pas notre cas ici donc on n'effectue pas le passage par un swapLocation pour C1 -> D1 (10)
+        //On recommence l'étape 1, y a t'il, dans la liste des relation Cx -> Cy | Cy -> Cx
+        //On constate que non, (on peut le detecter en regardant si on ne demmare pas plusieurs fois du même client)
         
-        //Notre tomate devient donc
+        // On repose alors la question numero 2
+        // Es-ce que l'on a des relations Cy -> Cx | Cz -> Cx (plusieurs fois le même client en destination)
+        // Oui c'est actuellement notre cas. Alors on fait la démarche suivante
+        // Pour chacune de ces relations, existe t'il une relation dont le départ n'est dans aucune arrivée de l'ensemble des relations du système.
+        //      Ce qui n'est pas le cas ici, C1 et C2 apparaissent en arrivé dans d'autres relations.
+        //      Donc si c'est le cas, on retire notre relation de la liste.
+        // Sinon
+        // Pour chaque relation Cx -> Cy | Cz -> Cx on regarde laquelle et la plus économique
+        // On a donc :
         
-        //  D1 -> S1 (15)
-        //  S1 -> C3 (15)
-        //  C1 -> D1 (10)
-        //  C2 -> C1 (7)
-        //  C3 -> S1 (10)
-        //  S1 -> C2 (10)
+        //  C1 -> C3 (13)
+        //  C2 -> C3 (12)
         
-        // Maintenant nous avons besoin de prendre en compte un autre souci, c'est le placement des colis dans le camion
+        // On garde donc le moins cher des 2 
+        // On garde donc C2 -> C3 (12)
         
-        // 
+        // On regarde le client suivant pour
+        
+        //  C1 -> C3 (13)
+        // deviens
+        //  C1 -> D1 (21)
+        
+        //On obtient donc la matrice tomate suivante
+        
+        //  D1 -> C2 (20)
+        //  C1 -> D1 (21)
+        //  C2 -> C3 (12)
+        //  C3 -> C1 (12)
+        
+        //Et ici elle prend bien en compte les swapLocations
         
         // </editor-fold>
         
