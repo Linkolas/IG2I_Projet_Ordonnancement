@@ -8,6 +8,7 @@ package ordo.algo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import ordo.data.dao.jpa.JpaLieuDao;
 import ordo.data.dao.jpa.JpaSwapLocationDao;
 import ordo.data.dao.jpa.JpaTrajetDao;
@@ -40,6 +41,37 @@ public class Tomate {
                 cost = calcCost();
             
         }
+
+        @Override
+        public int hashCode() {
+            int hash = 5;
+            hash = 43 * hash + Objects.hashCode(this.depart);
+            hash = 43 * hash + Objects.hashCode(this.arrivee);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final Chemin other = (Chemin) obj;
+            if (!Objects.equals(this.depart, other.depart)) {
+                return false;
+            }
+            if (!Objects.equals(this.arrivee, other.arrivee)) {
+                return false;
+            }
+            return true;
+        }
+        
+        
         
         private float calcCost(){
             return JpaTrajetDao.getInstance().find(this.depart, this.arrivee).getDuree();
@@ -132,6 +164,18 @@ public class Tomate {
      * @return La liste des chemins ayant des snakes
      */
     private List<Chemin> containsSnakes(){
+        List<Chemin> lc = new ArrayList(); 
+        for(Chemin c : this.chemins){
+            for(Chemin c2 : this.chemins){
+                if( c == c2) continue;
+                if(c.isOpositeOf(c2))
+                   lc.add(c);
+            }
+        }
+        return lc;
+    }
+    
+    private List<Chemin> containsTwins(){
         List<Chemin> lc = new ArrayList(); 
         for(Chemin c : this.chemins){
             for(Chemin c2 : this.chemins){

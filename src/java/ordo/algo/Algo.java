@@ -303,7 +303,7 @@ public class Algo {
         
         // @author Nicolas Hansse
         
-        //On creer une matrice qui à la forme suivante
+        //On creer une matrice qui à la forme suivante qui sera un Radis
         //
         //      |  D1  |  C1  |  C2  |  C3  |
         //  D1  |  00  |  10  |  20  |  15  |
@@ -534,6 +534,8 @@ public class Algo {
         
         // </editor-fold>
         
+        
+        
     }
     
     private static void generateColis(Vehicule v, CommandeClient cc){
@@ -562,7 +564,7 @@ public class Algo {
         }
     }
     
-    private static Depot getDepot(){
+    public static Depot getDepot(){
         JpaDepotDao daoDepot    = JpaDepotDao.getInstance();
         
         try{
@@ -632,7 +634,7 @@ public class Algo {
         return rtn;
     }
     
-    private static void createFakeConsts(){
+    public static void createFakeConsts(){
         if(Constantes.capaciteMax == -1){
             Constantes.capaciteMax = 1000;
         }
@@ -704,10 +706,6 @@ public class Algo {
         cc.setQuantiteVoulue(250);
         cc.setVille("Kirn");
         daoCommandeClient.create(cc);
-    }
-    
-    private void park(Vehicule v, CommandeClient cc) {
-        //for(CommandeClient cc, v.ge)
     }
     
     public static void main(String[] args) {        
