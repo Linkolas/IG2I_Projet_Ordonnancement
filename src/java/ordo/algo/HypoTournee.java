@@ -41,4 +41,36 @@ public class HypoTournee extends CplexTournee {
     {
         return (this.quantite > Constantes.capaciteMax);
     }
+    
+    /**
+     * Donne le cout d'une tournée si elle ne contient que des clients camions
+     * @return Le coût de la tournée
+     */
+    public float getCamionCost()
+    {
+        float cout = 0;
+        cout += Constantes.coutCamion;
+        cout += Constantes.coutDureeCamion * this.getDuree();
+        cout += Constantes.coutTrajetCamion * this.getQuantite();
+        
+        return cout;
+    }
+    
+    /**
+     * Donne le cout d'une tournée si elle ne contient que des clients trains
+     * @return Le coût de la tournée
+     */    
+    public float getTrainCost()
+    {
+        float cout = 0;
+        cout += Constantes.coutCamion;
+        cout += Constantes.coutSecondeRemorque;
+        
+        cout += Constantes.coutDureeCamion * this.getDuree();
+        
+        cout += Constantes.coutTrajetCamion * this.getQuantite();
+        cout += Constantes.coutTrajetSecondeRemorque * this.getQuantite();
+        
+        return cout;
+    }
 }
