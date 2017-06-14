@@ -33,7 +33,7 @@ public class APICalculateController extends HttpServlet {
             throws ServletException, IOException {
         
         Constantes.isCalculating = true;
-        Algo.makeSolutionV1();
+        Algo.makeSolutionV2();
         Constantes.isCalculating = false;
         
         

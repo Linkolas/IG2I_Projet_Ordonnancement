@@ -52,6 +52,14 @@ public class Vehicule implements Serializable {
         this.id = id;
     }
     
+    public float getClientQuantity(){
+        float rtn = 0;
+        for(CommandeClient cc : this.commandes){
+            rtn += cc.getQuantiteVoulue();
+        }
+        return rtn;
+    }
+    
     public float getQuantity(){
         return getQuantity(false);
     }

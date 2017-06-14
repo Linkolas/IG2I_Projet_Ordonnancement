@@ -139,8 +139,10 @@ public class VehiculeAction implements Serializable {
 
     @Override
     public String toString() {
-        return "ordo.data.entities.SwapBody[ id=" + id + " ]";
+        return "VehiculeAction{" + "enumAction=" + enumAction + ", duree=" + duree + ", distance=" + distance + ", depart=" + depart + ", arrivee=" + arrivee + ", isTrain=" + isTrain + "}\n";
     }
+
+    
     // </editor-fold>
 
     public static enum EnumAction {
