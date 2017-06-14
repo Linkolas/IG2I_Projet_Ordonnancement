@@ -287,9 +287,6 @@ public class CSVWriter
         valeurs[INDEX_SWAP_ACTION] = "NONE";
         CommandeClient commande = jpaCommandeClientDao.find(vehiculeAction.getArrivee().getId());
         List<Colis> listeColis = commande.getColis();
-        if(listeColis.isEmpty()) {
-            System.out.println("Commande " + commande.getId());
-        }
         valeurs[INDEX_SWAP_BODY_1_QUANTITY] = ""+listeColis.get(0).getQuantite();
         if(listeColis.size()==2)
         {
