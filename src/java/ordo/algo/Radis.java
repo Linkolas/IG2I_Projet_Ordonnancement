@@ -352,6 +352,8 @@ public class Radis {
     
     public Tomate wololo(){
         // La première chose à faire est de creer une tomate à partir des chemins les plus court
+        System.out.println(this);
+        System.out.println(this.matrice);
         Tomate t = generateInitialTomato();
         System.out.println(t);
         boolean flag = true;
@@ -364,6 +366,7 @@ public class Radis {
                     Chemin c2 = iter.next();
                     if(c1.getCost() < c2.getCost()){
                         nextRoad(t, c2);
+                        //if(t.getChemins().
                     }
                     else{
                         nextRoad(t, c1);
@@ -383,15 +386,28 @@ public class Radis {
                 Chemin c1 = iter.next();
                 if(!chemin_twins_spec.containsKey(c1.getArrivee()))
                     chemin_twins_spec.put(c1.getArrivee(), new ArrayList());
-                chemin_twins_spec.get(c1.getArrivee()).add(c1);
+                if(!chemin_twins_spec.get(c1.getArrivee()).contains(c1))
+                    chemin_twins_spec.get(c1.getArrivee()).add(c1);
             }
+            
             for (Lieu k : chemin_twins_spec.keySet()){
+                System.out.println("frriprbprzbi^rzbzîrzb^rznbîrznbrznbz\n" + chemin_twins_spec.get(k) + "\n");
+                
                 Chemin boy = null;
+                List<Chemin> vip = new ArrayList();
+                
                 for(Chemin chemin : chemin_twins_spec.get(k)){
+                    if(!t.lieuIsPresentInArrivals(chemin.getDepart())){
+                        vip.add(chemin);
+                    }
+                }
+                
+                for(Chemin chemin : vip){
                     if(boy == null) { boy = chemin; continue; }
                     if(boy.getCost() > chemin.getCost())
                         boy = chemin;
                 }
+                
                 //On a recup le meilleur candidat on assigne les autres à d'autres destinations
                 System.out.println("FLAG");
                 chemin_twins_spec.get(k).remove(boy);
@@ -406,6 +422,7 @@ public class Radis {
             if(t.containsSnakes().isEmpty() && t.containsTwins().isEmpty()){
                 mainFlag = false;
             }
+            flag = true;
         }
         return t;
     }
@@ -423,14 +440,36 @@ public class Radis {
         String boy = "";
         for(String s_col :this.matrice.get(c.getDepart().getNumeroLieu()).keySet()){
             if(s_col.equals(c.getDepart().getNumeroLieu()) || s_col.equals(c.getArrivee().getNumeroLieu()) || s_col == "S1") continue;
+            if(this.matrice.get(c.getDepart().getNumeroLieu()).get(s_col) < this.matrice.get(c.getDepart().getNumeroLieu()).get(c.getArrivee().getNumeroLieu())) continue;
             if(boy == "") { boy = s_col; continue; }
             if(this.matrice.get(c.getDepart().getNumeroLieu()).get(s_col) < this.matrice.get(c.getDepart().getNumeroLieu()).get(boy)
             && this.matrice.get(c.getDepart().getNumeroLieu()).get(s_col) > c.getCost())
                 boy = s_col;
         }
+        if(boy == "")
+            return;
         chemin = new Chemin(c.getDepart(), getLieuFromString(boy), this.c.needSwapLocation(c.getDepart(), getLieuFromString(boy)), this.matrice.get(c.getDepart().getNumeroLieu()).get(boy));
+        
+        if(chemin.getCost() < c.getCost()){
+//            chemin = getCheapestRoadRow(t, c.getDepart());
+//            System.out.println("ON ROLLBACK");
+            //chemin
+        }
+        
         System.out.println("OLD ROAD " + c + " | NEXT ROAD : " + chemin);
         t.replace(c, chemin);
+    }
+    
+    private Chemin getCheapestRoadRow(Tomate t, Lieu l){
+        String boy = "";
+        for(String s_col :this.matrice.get(l.getNumeroLieu()).keySet()){
+                if(s_col == l.getNumeroLieu()|| s_col == "S1") continue;
+                if(boy == "") { boy = s_col; continue; }
+                
+                if(this.matrice.get(l.getNumeroLieu()).get(s_col) < this.matrice.get(l.getNumeroLieu()).get(boy))
+                    boy = s_col;
+        }
+        return new Chemin(l, getLieuFromString(boy), this.c.needSwapLocation(l, getLieuFromString(boy)), this.matrice.get(l.getNumeroLieu()).get(boy));
     }
     
     private Tomate generateInitialTomato(){

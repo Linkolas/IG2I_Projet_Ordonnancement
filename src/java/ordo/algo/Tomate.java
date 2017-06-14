@@ -186,6 +186,7 @@ public class Tomate {
                    lc.add(c);
             }
         }
+        if(this.chemins.size() == 2 && lc.size() == 2) return new ArrayList();
         return lc;
     }
     
@@ -211,6 +212,14 @@ public class Tomate {
         }
         else
             System.out.println("ERROR CHEMIN NULL");
+    }
+    
+    public boolean lieuIsPresentInArrivals(Lieu l){
+        for(Chemin c : this.chemins){
+            if(c.arrivee == l)
+                return true;
+        }
+        return false;
     }
     
     public List<VehiculeAction> generateVehiculeAction(){

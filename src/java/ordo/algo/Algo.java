@@ -258,10 +258,15 @@ public class Algo {
             }
         });
         
-        for(CommandeClient cc: lcc){
+        List<CommandeClient> lcc_ghost = new ArrayList(lcc);
+        
+        
+        for(Iterator<CommandeClient> iter = lcc.iterator(); iter.hasNext(); ){
+            CommandeClient cc = iter.next();
+            if(!lcc_ghost.contains(cc)) continue;
             //On prend le client le plus éloigné.
             //On fait ensuite la liste des clients les plus proches de ce dernier
-            List<CommandeClient> liste_client_proche = lcc;
+            List<CommandeClient> liste_client_proche = new ArrayList(lcc_ghost);
             liste_client_proche.remove(cc);
             Collections.sort(liste_client_proche, new Comparator<CommandeClient>(){
                 @Override
@@ -278,12 +283,13 @@ public class Algo {
             for(CommandeClient ccp : liste_client_proche){
                 // Si la commande dépasse ce que peut supporter le véhicule on passe à la commande suivante
                 if(v.getClientQuantity() + ccp.getQuantiteVoulue() > Constantes.capaciteMax *2)continue;
-                if(v.getCommandes().size() > 5)break;
+                if(v.getCommandes().size() > 2)break;
                 else{
                     v.add(ccp);
                 }
             }
             
+            //
             List<VehiculeAction> lva = new Radis(dp, v.getCommandes()).wololo().generateVehiculeAction();
             
             while(getTempsTournee(lva) > Constantes.dureeMaxTournee){
@@ -291,10 +297,11 @@ public class Algo {
                 lva = new Radis(dp, v.getCommandes()).wololo().generateVehiculeAction();
             }
             
-            for(VehiculeAction va : v.getActions()){
-                va.setVehicule(v);
+            for(VehiculeAction va : lva){
+                v.addAction(va);
+                
                 try{
-                    lcc.remove(va.getArrivee());
+                    lcc_ghost.remove(va.getArrivee());
                 }
                 catch(Exception e){
                     
@@ -440,7 +447,7 @@ public class Algo {
             System.out.println("ERROR Constante coutTrajetSecondeRemorque non initialisée ! (-1)");
         }
         return rtn;
-    }
+    }   
     
     public static void createFakeConsts(){
         if(Constantes.capaciteMax == -1){
