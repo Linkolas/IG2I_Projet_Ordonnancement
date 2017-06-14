@@ -12,11 +12,14 @@ import ilog.concert.IloObjective;
 import ilog.concert.IloRange;
 import ilog.cplex.IloCplex;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import ordo.data.entities.CommandeClient;
 import ordo.data.entities.Depot;
+import ordo.data.entities.Lieu;
 import ordo.data.entities.SwapLocation;
 
 /**
@@ -25,7 +28,85 @@ import ordo.data.entities.SwapLocation;
  */
 public class CplexSolve {
     
+    private ArrayList<CplexTournee> tournees = new ArrayList<>();
+    private IloCplex cplex;
+    private HashMap<Lieu, List<IloNumVar>> constraints = new HashMap();
+    
+    public CplexSolve() {
+        try {
+            cplex = new IloCplex();
+        } catch (IloException ex) {
+            Logger.getLogger(CplexSolve.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void addTournee(CplexTournee tournee) {
+        try {
+            IloNumVar var = cplex.boolVar();
+            tournee.setCplexVar(var);
+            
+            for(Lieu lieu: tournee.getLieux()) {
+                if(!(lieu instanceof CommandeClient)) {
+                    continue;
+                }
+                
+                List<IloNumVar> lieuConstraints = constraints.get(lieu);
+                if(lieuConstraints == null) {
+                    lieuConstraints = new ArrayList<>();
+                }
+                lieuConstraints.add(var);
+                constraints.put(lieu, lieuConstraints);
+            }
+            
+            tournees.add(tournee);
+            
+        } catch (IloException ex) {
+            Logger.getLogger(CplexSolve.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void solve() {
+        try {
+            IloLinearNumExpr objective = cplex.linearNumExpr();
+            for(CplexTournee ct: tournees) {
+                objective.addTerm(ct.getCplexVar(), ct.getCost());
+            }
+            cplex.addMinimize(objective);
+            
+            Collection<List<IloNumVar>> listConstraints = constraints.values();
+            for(List<IloNumVar> listVars: listConstraints) {
+                IloLinearNumExpr contr = cplex.linearNumExpr();
+                for(IloNumVar var: listVars) {
+                    contr.addTerm(var, 1);
+                }
+                cplex.addEq(contr, 1);
+            }
+            
+            
+            cplex.exportModel("cplex_model.lp");
+            
+            if(cplex.solve()) {
+                System.out.println("");
+                System.out.println("Solution status: " + cplex.getStatus());
+                System.out.println("\tCost = " + cplex.getObjValue()); 
+            }
+            
+        } catch (IloException ex) {
+            Logger.getLogger(CplexSolve.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+            
     public static void main(String[] args) {
+        List<CplexTournee> tournees = generateTournees();
+        CplexSolve cp = new CplexSolve();
+        for(CplexTournee ct: tournees) {
+            cp.addTournee(ct);
+        }
+        cp.solve();
+    }
+    
+    public static void tests() {
         List<CplexTournee> tournees = generateTournees();
         
         try {
@@ -45,8 +126,6 @@ public class CplexSolve {
             Logger.getLogger(CplexSolve.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    
     
     public static void generateEquationsV1(IloCplex cplex) {
 /*
@@ -174,6 +253,10 @@ min ()
         SwapLocation sl = new SwapLocation();
         CommandeClient c1 = new CommandeClient();
         CommandeClient c2 = new CommandeClient();
+        d.setId(0);
+        sl.setId(1);
+        c1.setId(2);
+        c2.setId(3);
         
         CplexTournee t1 = new CplexTournee();
         CplexTournee t2 = new CplexTournee();
@@ -202,9 +285,9 @@ min ()
         t4.addLieu(d);
         
         t1.setCost(10);
-        t2.setCost(15);
-        t3.setCost(16);
-        t4.setCost(19);
+        t2.setCost(12);
+        t3.setCost(18);
+        t4.setCost(16);
         
         tournees.add(t1);
         tournees.add(t2);

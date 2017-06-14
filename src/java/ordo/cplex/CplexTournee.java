@@ -5,6 +5,7 @@
  */
 package ordo.cplex;
 
+import ilog.concert.IloNumVar;
 import java.util.ArrayList;
 import ordo.data.entities.Lieu;
 
@@ -15,6 +16,7 @@ import ordo.data.entities.Lieu;
 public class CplexTournee {
     private ArrayList<Lieu> lieux = new ArrayList<>();
     private float cost = 0;
+    private IloNumVar cplexVar;
 
     public ArrayList<Lieu> getLieux() {
         return lieux;
@@ -42,5 +44,13 @@ public class CplexTournee {
 
     public void setCost(float cost) {
         this.cost = cost;
+    }
+
+    public IloNumVar getCplexVar() {
+        return cplexVar;
+    }
+
+    public void setCplexVar(IloNumVar cplexVar) {
+        this.cplexVar = cplexVar;
     }
 }
