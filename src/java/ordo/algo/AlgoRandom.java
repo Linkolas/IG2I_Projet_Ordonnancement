@@ -63,8 +63,8 @@ public class AlgoRandom {
             
             Trajet trajet = daoTrajet.find(depot, client);
             
-            tournee.setDuree(Long.parseLong(trajet.getDuree() + ""));
-            tournee.setDistance(Long.parseLong("" + trajet.getDistance()));
+            tournee.setDuree(trajet.getDuree());
+            tournee.setDistance(trajet.getDistance());
             tournee.setQuantite(client.getQuantiteVoulue());
             
             //Liste des clients restants
@@ -86,10 +86,10 @@ public class AlgoRandom {
                 tournee.addLieu(nouveauClient);
                 
                 //On met à jour la durée
-                tournee.setDuree(tournee.getDuree() + Long.parseLong(ceTrajet.getDuree() + ""));
+                tournee.setDuree(tournee.getDuree() + ceTrajet.getDuree());
                 
                 //On met à jout la distance
-                tournee.setDistance(tournee.getDistance() + Long.parseLong("" + ceTrajet.getDistance()));
+                tournee.setDistance(tournee.getDistance() + ceTrajet.getDistance());
                 
                 //On met à jour la capacité
                 tournee.setQuantite(tournee.getQuantite() + nouveauClient.getQuantiteVoulue());
@@ -110,8 +110,8 @@ public class AlgoRandom {
             //Mise à jour de distance, temps, quantité après retrait du dernier client
             CommandeClient lieuEncoreAvant = (CommandeClient) tournee.getLieux().get(tournee.getLieux().size() - 1);
             Trajet ceTrajet = daoTrajet.find(lieuEncoreAvant, dernierLieu);
-            tournee.setDistance(tournee.getDistance() - Long.parseLong("" + ceTrajet.getDistance()));
-            tournee.setDuree(tournee.getDuree() - Long.parseLong("" + ceTrajet.getDuree()));
+            tournee.setDistance(tournee.getDistance() - ceTrajet.getDistance());
+            tournee.setDuree(tournee.getDuree() - ceTrajet.getDuree());
             tournee.setQuantite(tournee.getQuantite() - dernierLieu.getQuantiteVoulue());
             
             //On ajoute le dépôt pour finir la tournée
@@ -120,8 +120,8 @@ public class AlgoRandom {
             
             //Update distance, temps
             ceTrajet = daoTrajet.find(lieuEncoreAvant, depot);
-            tournee.setDistance(tournee.getDistance() + Long.parseLong("" + ceTrajet.getDistance()));
-            tournee.setDuree(tournee.getDuree() + Long.parseLong("" + ceTrajet.getDuree()));
+            tournee.setDistance(tournee.getDistance() + ceTrajet.getDistance());
+            tournee.setDuree(tournee.getDuree() + ceTrajet.getDuree());
             
             if(!(tournee.isTooFull() || tournee.isTooLong()))
             {
@@ -132,13 +132,13 @@ public class AlgoRandom {
             {    
                 //On retire le depôt
                 Depot dernierDepot = (Depot) tournee.getLieux().get(tournee.getLieux().size() - 1);
-                tournee.removeLieu(dernierLieu);
+                tournee.removeLieu(dernierDepot);
                 
                 //Mise à jour distance et temps
                 CommandeClient derniereCommandeClient = (CommandeClient) tournee.getLieux().get(tournee.getLieux().size() - 1);
                 ceTrajet = daoTrajet.find(derniereCommandeClient, dernierDepot);
-                tournee.setDistance(tournee.getDistance() - Long.parseLong("" + ceTrajet.getDistance()));
-                tournee.setDuree(tournee.getDuree() - Long.parseLong("" + ceTrajet.getDuree()));
+                tournee.setDistance(tournee.getDistance() - ceTrajet.getDistance());
+                tournee.setDuree(tournee.getDuree() - ceTrajet.getDuree());
 
                 //On retire le dernier lieu ajouté
                 tournee.removeLieu(derniereCommandeClient);
@@ -146,8 +146,8 @@ public class AlgoRandom {
                 
                 //Mise à jour distance, temps, quantité
                 ceTrajet = daoTrajet.find(clientEncoreAvant, derniereCommandeClient);
-                tournee.setDistance(tournee.getDistance() - Long.parseLong("" + ceTrajet.getDistance()));
-                tournee.setDuree(tournee.getDuree() - Long.parseLong("" + ceTrajet.getDuree()));
+                tournee.setDistance(tournee.getDistance() - ceTrajet.getDistance());
+                tournee.setDuree(tournee.getDuree() - ceTrajet.getDuree());
                 tournee.setQuantite(tournee.getQuantite() - derniereCommandeClient.getQuantiteVoulue());
                 
                 //On ajoute le dépôt
@@ -155,8 +155,8 @@ public class AlgoRandom {
                 
                 //Mise à jour distance, temps
                 ceTrajet = daoTrajet.find(clientEncoreAvant, depot);
-                tournee.setDistance(tournee.getDistance() + Long.parseLong("" + ceTrajet.getDistance()));
-                tournee.setDuree(tournee.getDuree() + Long.parseLong("" + ceTrajet.getDuree()));
+                tournee.setDistance(tournee.getDistance() + ceTrajet.getDistance());
+                tournee.setDuree(tournee.getDuree() + ceTrajet.getDuree());
                 
                 
                 if(!(tournee.isTooFull() || tournee.isTooLong()))
@@ -215,7 +215,10 @@ public class AlgoRandom {
     
     public static void main(String[] args) 
     {
+        //AlgoRandom algoRandom = new AlgoRandom();
+        //algoRandom.testChoisirCommandeRandom();
+        
         AlgoRandom algoRandom = new AlgoRandom();
-        algoRandom.testChoisirCommandeRandom();
+        algoRandom.makeTourneesRandom();
     }
 }

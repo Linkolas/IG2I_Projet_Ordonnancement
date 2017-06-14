@@ -13,15 +13,15 @@ import ordo.data.Constantes;
  * @author Axelle
  */
 public class HypoTournee extends CplexTournee {
-    private long duree;
+    private float duree;
     private float quantite;
-    private long distance;
+    private float distance;
 
-    public long getDuree() {
+    public float getDuree() {
         return duree;
     }
 
-    public void setDuree(long duree) {
+    public void setDuree(float duree) {
         this.duree = duree;
     }
 
@@ -33,11 +33,11 @@ public class HypoTournee extends CplexTournee {
         this.quantite = quantite;
     }
 
-    public long getDistance() {
+    public float getDistance() {
         return distance;
     }
 
-    public void setDistance(long distance) {
+    public void setDistance(float distance) {
         this.distance = distance;
     }
     
