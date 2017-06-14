@@ -15,6 +15,7 @@ import ordo.data.Constantes;
 public class HypoTournee extends CplexTournee {
     private long duree;
     private float quantite;
+    private long distance;
 
     public long getDuree() {
         return duree;
@@ -31,6 +32,14 @@ public class HypoTournee extends CplexTournee {
     public void setQuantite(float quantite) {
         this.quantite = quantite;
     }
+
+    public long getDistance() {
+        return distance;
+    }
+
+    public void setDistance(long distance) {
+        this.distance = distance;
+    }
     
     public boolean isTooLong()
     {
@@ -39,6 +48,6 @@ public class HypoTournee extends CplexTournee {
     
     public boolean isTooFull()
     {
-        return (this.quantite > Constantes.capaciteMax);
+        return (this.quantite > (Constantes.capaciteMax*2));
     }
 }
