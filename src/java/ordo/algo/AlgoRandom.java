@@ -65,19 +65,20 @@ public class AlgoRandom {
             tournee.setDuree(tournee.getDuree() + Long.parseLong(trajet.getDuree() + ""));
             
             //Liste des clients restants
-            List<Lieu> clientsRestants = new ArrayList<>(clientsTrains);
+            List<CommandeClient> clientsRestants = new ArrayList<>(clientsTrains);
             clientsRestants.remove(client);
             
             while(OK1 == true)
             {
                 //Randomisation = ajout d'un client aléatoire
                 CommandeClient nouveauClient = choisirCommandeRandom(clientsRestants);
-                //CommandeClient nouveauClient = new CommandeClient();
                 
                 //On récupère le dernier client avant le random
                 CommandeClient dernierClient = (CommandeClient) tournee.getLieux().get(tournee.getLieux().size());
+                
                 //On récupère le trajet entre les deux
                 Trajet ceTrajet = daoTrajet.find(dernierClient, nouveauClient);
+                
                 //On ajoute le nouveau client à la tournée
                 tournee.addLieu(nouveauClient);
                 //On met à jour la durée
@@ -106,7 +107,7 @@ public class AlgoRandom {
      * @param clients La liste des clients parmi lesquels on peut piocher
      * @return Retourne une CommandeClient au hasard
      */
-    public CommandeClient choisirCommandeRandom(List<CommandeClient> clients)
+    public static CommandeClient choisirCommandeRandom(List<CommandeClient> clients)
     {
         Random randomGenerator = new Random();
         int randomIndex = randomGenerator.nextInt(clients.size());
