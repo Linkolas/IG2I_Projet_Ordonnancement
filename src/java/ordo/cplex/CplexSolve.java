@@ -98,6 +98,8 @@ public class CplexSolve {
     }
     
     public List<CplexTournee> getResults() {
+        results = new ArrayList<>();
+        
         try {
             if(cplex.getStatus() != IloCplex.Status.Optimal) {
                 return results;
@@ -128,6 +130,7 @@ public class CplexSolve {
         System.out.println("DONE.");
     }
     
+    // <editor-fold defaultstate="collapsed" desc="Test functions">
     public static void tests() {
         List<CplexTournee> tournees = generateTournees();
         
@@ -365,5 +368,7 @@ min ()
             Logger.getLogger(CplexSolve.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    // </editor-fold>
 
 }
