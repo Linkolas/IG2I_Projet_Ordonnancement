@@ -16,6 +16,15 @@ $(function() {
         });
     });
     
+    $("#generate").click(function() {
+        $("#generate").html("Génération...");
+        $.get("api/generate", function(data) {
+            $("#generate").html("GENERER");
+            window.location.href = 'assets/csv/Solution.csv';
+        });
+    });
+    
+    
     $.get("api/lieux", function(data) {
         
         var markers = [];

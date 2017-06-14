@@ -6,6 +6,7 @@
 package ordo.data.entities;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -59,13 +60,21 @@ public class Colis implements Serializable {
 
     public void setCommande(CommandeClient commande) {
         this.commande = commande;
+        
+        if(!commande.getColis().contains(this)) {
+            commande.addColis(this);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc=".equals, .toString, ...">
+
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 61 * hash + (int) (this.id ^ (this.id >>> 32));
+        hash = 73 * hash + (int) (this.id ^ (this.id >>> 32));
+        hash = 73 * hash + Float.floatToIntBits(this.quantite);
+        hash = 73 * hash + Objects.hashCode(this.swapBody);
+        hash = 73 * hash + Objects.hashCode(this.commande);
         return hash;
     }
 
@@ -84,8 +93,18 @@ public class Colis implements Serializable {
         if (this.id != other.id) {
             return false;
         }
+        if (Float.floatToIntBits(this.quantite) != Float.floatToIntBits(other.quantite)) {
+            return false;
+        }
+        if (!Objects.equals(this.swapBody, other.swapBody)) {
+            return false;
+        }
+        if (!Objects.equals(this.commande, other.commande)) {
+            return false;
+        }
         return true;
     }
+    
     // </editor-fold>
     
     

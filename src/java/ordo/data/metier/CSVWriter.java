@@ -49,10 +49,15 @@ public class CSVWriter
     {
     }
     
+    public void WriteCSV() {
+        WriteCSV("Solution.csv");
+    }
+    
     /**
-     * Fonction de génération du fichier CSV Solution
+     * Fonction de génération du fichier CSV Solution.
+     * @param filePath Chemin du fichier.
      */
-    public void WriteCSV()
+    public void WriteCSV(String filePath)
     {
         try
         {
@@ -61,7 +66,7 @@ public class CSVWriter
             JpaVehiculeActionDao jpaVehiculeActionDao = JpaVehiculeActionDao.getInstance();
             
             //On génère le fichier nommé Solution.csv, situé à la racine du projet
-            FileWriter filewriter = new FileWriter("Solution.csv");
+            FileWriter filewriter = new FileWriter(filePath);
             
             //On inscrit le header qui respecte le format demandé
             filewriter.append("TOUR_ID;TOUR_POSITION;LOCATION_ID;LOCATION_TYPE;SEMI_TRAILER_ATTACHED;SWAP_BODY_TRUCK;SWAP_BODY_SEMI_TRAILER;SWAP_ACTION;SWAP_BODY_1_QUANTITY;SWAP_BODY_2_QUANTITY");

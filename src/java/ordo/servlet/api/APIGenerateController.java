@@ -5,21 +5,23 @@
  */
 package ordo.servlet.api;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import ordo.algo.Algo;
-import ordo.data.Constantes;
+import ordo.data.metier.CSVWriter;
 
 /**
  *
  * @author Nicolas
  */
-public class APICalculateController extends HttpServlet {
+public class APIGenerateController extends HttpServlet {
 
+    private static final String UPLOAD_DIR = "assets" + File.separator + "csv";
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -32,14 +34,16 @@ public class APICalculateController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        Constantes.isCalculating = true;
-        Algo.makeSolutionV1();
-        Constantes.isCalculating = false;
+        String applicationPath = request.getServletContext().getRealPath("");
+        String uploadFilePath = applicationPath + File.separator + UPLOAD_DIR + File.separator;
+        System.out.println(uploadFilePath + "Solution.csv");
         
+        CSVWriter writer = new CSVWriter();
+        writer.WriteCSV(uploadFilePath + "Solution.csv");
         
+        String json = "{\"lieux\": true}";
         PrintWriter out = response.getWriter();
-        out.print("{\"success\": true}");
-        
+        out.print(json);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
