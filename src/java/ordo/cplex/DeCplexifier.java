@@ -6,9 +6,14 @@
 package ordo.cplex;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import static ordo.cplex.CplexSolve.generateTournees;
 import ordo.data.Constantes;
 import ordo.data.dao.jpa.JpaCommandeClientDao;
+import ordo.data.dao.jpa.JpaDepotDao;
+import ordo.data.dao.jpa.JpaSwapLocationDao;
 import ordo.data.dao.jpa.JpaTrajetDao;
 import ordo.data.dao.jpa.JpaVehiculeDao;
 import ordo.data.entities.Colis;
@@ -16,6 +21,7 @@ import ordo.data.entities.CommandeClient;
 import ordo.data.entities.Depot;
 import ordo.data.entities.Lieu;
 import ordo.data.entities.SwapBody;
+import ordo.data.entities.SwapLocation;
 import ordo.data.entities.Trajet;
 import ordo.data.entities.Vehicule;
 import ordo.data.entities.VehiculeAction;
@@ -42,7 +48,6 @@ public class DeCplexifier {
             
             Lieu prevLieu = null;
             for(Lieu lieu: tournee.getLieux()) {
-                
                 if(prevLieu == null) {
                     prevLieu = lieu;
                     continue;
@@ -67,6 +72,7 @@ public class DeCplexifier {
                 if(lieu instanceof CommandeClient) {
                     CommandeClient cc = (CommandeClient) lieu;
                     commandes.add(cc);
+                    vehi.add(cc);
                     
                     VehiculeAction vat = new VehiculeAction();
                     vat.setDepart(lieu);
@@ -87,7 +93,13 @@ public class DeCplexifier {
                         float qdispo_sw1 = Constantes.capaciteMax - vehi.getSwapBodies().get(0).getQuantite();
                         float qdispo_sw2 = Constantes.capaciteMax - vehi.getSwapBodies().get(1).getQuantite();
                         
+                        System.out.println("QDispo = " + qdispo_sw1);
+                        System.out.println("QDispo = " + qdispo_sw2);
+                        System.out.println("");
+                        
                         if(qdispo_sw1 > cc.getQuantiteVoulue()) {
+                            System.out.println("COLIS 1");
+                            
                             Colis colis = new Colis();
                             colis.setCommande(cc);
                             colis.setQuantite(cc.getQuantiteVoulue());
@@ -95,22 +107,27 @@ public class DeCplexifier {
                             vehi.getSwapBodies().get(0).addColis(colis);
                             
                         } else {
+                            float remaining = cc.getQuantiteVoulue();
                             
                             if(qdispo_sw1 > 0) {
+                                System.out.println("COLIS 1");
                                 Colis colis = new Colis();
                                 colis.setCommande(cc);
                                 colis.setQuantite(qdispo_sw1);
 
                                 vehi.getSwapBodies().get(0).addColis(colis);
+                                
+                                remaining = cc.getQuantiteVoulue() - qdispo_sw1;
                             }
                             
-                            float remaining = cc.getQuantiteVoulue() - qdispo_sw1;
-                            
-                            Colis colis2 = new Colis();
-                            colis2.setCommande(cc);
-                            colis2.setQuantite(remaining);
-                            
-                            vehi.getSwapBodies().get(1).addColis(colis2);
+                            if(remaining > 0) {
+                                System.out.println("COLIS 2");
+                                Colis colis2 = new Colis();
+                                colis2.setCommande(cc);
+                                colis2.setQuantite(remaining);
+
+                                vehi.getSwapBodies().get(1).addColis(colis2);
+                            }
                         }
                         
                         
@@ -134,4 +151,79 @@ public class DeCplexifier {
         
     }
     
+    
+    public static void main(String[] args) {
+        Constantes.capaciteMax = 500;
+        
+        List<CplexTournee> tournees = generateTournees();
+        CplexSolve cp = new CplexSolve();
+        for(CplexTournee ct: tournees) {
+            cp.addTournee(ct);
+        }
+        cp.solve();
+        ArrayList<CplexTournee> results = cp.getResults();
+        System.out.println("DONE.");
+        
+        DeCplexifier dec = new DeCplexifier();
+        dec.CplexTourneesToSolution(results);
+        
+    }
+    
+    public static List<CplexTournee> generateTournees() {
+        
+        JpaDepotDao daoDepot = JpaDepotDao.getInstance();
+        JpaCommandeClientDao daoCc = JpaCommandeClientDao.getInstance();
+        JpaSwapLocationDao daoSwLoc = JpaSwapLocationDao.getInstance();
+        
+        List<CplexTournee> tournees = new ArrayList<>();
+        
+        Depot d = daoDepot.findAll().iterator().next();
+        SwapLocation sl = daoSwLoc.findAll().iterator().next();
+        Iterator<CommandeClient> ccs = daoCc.findAll(false).iterator();
+        CommandeClient c1 = ccs.next();
+        CommandeClient c2 = ccs.next();
+        
+        daoDepot.create(d);
+        daoSwLoc.create(sl);
+        daoCc.create(c1);
+        daoCc.create(c2);
+        
+        CplexTournee t1 = new CplexTournee();
+        CplexTournee t2 = new CplexTournee();
+        CplexTournee t3 = new CplexTournee();
+        CplexTournee t4 = new CplexTournee();
+        
+        t1.addLieu(d);
+        t2.addLieu(d);
+        t3.addLieu(d);
+        t4.addLieu(d);
+        
+        t1.addLieu(c1);
+        t2.addLieu(c2);
+        
+        t3.addLieu(c1);
+        t3.addLieu(sl);
+        t3.addLieu(c2);
+        
+        t4.addLieu(c2);
+        t4.addLieu(sl);
+        t4.addLieu(c1);
+        
+        t1.addLieu(d);
+        t2.addLieu(d);
+        t3.addLieu(d);
+        t4.addLieu(d);
+        
+        t1.setCost(10);
+        t2.setCost(12);
+        t3.setCost(18);
+        t4.setCost(16);
+        
+        tournees.add(t1);
+        tournees.add(t2);
+        tournees.add(t3);
+        tournees.add(t4);
+        
+        return tournees;
+    }
 }

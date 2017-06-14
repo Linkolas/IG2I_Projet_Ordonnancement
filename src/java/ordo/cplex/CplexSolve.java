@@ -126,7 +126,7 @@ public class CplexSolve {
             cp.addTournee(ct);
         }
         cp.solve();
-        List<CplexTournee> results = cp.getResults();
+        ArrayList<CplexTournee> results = cp.getResults();
         System.out.println("DONE.");
     }
     

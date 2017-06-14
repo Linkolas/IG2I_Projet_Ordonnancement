@@ -142,7 +142,6 @@ public class CommandeClient extends Lieu implements Serializable {
         hash = 79 * hash + Float.floatToIntBits(this.quantiteVoulue);
         hash = 79 * hash + Float.floatToIntBits(this.dureeService);
         hash = 79 * hash + Objects.hashCode(this.vehicule);
-        hash = 79 * hash + Objects.hashCode(this.colis);
         hash = 79 * hash + (this.isLivree ? 1 : 0);
         return hash;
     }
@@ -173,9 +172,6 @@ public class CommandeClient extends Lieu implements Serializable {
             return false;
         }
         if (!Objects.equals(this.vehicule, other.vehicule)) {
-            return false;
-        }
-        if (!Objects.equals(this.colis, other.colis)) {
             return false;
         }
         return true;
