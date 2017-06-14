@@ -7,6 +7,7 @@ package ordo.algo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import ordo.data.dao.jpa.JpaCommandeClientDao;
 import ordo.data.dao.jpa.JpaDepotDao;
 import ordo.data.dao.jpa.JpaLieuDao;
@@ -80,7 +81,45 @@ public class AlgoRandom {
         }
     }
     
-    public static void main(String[] args) {
+    /**
+     * Permet de choisir une commandeClient de manière aléatoire dans une liste de clients
+     * @param clients La liste des clients parmi lesquels on peut piocher
+     * @return Retourne une CommandeClient au hasard
+     */
+    public CommandeClient choisirCommandeRandom(List<CommandeClient> clients)
+    {
+        Random randomGenerator = new Random();
+        int randomIndex = randomGenerator.nextInt(clients.size());
+        CommandeClient commandeRandom = clients.get(randomIndex);
+        return commandeRandom;
+    }
+    
+    /**
+     * Fonction de test qui permet de tester la fonction choisirCommandeRandom(List<CommandeClient> clients)
+     */
+    public void testChoisirCommandeRandom()
+    {
+        List<CommandeClient> clients = new ArrayList<CommandeClient>();
         
+        CommandeClient client1 = new CommandeClient();
+        client1.setCodePostal("1");
+        clients.add(client1);
+        
+        CommandeClient client2 = new CommandeClient();
+        client2.setCodePostal("2");
+        clients.add(client2);
+        
+        CommandeClient client3 = new CommandeClient();
+        client3.setCodePostal("3");
+        clients.add(client3);
+        
+        CommandeClient clientRandom = this.choisirCommandeRandom(clients);
+        System.out.println(clientRandom.getCodePostal());
+    }
+    
+    public static void main(String[] args) 
+    {
+        AlgoRandom algoRandom = new AlgoRandom();
+        algoRandom.testChoisirCommandeRandom();
     }
 }
