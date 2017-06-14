@@ -64,15 +64,36 @@ public class AlgoRandom {
             
             tournee.setDuree(tournee.getDuree() + Long.parseLong(trajet.getDuree() + ""));
             
+            //Liste des clients restants
+            List<CommandeClient> clientsRestants = new ArrayList<>(clientsTrains);
+            clientsRestants.remove(client);
+            
             while(OK1 == true)
             {
-                //Randomisation = ajout d'un lieu
-                //Ajout de la durée
+                //Randomisation = ajout d'un client aléatoire
+                CommandeClient nouveauClient = choisirCommandeRandom(clientsRestants);
+                
+                //On récupère le dernier client avant le random
+                CommandeClient dernierClient = (CommandeClient) tournee.getLieux().get(tournee.getLieux().size());
+                
+                //On récupère le trajet entre les deux
+                Trajet ceTrajet = daoTrajet.find(dernierClient, nouveauClient);
+                
+                //On ajoute le nouveau client à la tournée
+                tournee.addLieu(nouveauClient);
+                //On met à jour la durée
+                //On met à jout la distance
+                //On met à jour la capacité
+                
+                
+                
+                
+                clientsRestants.remove(nouveauClient);
             }
             Lieu dernierLieu = tournee.getLieux().get(tournee.getLieux().size());
             tournee.removeLieu(dernierLieu);
             
-            tournee.addLieu(depot);
+            //tournee.addLieu(depot);
                                 
             //while()
                 
@@ -86,7 +107,7 @@ public class AlgoRandom {
      * @param clients La liste des clients parmi lesquels on peut piocher
      * @return Retourne une CommandeClient au hasard
      */
-    public CommandeClient choisirCommandeRandom(List<CommandeClient> clients)
+    public static CommandeClient choisirCommandeRandom(List<CommandeClient> clients)
     {
         Random randomGenerator = new Random();
         int randomIndex = randomGenerator.nextInt(clients.size());

@@ -5,6 +5,7 @@
  */
 package ordo.data.dao.jpa;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.persistence.Query;
@@ -106,9 +107,13 @@ public class JpaCommandeClientDao extends JpaDao<CommandeClient> {
     }
     
     public static void main(String[] args) {
+        List<CommandeClient> clientsTrains = new ArrayList<>();
+        
         JpaCommandeClientDao    daoCommandeClient   = JpaCommandeClientDao.getInstance();
         
-        daoCommandeClient.findAllCamions();
+        clientsTrains = daoCommandeClient.findAllCamions();
+        
+        System.out.println(clientsTrains.get(0).getCodePostal());
         
         
     }
