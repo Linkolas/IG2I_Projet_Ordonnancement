@@ -66,8 +66,6 @@ public class AlgoRandom {
         
         for(CommandeClient client : clientsTrains)
         {
-            //for(int iterateurEssai = 0; iterateurEssai < 30; iterateurEssai++)
-            //{
                 System.out.println("Nouvelle tournée !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 OK1 = true;
                 OK2 = false;
@@ -208,7 +206,6 @@ public class AlgoRandom {
                 }
 
                 hypoTourneesTrains.add(tournee);
-            //}
         }
         
         System.out.println(hypoTourneesTrains.size() + " tournées hypothétiques générées !");
@@ -225,10 +222,6 @@ public class AlgoRandom {
         }
         
         System.out.println(coutMin);
-        /*for(HypoTournee hypotournee: hypoTourneesTrains)
-        {
-            hypotournee.setCost(hypotournee.getTrainCost());
-        }*/
         
         return hypoTourneesTrains;
     }
