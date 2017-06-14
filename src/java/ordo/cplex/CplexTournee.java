@@ -7,6 +7,8 @@ package ordo.cplex;
 
 import ilog.concert.IloNumVar;
 import java.util.ArrayList;
+import ordo.data.Constantes;
+import ordo.data.entities.CommandeClient;
 import ordo.data.entities.Lieu;
 
 /**
@@ -52,5 +54,20 @@ public class CplexTournee {
 
     public void setCplexVar(IloNumVar cplexVar) {
         this.cplexVar = cplexVar;
+    }
+    
+    public boolean needTrain() {
+        float qtity = 0;
+        
+        for(Lieu lieu: lieux) {
+            if(!(lieu instanceof CommandeClient)) {
+                continue;
+            }
+            
+            CommandeClient cc = (CommandeClient) lieu;
+            qtity += cc.getQuantiteVoulue();
+        }
+        
+        return qtity <= Constantes.capaciteMax;
     }
 }

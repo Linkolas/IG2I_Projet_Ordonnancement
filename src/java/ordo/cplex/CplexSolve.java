@@ -97,7 +97,7 @@ public class CplexSolve {
         }
     }
     
-    public List<CplexTournee> getResults() {
+    public ArrayList<CplexTournee> getResults() {
         results = new ArrayList<>();
         
         try {
