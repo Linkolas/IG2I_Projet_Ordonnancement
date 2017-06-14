@@ -59,8 +59,8 @@ public class HypoTournee extends CplexTournee {
     {
         float cout = 0;
         cout += Constantes.coutCamion;
-        cout += Constantes.coutDureeCamion * this.getDuree();
-        cout += Constantes.coutTrajetCamion * this.getDistance();
+        cout += Constantes.coutDureeCamion * (this.getDuree()/3600);
+        cout += Constantes.coutTrajetCamion * (this.getDistance()/3600);
         
         return cout;
     }
