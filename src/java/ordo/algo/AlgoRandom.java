@@ -28,153 +28,209 @@ import ordo.data.entities.Trajet;
  */
 public class AlgoRandom {
     
-    public static void makeTourneesRandom()
+    public static void testCodePostal(HypoTournee tournee)
+    {
+        for(Lieu lieu: tournee.getLieux())
+        {
+            System.out.println(lieu.getCodePostal());
+        }
+    }
+            
+    
+    public static List<HypoTournee> makeTourneesRandom()
     {
         boolean OK1 = true;
         boolean OK2 = false;
         List<CommandeClient> clientsTrains = new ArrayList<>();
         List<CommandeClient> clientsCamions = new ArrayList<>();
         
+        Constantes.capaciteMax = 1000;
+        Constantes.dureeMaxTournee = 99999;
+        //Constantes.dureeMaxTournee = 28800;
+        Constantes.coutCamion = 100;
+        Constantes.coutDureeCamion = 20;
+        Constantes.coutSecondeRemorque = 50;
+        Constantes.coutTrajetCamion = (float) 0.5;
+        Constantes.coutTrajetSecondeRemorque = (float) 0.2;
         
         // Dans un premier temps on a besoin de récupérer les instances de chaques objets
-        JpaVehiculeDao          daoVehicule         = JpaVehiculeDao.getInstance();
-        JpaVehiculeActionDao    daoVehiculeAction   = JpaVehiculeActionDao.getInstance();
-        JpaLieuDao              daoLieu             = JpaLieuDao.getInstance();
         JpaDepotDao             daoDepot            = JpaDepotDao.getInstance();
         JpaCommandeClientDao    daoCommandeClient   = JpaCommandeClientDao.getInstance();
-        JpaSolutionDao          daoSolution         = JpaSolutionDao.getInstance();
-        JpaSwapBodyDao          daoSwapBodyDao      = JpaSwapBodyDao.getInstance();
         JpaTrajetDao            daoTrajet           = JpaTrajetDao.getInstance();
         
         List<Depot> depots = (List<Depot>) daoDepot.findAll();
         Depot depot = depots.get(0);
         clientsTrains = daoCommandeClient.findAllTrains();
         clientsCamions = daoCommandeClient.findAllCamions();
-        
+        List<HypoTournee> hypoTourneesTrains = new ArrayList<HypoTournee>();
         
         for(CommandeClient client : clientsTrains)
         {
-            OK1 = true;
-            OK2 = false;
-            
-            HypoTournee tournee = new HypoTournee();
-            tournee.addLieu(depot);
-            tournee.addLieu(client);
-            
-            Trajet trajet = daoTrajet.find(depot, client);
-            
-            tournee.setDuree(trajet.getDuree());
-            tournee.setDistance(trajet.getDistance());
-            tournee.setQuantite(client.getQuantiteVoulue());
-            
-            //Liste des clients restants
-            List<CommandeClient> clientsRestants = new ArrayList<>(clientsTrains);
-            clientsRestants.remove(client);
-            
-            while(OK1 == true)
-            {
-                //Randomisation = ajout d'un client aléatoire
-                CommandeClient nouveauClient = choisirCommandeRandom(clientsRestants);
-                
-                //On récupère le dernier client avant le random
-                CommandeClient dernierClient = (CommandeClient) tournee.getLieux().get(tournee.getLieux().size() - 1);
-                
-                //On récupère le trajet entre les deux
-                Trajet ceTrajet = daoTrajet.find(dernierClient, nouveauClient);
-                
-                //On ajoute le nouveau client à la tournée
-                tournee.addLieu(nouveauClient);
-                
-                //On met à jour la durée
-                tournee.setDuree(tournee.getDuree() + ceTrajet.getDuree());
-                
-                //On met à jout la distance
+            //for(int iterateurEssai = 0; iterateurEssai < 30; iterateurEssai++)
+            //{
+                System.out.println("Nouvelle tournée !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                OK1 = true;
+                OK2 = false;
+
+                HypoTournee tournee = new HypoTournee();
+                tournee.addLieu(depot);
+                tournee.addLieu(client);
+
+                System.out.println("On a ajouté le dépot et la première tournée");
+                testCodePostal(tournee);
+
+                Trajet trajet = daoTrajet.find(depot, client);
+
+                tournee.setDuree(trajet.getDuree());
+                tournee.setDistance(trajet.getDistance());
+                tournee.setQuantite(client.getQuantiteVoulue());
+
+                //Liste des clients restants
+                List<CommandeClient> clientsRestants = new ArrayList<>(clientsTrains);
+                clientsRestants.remove(client);
+
+                while(OK1 == true)
+                {
+                    //Randomisation = ajout d'un client aléatoire
+                    CommandeClient nouveauClient = choisirCommandeRandom(clientsRestants);
+
+                    //On récupère le dernier client avant le random
+                    CommandeClient dernierClient = (CommandeClient) tournee.getLieux().get(tournee.getLieux().size() - 1);
+
+                    //On récupère le trajet entre les deux
+                    Trajet ceTrajet = daoTrajet.find(dernierClient, nouveauClient);
+
+                    //On ajoute le nouveau client à la tournée
+                    tournee.addLieu(nouveauClient);
+
+                    System.out.println("Première boucle : On a ajouté un nouveau client à la tournée");
+                    testCodePostal(tournee);
+
+                    //On met à jour la durée
+                    tournee.setDuree(tournee.getDuree() + ceTrajet.getDuree());
+
+                    //On met à jout la distance
+                    tournee.setDistance(tournee.getDistance() + ceTrajet.getDistance());
+
+                    //On met à jour la capacité
+                    tournee.setQuantite(tournee.getQuantite() + nouveauClient.getQuantiteVoulue());
+
+                    //On retire ce client des possibilités pour le prochain tirage
+                    clientsRestants.remove(nouveauClient);
+
+                    //On teste si la tournée est toujours correcte
+                    if(tournee.isTooFull() || tournee.isTooLong())
+                    {
+                        OK1 = false;
+                    }
+                }
+                //Si on sort de la boucle, c'est qu'un lieu est en trop : on le retire
+                CommandeClient dernierLieu = (CommandeClient) tournee.getLieux().get(tournee.getLieux().size() - 1);
+                tournee.removeLieu(dernierLieu);
+                System.out.println("On retire le client de trop de la tournée");
+                testCodePostal(tournee);
+
+                //Mise à jour de distance, temps, quantité après retrait du dernier client
+                CommandeClient lieuEncoreAvant = (CommandeClient) tournee.getLieux().get(tournee.getLieux().size() - 1);
+                Trajet ceTrajet = daoTrajet.find(lieuEncoreAvant, dernierLieu);
+                tournee.setDistance(tournee.getDistance() - ceTrajet.getDistance());
+                tournee.setDuree(tournee.getDuree() - ceTrajet.getDuree());
+                tournee.setQuantite(tournee.getQuantite() - dernierLieu.getQuantiteVoulue());
+
+                //On ajoute le dépôt pour finir la tournée
+                tournee.addLieu(depot);
+                System.out.println("On ajoute le dépôt pour finir la tournée");
+                testCodePostal(tournee);
+
+
+                //Update distance, temps
+                ceTrajet = daoTrajet.find(lieuEncoreAvant, depot);
                 tournee.setDistance(tournee.getDistance() + ceTrajet.getDistance());
-                
-                //On met à jour la capacité
-                tournee.setQuantite(tournee.getQuantite() + nouveauClient.getQuantiteVoulue());
-                
-                //On retire ce client des possibilités pour le prochain tirage
-                clientsRestants.remove(nouveauClient);
-                
-                //On teste si la tournée est toujours correcte
+                tournee.setDuree(tournee.getDuree() + ceTrajet.getDuree());
+
                 if(tournee.isTooFull() || tournee.isTooLong())
                 {
-                    OK1 = false;
+                    OK2 = false;
                 }
-            }
-            //Si on sort de la boucle, c'est qu'un lieu est en trop : on le retire
-            CommandeClient dernierLieu = (CommandeClient) tournee.getLieux().get(tournee.getLieux().size() - 1);
-            tournee.removeLieu(dernierLieu);
-            
-            //Mise à jour de distance, temps, quantité après retrait du dernier client
-            CommandeClient lieuEncoreAvant = (CommandeClient) tournee.getLieux().get(tournee.getLieux().size() - 1);
-            Trajet ceTrajet = daoTrajet.find(lieuEncoreAvant, dernierLieu);
-            tournee.setDistance(tournee.getDistance() - ceTrajet.getDistance());
-            tournee.setDuree(tournee.getDuree() - ceTrajet.getDuree());
-            tournee.setQuantite(tournee.getQuantite() - dernierLieu.getQuantiteVoulue());
-            
-            //On ajoute le dépôt pour finir la tournée
-            tournee.addLieu(depot);
-
-            
-            //Update distance, temps
-            ceTrajet = daoTrajet.find(lieuEncoreAvant, depot);
-            tournee.setDistance(tournee.getDistance() + ceTrajet.getDistance());
-            tournee.setDuree(tournee.getDuree() + ceTrajet.getDuree());
-            
-            if(!(tournee.isTooFull() || tournee.isTooLong()))
-            {
-                OK2 = true;
-            }
-                                
-            while(OK2 == false)
-            {    
-                //On retire le depôt
-                Depot dernierDepot = (Depot) tournee.getLieux().get(tournee.getLieux().size() - 1);
-                tournee.removeLieu(dernierDepot);
-                
-                //Mise à jour distance et temps
-                CommandeClient derniereCommandeClient = (CommandeClient) tournee.getLieux().get(tournee.getLieux().size() - 1);
-                ceTrajet = daoTrajet.find(derniereCommandeClient, dernierDepot);
-                tournee.setDistance(tournee.getDistance() - ceTrajet.getDistance());
-                tournee.setDuree(tournee.getDuree() - ceTrajet.getDuree());
-
-                //On retire le dernier lieu ajouté
-                tournee.removeLieu(derniereCommandeClient);
-                CommandeClient clientEncoreAvant = (CommandeClient) tournee.getLieux().get(tournee.getLieux().size() - 1);
-                
-                //Mise à jour distance, temps, quantité
-                ceTrajet = daoTrajet.find(clientEncoreAvant, derniereCommandeClient);
-                tournee.setDistance(tournee.getDistance() - ceTrajet.getDistance());
-                tournee.setDuree(tournee.getDuree() - ceTrajet.getDuree());
-                tournee.setQuantite(tournee.getQuantite() - derniereCommandeClient.getQuantiteVoulue());
-                
-                //On ajoute le dépôt
-                tournee.addLieu(depot);  
-                
-                //Mise à jour distance, temps
-                ceTrajet = daoTrajet.find(clientEncoreAvant, depot);
-                tournee.setDistance(tournee.getDistance() + ceTrajet.getDistance());
-                tournee.setDuree(tournee.getDuree() + ceTrajet.getDuree());
-                
-                
-                if(!(tournee.isTooFull() || tournee.isTooLong()))
+                else
                 {
                     OK2 = true;
                 }
-            }
+                System.out.println(tournee.isTooFull());
+                System.out.println(tournee.isTooLong());
+                System.out.println(tournee.getDuree());
+
+                while(OK2 == false)
+                {    
+                    //On retire le depôt
+                    Depot dernierDepot = (Depot) tournee.getLieux().get(tournee.getLieux().size() - 1);
+                    tournee.getLieux().remove(tournee.getLieux().size() - 1);
+                    System.out.println("Deuxième boucle : On retire le dépôt pour retirer le dernier client");
+                    testCodePostal(tournee);
+
+                    //Mise à jour distance et temps
+                    CommandeClient derniereCommandeClient = (CommandeClient) tournee.getLieux().get(tournee.getLieux().size() - 1);
+                    ceTrajet = daoTrajet.find(derniereCommandeClient, dernierDepot);
+                    tournee.setDistance(tournee.getDistance() - ceTrajet.getDistance());
+                    tournee.setDuree(tournee.getDuree() - ceTrajet.getDuree());
+
+                    //On retire le dernier lieu ajouté
+                    tournee.removeLieu(derniereCommandeClient);
+                    System.out.println("Deuxième boucle : On retire le dernier client");
+                    testCodePostal(tournee);
+                    CommandeClient clientEncoreAvant = (CommandeClient) tournee.getLieux().get(tournee.getLieux().size() - 1);
+
+                    //Mise à jour distance, temps, quantité
+                    ceTrajet = daoTrajet.find(clientEncoreAvant, derniereCommandeClient);
+                    tournee.setDistance(tournee.getDistance() - ceTrajet.getDistance());
+                    tournee.setDuree(tournee.getDuree() - ceTrajet.getDuree());
+                    tournee.setQuantite(tournee.getQuantite() - derniereCommandeClient.getQuantiteVoulue());
+
+                    //On ajoute le dépôt
+                    tournee.addLieu(depot);  
+                    System.out.println("Deuxième boucle : On rajoute le dépôt pour finir la tournée");
+                    testCodePostal(tournee);
+
+                    //Mise à jour distance, temps
+                    ceTrajet = daoTrajet.find(clientEncoreAvant, depot);
+                    tournee.setDistance(tournee.getDistance() + ceTrajet.getDistance());
+                    tournee.setDuree(tournee.getDuree() + ceTrajet.getDuree());
+
+
+                    if(tournee.isTooFull() || tournee.isTooLong())
+                    {
+                        OK2 = false;
+                    }
+                    else
+                    {
+                        OK2 = true;
+                    }
+                }
+
+                hypoTourneesTrains.add(tournee);
+            //}
         }
         
-        /*for(HypoTournee hypotournee: hypoTourneesCamions)
-        {
-            hypotournee.setCost(hypotournee.getCamionCost());
-        }
+        System.out.println(hypoTourneesTrains.size() + " tournées hypothétiques générées !");
         
+        float coutMin = 999999999;
         for(HypoTournee hypotournee: hypoTourneesTrains)
         {
             hypotournee.setCost(hypotournee.getTrainCost());
+            System.out.println(hypotournee.getCost());
+            if(hypotournee.getCost() < coutMin)
+            {
+                coutMin = hypotournee.getCost();
+            }
+        }
+        
+        System.out.println(coutMin);
+        /*for(HypoTournee hypotournee: hypoTourneesTrains)
+        {
+            hypotournee.setCost(hypotournee.getTrainCost());
         }*/
+        
+        return hypoTourneesTrains;
     }
     
     /**
@@ -219,6 +275,9 @@ public class AlgoRandom {
         //algoRandom.testChoisirCommandeRandom();
         
         AlgoRandom algoRandom = new AlgoRandom();
-        algoRandom.makeTourneesRandom();
+        for(int j=0; j < 100; j++)
+        {
+            algoRandom.makeTourneesRandom();
+        }
     }
 }

@@ -48,7 +48,7 @@ public class HypoTournee extends CplexTournee {
     
     public boolean isTooFull()
     {
-        return (this.quantite > (Constantes.capaciteMax*2));
+        return (this.quantite > Constantes.capaciteMax);
     }
     
     /**
@@ -60,7 +60,7 @@ public class HypoTournee extends CplexTournee {
         float cout = 0;
         cout += Constantes.coutCamion;
         cout += Constantes.coutDureeCamion * this.getDuree();
-        cout += Constantes.coutTrajetCamion * this.getQuantite();
+        cout += Constantes.coutTrajetCamion * this.getDistance();
         
         return cout;
     }
@@ -75,10 +75,10 @@ public class HypoTournee extends CplexTournee {
         cout += Constantes.coutCamion;
         cout += Constantes.coutSecondeRemorque;
         
-        cout += Constantes.coutDureeCamion * this.getDuree();
+        cout += Constantes.coutDureeCamion * (this.getDuree()/3600);
         
-        cout += Constantes.coutTrajetCamion * this.getQuantite();
-        cout += Constantes.coutTrajetSecondeRemorque * this.getQuantite();
+        cout += Constantes.coutTrajetCamion * (this.getDistance()/1000);
+        cout += Constantes.coutTrajetSecondeRemorque * (this.getDistance()/1000);
         
         return cout;
     }
