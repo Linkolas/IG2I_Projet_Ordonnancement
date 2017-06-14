@@ -12,6 +12,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 /**
@@ -19,6 +21,16 @@ import javax.persistence.OneToMany;
  * @author Nicolas
  */
 @Entity
+@NamedQueries({
+    @NamedQuery(
+            name="CommandeClient.findAllCamions", 
+            query="SELECT c FROM CommandeClient c WHERE c.nombreRemorquesMax=1"
+    ),
+    @NamedQuery(
+            name="CommandeClient.findAllTrains",
+            query="SELECT c FROM CommandeClient c WHERE c.nombreRemorquesMax=2"
+    )
+}) 
 public class CommandeClient extends Lieu implements Serializable {
 
     @Column
