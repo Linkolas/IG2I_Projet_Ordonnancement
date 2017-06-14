@@ -8,6 +8,7 @@ package ordo.algo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import ordo.data.Constantes;
 import ordo.data.dao.jpa.JpaCommandeClientDao;
 import ordo.data.dao.jpa.JpaDepotDao;
 import ordo.data.dao.jpa.JpaLieuDao;
@@ -115,6 +116,7 @@ public class AlgoRandom {
             
             //On ajoute le dépôt pour finir la tournée
             tournee.addLieu(depot);
+
             
             //Update distance, temps
             ceTrajet = daoTrajet.find(lieuEncoreAvant, depot);
@@ -163,6 +165,16 @@ public class AlgoRandom {
                 }
             }
         }
+        
+        /*for(HypoTournee hypotournee: hypoTourneesCamions)
+        {
+            hypotournee.setCost(hypotournee.getCamionCost());
+        }
+        
+        for(HypoTournee hypotournee: hypoTourneesTrains)
+        {
+            hypotournee.setCost(hypotournee.getTrainCost());
+        }*/
     }
     
     /**

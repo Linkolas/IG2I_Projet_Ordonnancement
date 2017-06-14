@@ -8,6 +8,7 @@ package ordo.data.entities;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -133,10 +134,54 @@ public class CommandeClient extends Lieu implements Serializable {
         return 0;
     }
     
-    // <editor-fold defaultstate="collapsed" desc=".equals, .toString, ...">
-    
-    // </editor-fold>
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + Objects.hashCode(this.libelle);
+        hash = 79 * hash + this.nombreRemorquesMax;
+        hash = 79 * hash + Float.floatToIntBits(this.quantiteVoulue);
+        hash = 79 * hash + Float.floatToIntBits(this.dureeService);
+        hash = 79 * hash + Objects.hashCode(this.vehicule);
+        hash = 79 * hash + Objects.hashCode(this.colis);
+        hash = 79 * hash + (this.isLivree ? 1 : 0);
+        return hash;
+    }
 
+    // <editor-fold defaultstate="collapsed" desc=".equals, .toString, ...">
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final CommandeClient other = (CommandeClient) obj;
+        if (this.nombreRemorquesMax != other.nombreRemorquesMax) {
+            return false;
+        }
+        if (Float.floatToIntBits(this.quantiteVoulue) != Float.floatToIntBits(other.quantiteVoulue)) {
+            return false;
+        }
+        if (this.isLivree != other.isLivree) {
+            return false;
+        }
+        if (!Objects.equals(this.libelle, other.libelle)) {
+            return false;
+        }
+        if (!Objects.equals(this.vehicule, other.vehicule)) {
+            return false;
+        }
+        if (!Objects.equals(this.colis, other.colis)) {
+            return false;
+        }
+        return true;
+    }
+
+    // </editor-fold>
     @Override
     public String toString() {
         return "CommandeClient{" + "NUMERO LIEU" + this.getNumeroLieu() + ", libelle=" + libelle + ", nombreRemorquesMax=" + nombreRemorquesMax + ", quantiteVoulue=" + quantiteVoulue + ", dureeService=" + dureeService + ", vehicule=" + vehicule.getId() + ", colis=" + colis + ", isLivree=" + isLivree + "}\n";
