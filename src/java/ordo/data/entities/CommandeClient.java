@@ -89,6 +89,10 @@ public class CommandeClient extends Lieu implements Serializable {
 
     public void addColis(Colis colis) {
         this.colis.add(colis);
+        
+        if(colis.getCommande() != this) {
+            colis.setCommande(this);
+        }
     }
     
     public void delColis(Colis colis) {

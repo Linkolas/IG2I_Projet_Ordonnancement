@@ -59,6 +59,10 @@ public class Colis implements Serializable {
 
     public void setCommande(CommandeClient commande) {
         this.commande = commande;
+        
+        if(!commande.getColis().contains(this)) {
+            commande.addColis(this);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc=".equals, .toString, ...">
