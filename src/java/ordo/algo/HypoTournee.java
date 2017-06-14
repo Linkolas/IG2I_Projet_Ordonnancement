@@ -13,14 +13,15 @@ import ordo.data.Constantes;
  * @author Axelle
  */
 public class HypoTournee extends CplexTournee {
-    private long duree;
+    private float duree;
     private float quantite;
+    private float distance;
 
-    public long getDuree() {
+    public float getDuree() {
         return duree;
     }
 
-    public void setDuree(long duree) {
+    public void setDuree(float duree) {
         this.duree = duree;
     }
 
@@ -31,6 +32,14 @@ public class HypoTournee extends CplexTournee {
     public void setQuantite(float quantite) {
         this.quantite = quantite;
     }
+
+    public float getDistance() {
+        return distance;
+    }
+
+    public void setDistance(float distance) {
+        this.distance = distance;
+    }
     
     public boolean isTooLong()
     {
@@ -39,6 +48,38 @@ public class HypoTournee extends CplexTournee {
     
     public boolean isTooFull()
     {
-        return (this.quantite > Constantes.capaciteMax);
+        return (this.quantite > (Constantes.capaciteMax*2));
+    }
+    
+    /**
+     * Donne le cout d'une tournée si elle ne contient que des clients camions
+     * @return Le coût de la tournée
+     */
+    public float getCamionCost()
+    {
+        float cout = 0;
+        cout += Constantes.coutCamion;
+        cout += Constantes.coutDureeCamion * this.getDuree();
+        cout += Constantes.coutTrajetCamion * this.getQuantite();
+        
+        return cout;
+    }
+    
+    /**
+     * Donne le cout d'une tournée si elle ne contient que des clients trains
+     * @return Le coût de la tournée
+     */    
+    public float getTrainCost()
+    {
+        float cout = 0;
+        cout += Constantes.coutCamion;
+        cout += Constantes.coutSecondeRemorque;
+        
+        cout += Constantes.coutDureeCamion * this.getDuree();
+        
+        cout += Constantes.coutTrajetCamion * this.getQuantite();
+        cout += Constantes.coutTrajetSecondeRemorque * this.getQuantite();
+        
+        return cout;
     }
 }
