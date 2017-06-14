@@ -99,21 +99,19 @@ public class Algo {
         // On crée une liste de véhicule Action pour les clients
         List<VehiculeAction> lva = new ArrayList();
         
-        // On crée un Véhicule vide qui nous servira de point se stockage pour les clients
-        Vehicule tmp_v;
-        
-        // On crée un Véhicule Action vide qui nous servira de point se stockage pour les clients
-        VehiculeAction tmp_va;
-        
-        // On crée un colis vide qui nous servira de point de stockage 
-        Colis tmp_c;
         
         //On boucle sur les commandes clients
         for (Iterator<CommandeClient> iter = ccc.iterator(); iter.hasNext(); ) {
             CommandeClient cc = iter.next();
-            tmp_v = new Vehicule();
+            
+            // On crée un Véhicule vide qui nous servira de point se stockage pour les clients
+            Vehicule tmp_v = new Vehicule();
+            
+            // On crée deux colis vide qui nous servira de point de stockage 
+            Colis tmp_c = new Colis();
+            Colis tmp_c2 = new Colis();
+            
             if(cc.getQuantiteVoulue() > Constantes.capaciteMax){
-                tmp_c = new Colis();
                 
                 tmp_c.setCommande(cc);
                 tmp_c.setQuantite(Constantes.capaciteMax);
@@ -121,11 +119,10 @@ public class Algo {
                 
                 
                 // On fait un nouveau colis avec le restant de la commande
-                tmp_c = new Colis();
-                tmp_c.setCommande(cc);
-                tmp_c.setQuantite(cc.getQuantiteVoulue() - Constantes.capaciteMax);
+                tmp_c2.setCommande(cc);
+                tmp_c2.setQuantite(cc.getQuantiteVoulue() - Constantes.capaciteMax);
                 tmp_v.addSwapBody(new SwapBody());
-                tmp_v.getSwapBodies().get(1).addColis(tmp_c);
+                tmp_v.getSwapBodies().get(1).addColis(tmp_c2);
                 tmp_v.add(cc);
             }
             else{
@@ -200,12 +197,13 @@ public class Algo {
             // On persiste les véhicules
             //System.out.println(v);
             daoVehicule.create(v);
-            
-            for(CommandeClient cc: v.getCommandes()) {
-                cc.setLivree(true);
-                daoCommandeClient.update(cc);
-            }
         }
+        
+        for(CommandeClient cc: daoCommandeClient.findAll()) {
+            cc.setLivree(true);
+            daoCommandeClient.update(cc);
+        }
+        
     }
     
     public static void makeSolutionV2(){
