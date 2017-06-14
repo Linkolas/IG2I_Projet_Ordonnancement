@@ -29,6 +29,7 @@ import ordo.data.entities.SwapLocation;
 public class CplexSolve {
     
     private ArrayList<CplexTournee> tournees = new ArrayList<>();
+    private ArrayList<CplexTournee> results = new ArrayList<>();
     private IloCplex cplex;
     private HashMap<Lieu, List<IloNumVar>> constraints = new HashMap();
     
@@ -88,12 +89,31 @@ public class CplexSolve {
             if(cplex.solve()) {
                 System.out.println("");
                 System.out.println("Solution status: " + cplex.getStatus());
-                System.out.println("\tCost = " + cplex.getObjValue()); 
+                System.out.println("\tCost = " + cplex.getObjValue());
             }
             
         } catch (IloException ex) {
             Logger.getLogger(CplexSolve.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public List<CplexTournee> getResults() {
+        try {
+            if(cplex.getStatus() != IloCplex.Status.Optimal) {
+                return results;
+            }
+            
+            for(CplexTournee ct: tournees) {
+                double val = cplex.getValue(ct.getCplexVar());
+                if(val > 0) {
+                    results.add(ct);
+                }
+            }
+            
+        } catch (IloException ex) {
+            Logger.getLogger(CplexSolve.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return results;
     }
     
             
@@ -104,6 +124,8 @@ public class CplexSolve {
             cp.addTournee(ct);
         }
         cp.solve();
+        List<CplexTournee> results = cp.getResults();
+        System.out.println("DONE.");
     }
     
     public static void tests() {
