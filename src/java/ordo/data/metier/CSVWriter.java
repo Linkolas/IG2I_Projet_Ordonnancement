@@ -291,6 +291,8 @@ public class CSVWriter
         if(listeColis.size()==2)
         {
             valeurs[INDEX_SWAP_BODY_2_QUANTITY] = ""+listeColis.get(1).getQuantite();   
+        } else {
+            valeurs[INDEX_SWAP_BODY_2_QUANTITY] = "0";
         }
     }
     
