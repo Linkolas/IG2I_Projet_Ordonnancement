@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import ordo.data.entities.CommandeClient;
@@ -31,7 +32,7 @@ public class CplexSolve {
     private ArrayList<CplexTournee> tournees = new ArrayList<>();
     private ArrayList<CplexTournee> results = new ArrayList<>();
     private IloCplex cplex;
-    private HashMap<Lieu, List<IloNumVar>> constraints = new HashMap();
+    private HashMap<CommandeClient, List<IloNumVar>> constraints = new HashMap();
     
     public CplexSolve() {
         try {
@@ -51,12 +52,16 @@ public class CplexSolve {
                     continue;
                 }
                 
-                List<IloNumVar> lieuConstraints = constraints.get(lieu);
+                CommandeClient cc = (CommandeClient) lieu;
+                
+                List<IloNumVar> lieuConstraints = constraints.get(cc);
+                
                 if(lieuConstraints == null) {
                     lieuConstraints = new ArrayList<>();
                 }
+                
                 lieuConstraints.add(var);
-                constraints.put(lieu, lieuConstraints);
+                constraints.put(cc, lieuConstraints);
             }
             
             tournees.add(tournee);
@@ -67,12 +72,20 @@ public class CplexSolve {
     }
     
     public void solve() {
+        System.out.println("Il y a " + tournees.size() + " tournées enregistrées.");
+        System.out.println("Il y a " + constraints.keySet().size() + " CommandeClient à traiter.");
+        
         try {
             IloLinearNumExpr objective = cplex.linearNumExpr();
             for(CplexTournee ct: tournees) {
                 objective.addTerm(ct.getCplexVar(), ct.getCost());
             }
             cplex.addMinimize(objective);
+            
+            Set<CommandeClient> keySet = constraints.keySet();
+            for(CommandeClient cc: keySet) {
+                System.out.println("Contrainte " + cc.getNumeroLieu());
+            }
             
             Collection<List<IloNumVar>> listConstraints = constraints.values();
             for(List<IloNumVar> listVars: listConstraints) {

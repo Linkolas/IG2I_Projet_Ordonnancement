@@ -137,6 +137,7 @@ public class CommandeClient extends Lieu implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
+        hash = (int) (79 * hash + getId());
         hash = 79 * hash + Objects.hashCode(this.libelle);
         hash = 79 * hash + this.nombreRemorquesMax;
         hash = 79 * hash + Float.floatToIntBits(this.quantiteVoulue);
@@ -159,6 +160,9 @@ public class CommandeClient extends Lieu implements Serializable {
             return false;
         }
         final CommandeClient other = (CommandeClient) obj;
+        if(!Objects.equals(getId(), other.getId())) {
+            return false;
+        }
         if (this.nombreRemorquesMax != other.nombreRemorquesMax) {
             return false;
         }

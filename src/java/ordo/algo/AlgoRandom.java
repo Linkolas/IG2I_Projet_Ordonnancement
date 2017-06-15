@@ -115,7 +115,7 @@ public class AlgoRandom {
                 tournees.add(tournee);
             }
             
-            System.out.println("Temps écoulé : " + ((System.currentTimeMillis() - beginTime)/1000));
+            System.out.println("Temps écoulé : " + ((System.currentTimeMillis() - beginTime)/1000) + "/" + timeoutSeconds + "s");
             System.out.println(tournees.size() + " tournées hypothétiques générées !");
         }
         
@@ -185,13 +185,15 @@ public class AlgoRandom {
     
     public static void main(String[] args) 
     {
+        int generateTourneesDuringSeconds = 30;
+        
         System.out.println("STEP 1 / READING FLEET.CSV");
         CSVReader reader = new CSVReader();
         reader.readFleet();
         
         
         System.out.println("STEP 2 / GENERATING TOURNEES");
-        List<HypoTournee> hypoTournees = makeTourneesRandom(30);
+        List<HypoTournee> hypoTournees = makeTourneesRandom(generateTourneesDuringSeconds);
         List<CplexTournee> tournees = new ArrayList<>(hypoTournees);
         
         System.out.println("STEP 3 / SOLVING CPLEX");
