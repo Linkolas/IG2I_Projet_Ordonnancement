@@ -25,6 +25,7 @@ import ordo.data.entities.Depot;
 import ordo.data.entities.Lieu;
 import ordo.data.entities.Trajet;
 import ordo.data.metier.CSVReader;
+import ordo.data.metier.CSVWriter;
 
 /**
  *
@@ -208,6 +209,10 @@ public class AlgoRandom {
         System.out.println("STEP 4 / SAVING RESULTS");
         DeCplexifier dec = new DeCplexifier();
         dec.CplexTourneesToSolution(results);
+        
+        System.out.println("STEP 5 / WRITING SOLUTION.CSV");
+        CSVWriter writer = new CSVWriter();
+        writer.WriteCSV();
     }
     
     public static void setConstantes() {

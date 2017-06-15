@@ -36,6 +36,7 @@
                 </ul>
                 
                 <ul class="nav navbar-nav links" style="float: right;">
+                    <li role="presentation"><button class="btn btn-danger" id="calculate_wip">CALCULER (WIP)</button></li>
                     <li role="presentation"><button class="btn btn-success" id="calculate">CALCULER</button></li>
                 </ul>
             </div>

@@ -25,6 +25,10 @@
         <servlet-class>ordo.servlet.api.APICalculateController</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>APICalculateExperimentalController</servlet-name>
+        <servlet-class>ordo.servlet.api.APICalculateExperimentalController</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>APIGenerateController</servlet-name>
         <servlet-class>ordo.servlet.api.APIGenerateController</servlet-class>
     </servlet>
@@ -51,6 +55,10 @@
     <servlet-mapping>
         <servlet-name>APICalculateController</servlet-name>
         <url-pattern>/api/calculate</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>APICalculateExperimentalController</servlet-name>
+        <url-pattern>/api/calculatewip</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>APIGenerateController</servlet-name>

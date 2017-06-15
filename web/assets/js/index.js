@@ -8,6 +8,14 @@ $(function() {
         });
     });
     
+    $("#calculate_wip").click(function() {
+        $("#calculate_wip").html("Calcul en cours...");
+        $.get("api/calculatewip", function(data) {
+            $("#calculate_wip").html("CALCULER (WIP)");
+            location.reload();
+        });
+    });
+    
     $("#loadData").click(function() {
         $("#loadData").html("Chargement en cours...");
         $.get("upload", function(data) {
