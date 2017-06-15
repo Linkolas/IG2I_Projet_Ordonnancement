@@ -7,6 +7,7 @@ package ordo.data.entities;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -116,26 +117,62 @@ public class VehiculeAction implements Serializable {
 
     // <editor-fold defaultstate="collapsed" desc=".equals, .toString, ...">
     private static final long serialVersionUID = 1L;
-    
+
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        int hash = 5;
+        hash = 83 * hash + Objects.hashCode(this.id);
+        hash = 83 * hash + Objects.hashCode(this.enumAction);
+        hash = 83 * hash + Float.floatToIntBits(this.duree);
+        hash = 83 * hash + Float.floatToIntBits(this.distance);
+        hash = 83 * hash + Objects.hashCode(this.vehicule);
+        hash = 83 * hash + Objects.hashCode(this.depart);
+        hash = 83 * hash + Objects.hashCode(this.arrivee);
+        hash = 83 * hash + (this.isTrain ? 1 : 0);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof VehiculeAction)) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
-        VehiculeAction other = (VehiculeAction) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final VehiculeAction other = (VehiculeAction) obj;
+        if (Float.floatToIntBits(this.duree) != Float.floatToIntBits(other.duree)) {
+            return false;
+        }
+        if (Float.floatToIntBits(this.distance) != Float.floatToIntBits(other.distance)) {
+            return false;
+        }
+        if (this.isTrain != other.isTrain) {
+            return false;
+        }
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        if (this.enumAction != other.enumAction) {
+            return false;
+        }
+        if (!Objects.equals(this.vehicule, other.vehicule)) {
+            return false;
+        }
+        if (!Objects.equals(this.depart, other.depart)) {
+            return false;
+        }
+        if (!Objects.equals(this.arrivee, other.arrivee)) {
             return false;
         }
         return true;
     }
+    
+    
+    
 
     @Override
     public String toString() {

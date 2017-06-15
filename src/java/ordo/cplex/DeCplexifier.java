@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import static ordo.cplex.CplexSolve.generateTournees;
 import ordo.data.Constantes;
+import ordo.data.dao.jpa.JpaColisDao;
 import ordo.data.dao.jpa.JpaCommandeClientDao;
 import ordo.data.dao.jpa.JpaDepotDao;
 import ordo.data.dao.jpa.JpaSwapLocationDao;
@@ -33,9 +34,12 @@ import ordo.data.entities.VehiculeAction;
 public class DeCplexifier {
     
     public void CplexTourneesToSolution(ArrayList<CplexTournee> tournees) {
+        System.out.println("CPLEX TO SOLUTION");
+        
         JpaTrajetDao trajetDao = JpaTrajetDao.getInstance();
         JpaCommandeClientDao ccDao = JpaCommandeClientDao.getInstance();
         JpaVehiculeDao vehiDao = JpaVehiculeDao.getInstance();
+        JpaColisDao colisDao = JpaColisDao.getInstance();
         
         List<CommandeClient> commandes = new ArrayList<>();
         
@@ -73,6 +77,7 @@ public class DeCplexifier {
                     CommandeClient cc = (CommandeClient) lieu;
                     commandes.add(cc);
                     vehi.add(cc);
+                    cc.setLivree(true);
                     
                     VehiculeAction vat = new VehiculeAction();
                     vat.setDepart(lieu);
@@ -93,12 +98,7 @@ public class DeCplexifier {
                         float qdispo_sw1 = Constantes.capaciteMax - vehi.getSwapBodies().get(0).getQuantite();
                         float qdispo_sw2 = Constantes.capaciteMax - vehi.getSwapBodies().get(1).getQuantite();
                         
-                        System.out.println("QDispo = " + qdispo_sw1);
-                        System.out.println("QDispo = " + qdispo_sw2);
-                        System.out.println("");
-                        
                         if(qdispo_sw1 > cc.getQuantiteVoulue()) {
-                            System.out.println("COLIS 1");
                             
                             Colis colis = new Colis();
                             colis.setCommande(cc);
@@ -110,7 +110,6 @@ public class DeCplexifier {
                             float remaining = cc.getQuantiteVoulue();
                             
                             if(qdispo_sw1 > 0) {
-                                System.out.println("COLIS 1");
                                 Colis colis = new Colis();
                                 colis.setCommande(cc);
                                 colis.setQuantite(qdispo_sw1);
@@ -121,7 +120,6 @@ public class DeCplexifier {
                             }
                             
                             if(remaining > 0) {
-                                System.out.println("COLIS 2");
                                 Colis colis2 = new Colis();
                                 colis2.setCommande(cc);
                                 colis2.setQuantite(remaining);
@@ -143,12 +141,10 @@ public class DeCplexifier {
             vehiDao.create(vehi);
         }
         
-        
-        for(CommandeClient cc: ccDao.findAll()) {
-            cc.setLivree(true);
+        for(CommandeClient cc: commandes) {
+            // Warning: The attribute [id] of class [ordo.data.entities.CommandeClient] is mapped to a primary key column in the database. Updates are not allowed.
             ccDao.update(cc);
         }
-        
     }
     
     
@@ -167,6 +163,20 @@ public class DeCplexifier {
         DeCplexifier dec = new DeCplexifier();
         dec.CplexTourneesToSolution(results);
         
+        /*
+        JpaCommandeClientDao ccDao = JpaCommandeClientDao.getInstance();
+        Collection<CommandeClient> ccs = ccDao.findAll(false);
+        for(CommandeClient cc: ccs) {
+            if(!(cc.getNumeroLieu().equals("C1") || cc.getNumeroLieu().equals("C2"))) {
+                continue;
+            }
+            
+            System.out.println("Client " + cc.getNumeroLieu() + " / colis : " + cc.getColis().size());
+            
+            cc.setLivree(true);
+            ccDao.update(cc);
+        }
+        */
     }
     
     public static List<CplexTournee> generateTournees() {

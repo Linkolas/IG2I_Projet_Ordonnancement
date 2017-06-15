@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,7 +34,7 @@ public class Vehicule implements Serializable {
     private long id;
     @OneToMany(mappedBy = "vehicule", cascade={CascadeType.PERSIST})
     private List<SwapBody> swapBodies = new ArrayList<>();
-    @OneToMany(mappedBy = "vehicule", cascade={CascadeType.MERGE})
+    @OneToMany(mappedBy = "vehicule", cascade={CascadeType.PERSIST})
     private List<CommandeClient> commandes = new ArrayList<>();
     @OneToMany(mappedBy = "vehicule", cascade={CascadeType.PERSIST})
     private List<VehiculeAction> actions = new ArrayList<>();
@@ -182,8 +183,9 @@ public class Vehicule implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 97 * hash + (int) (this.id ^ (this.id >>> 32));
+        int hash = 7;
+        hash = 53 * hash + (int) (this.id ^ (this.id >>> 32));
+        hash = 53 * hash + Objects.hashCode(this.solution);
         return hash;
     }
 
@@ -200,6 +202,9 @@ public class Vehicule implements Serializable {
         }
         final Vehicule other = (Vehicule) obj;
         if (this.id != other.id) {
+            return false;
+        }
+        if (!Objects.equals(this.solution, other.solution)) {
             return false;
         }
         return true;

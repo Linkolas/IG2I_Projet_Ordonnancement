@@ -6,6 +6,7 @@
 package ordo.data.entities;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -84,27 +85,48 @@ public class Trajet implements Serializable {
 
     // <editor-fold defaultstate="collapsed" desc=".equals, .toString, ...">
     private static final long serialVersionUID = 1L;
-    
+
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        int hash = 3;
+        hash = 53 * hash + Objects.hashCode(this.id);
+        hash = 53 * hash + this.duree;
+        hash = 53 * hash + this.distance;
+        hash = 53 * hash + Objects.hashCode(this.depart);
+        hash = 53 * hash + Objects.hashCode(this.destination);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Trajet)) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
-        Trajet other = (Trajet) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Trajet other = (Trajet) obj;
+        if (this.duree != other.duree) {
+            return false;
+        }
+        if (this.distance != other.distance) {
+            return false;
+        }
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        if (!Objects.equals(this.depart, other.depart)) {
+            return false;
+        }
+        if (!Objects.equals(this.destination, other.destination)) {
             return false;
         }
         return true;
     }
-
+    
     @Override
     public String toString() {
         return "ordo.data.entities.Trajet[ id=" + id + " ]";

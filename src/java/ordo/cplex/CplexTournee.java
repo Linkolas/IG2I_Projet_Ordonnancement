@@ -8,6 +8,7 @@ package ordo.cplex;
 import ilog.concert.IloNumVar;
 import java.util.ArrayList;
 import ordo.data.Constantes;
+import ordo.data.dao.jpa.JpaTrajetDao;
 import ordo.data.entities.CommandeClient;
 import ordo.data.entities.Lieu;
 
@@ -68,6 +69,6 @@ public class CplexTournee {
             qtity += cc.getQuantiteVoulue();
         }
         
-        return qtity <= Constantes.capaciteMax;
+        return qtity > Constantes.capaciteMax;
     }
 }

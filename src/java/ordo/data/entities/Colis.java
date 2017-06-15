@@ -52,6 +52,10 @@ public class Colis implements Serializable {
 
     public void setSwapBody(SwapBody swapBody) {
         this.swapBody = swapBody;
+        
+        if(!swapBody.getColis().contains(this)) {
+            swapBody.addColis(this);
+        }
     }
 
     public CommandeClient getCommande() {
@@ -68,13 +72,14 @@ public class Colis implements Serializable {
 
     // <editor-fold defaultstate="collapsed" desc=".equals, .toString, ...">
 
+    
+    
+    // </editor-fold>
+
     @Override
     public int hashCode() {
         int hash = 7;
         hash = 73 * hash + (int) (this.id ^ (this.id >>> 32));
-        hash = 73 * hash + Float.floatToIntBits(this.quantite);
-        hash = 73 * hash + Objects.hashCode(this.swapBody);
-        hash = 73 * hash + Objects.hashCode(this.commande);
         return hash;
     }
 
@@ -93,19 +98,8 @@ public class Colis implements Serializable {
         if (this.id != other.id) {
             return false;
         }
-        if (Float.floatToIntBits(this.quantite) != Float.floatToIntBits(other.quantite)) {
-            return false;
-        }
-        if (!Objects.equals(this.swapBody, other.swapBody)) {
-            return false;
-        }
-        if (!Objects.equals(this.commande, other.commande)) {
-            return false;
-        }
         return true;
     }
-    
-    // </editor-fold>
     
     
 }

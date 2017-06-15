@@ -6,6 +6,7 @@
 package ordo.data.entities;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -99,8 +100,9 @@ public class Lieu implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 97 * hash + (int) (this.id ^ (this.id >>> 32));
+        int hash = 5;
+        hash = 83 * hash + (int) (this.id ^ (this.id >>> 32));
+        hash = 83 * hash + Objects.hashCode(this.codePostal);
         return hash;
     }
 
@@ -119,9 +121,13 @@ public class Lieu implements Serializable {
         if (this.id != other.id) {
             return false;
         }
+        if (!Objects.equals(this.codePostal, other.codePostal)) {
+            return false;
+        }
         return true;
     }
 
+    
     
     // </editor-fold>
 
