@@ -68,7 +68,7 @@ public class HypoTournee extends CplexTournee {
         
         cout += Constantes.coutCamion;
         cout += Constantes.coutDureeCamion * (this.getDuree()/3600);
-        cout += Constantes.coutTrajetCamion * (this.getDistance()/3600);
+        cout += Constantes.coutTrajetCamion * (this.getDistance()/1000);
         
         if(type == Type.TRAIN) {
             cout += Constantes.coutSecondeRemorque;
