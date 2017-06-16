@@ -20,6 +20,7 @@ import ordo.data.entities.Colis;
 import ordo.data.entities.CommandeClient;
 import ordo.data.entities.Depot;
 import ordo.data.entities.Lieu;
+import ordo.data.entities.SwapBody;
 import ordo.data.entities.Vehicule;
 import ordo.data.entities.VehiculeAction;
 import static ordo.data.entities.VehiculeAction.VehiculeActionIdComparator;
@@ -288,12 +289,19 @@ public class CSVWriter
         valeurs[INDEX_SWAP_ACTION] = "NONE";
         CommandeClient commande = jpaCommandeClientDao.find(vehiculeAction.getArrivee().getId());
         List<Colis> listeColis = commande.getColis();
-        valeurs[INDEX_SWAP_BODY_1_QUANTITY] = ""+listeColis.get(0).getQuantite();
-        if(listeColis.size()==2)
-        {
-            valeurs[INDEX_SWAP_BODY_2_QUANTITY] = ""+listeColis.get(1).getQuantite();   
-        } else {
-            valeurs[INDEX_SWAP_BODY_2_QUANTITY] = "0";
+        
+        valeurs[INDEX_SWAP_BODY_1_QUANTITY] = "0";
+        valeurs[INDEX_SWAP_BODY_2_QUANTITY] = "0";
+        
+        SwapBody camionSB1 = vehiculeAction.getVehicule().getSwapBodies().get(0);
+        
+        for(Colis colis: listeColis) {
+            SwapBody colisSB = colis.getSwapBody();
+            if(colisSB.equals(camionSB1)) {
+                valeurs[INDEX_SWAP_BODY_1_QUANTITY] = ""+colis.getQuantite();
+            } else {
+                valeurs[INDEX_SWAP_BODY_2_QUANTITY] = ""+colis.getQuantite();
+            }
         }
     }
     
@@ -328,6 +336,9 @@ public class CSVWriter
     
     public static void main(String[] args)
     {
+        CSVReader reader = new CSVReader();
+        reader.readFleet();
+        
         CSVWriter csvWriter = new CSVWriter();
         csvWriter.WriteCSV();
     }
