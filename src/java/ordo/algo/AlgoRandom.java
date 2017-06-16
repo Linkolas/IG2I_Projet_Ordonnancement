@@ -95,6 +95,10 @@ public class AlgoRandom {
                     clientsRestants.remove(nouveauClient);
                 }
 
+                // Le dernier lieu ajouté a fait dépasser un limite, on l'enlève
+                tournee.removeLastLieu();
+                
+                // On doit maintenant retourner au dépot
                 tournee.addLieu(depot);
 
                 while(tournee.isTooFull() || tournee.isTooLong()) {
