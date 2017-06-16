@@ -88,7 +88,7 @@ public class CSVWriter
             for(Vehicule vehicule: vehicules)
             {
                 valeurs[INDEX_TOUR_ID] = 'R'+ i.toString();
-                
+                        
                 // Récupération de toutes les actions de la tournée, qu'on trie par ordre dans la tournée
                 vehiculeActions = jpaVehiculeActionDao.findByVehicule(vehicule);
                 Collections.sort(vehiculeActions, VehiculeActionIdComparator);
@@ -104,6 +104,7 @@ public class CSVWriter
                     if(j == 1)
                     {
                         ecrirePremiereAction(valeurs, vehicule);
+                        j++;
                     }
                     // Toutes les autres actions sauf le retour au dépôt
                     else
@@ -124,14 +125,14 @@ public class CSVWriter
                             // On continue donc jusqu'à la prochaine itération
                             if(vehiculeAction.getEnumAction() == VehiculeAction.EnumAction.DEPLACEMENT)
                             {
-                                j++;
                                 continue;
                             }
                             
                             // On livre un client
                             else
                             {
-                                ecritureLivraisonClient(valeurs, vehiculeAction);
+                                ecritureLivraisonClient(valeurs, vehiculeAction); 
+                                j++;
                             }
                         }
                         
@@ -139,14 +140,14 @@ public class CSVWriter
                         else
                         {                            
                             ecritureSwapActions(valeurs, vehiculeAction);
+                            j++;
                         }
                     }
                     
                     ecrireLigne(valeurs, filewriter);
-                    j++;
                 }
                 
-                valeurs[INDEX_TOUR_POSITION] = Integer.toString(j-1);
+                valeurs[INDEX_TOUR_POSITION] = Integer.toString(j);
                 ecrireDerniereAction(valeurs, vehicule, filewriter);
                 
                 i++;
