@@ -122,7 +122,8 @@ public class CplexSolve {
         results = new ArrayList<>();
         
         try {
-            if(cplex.getStatus() != IloCplex.Status.Optimal) {
+            if(         cplex.getStatus() != IloCplex.Status.Optimal
+                    &&  cplex.getStatus() != IloCplex.Status.Feasible) {
                 return results;
             }
             
