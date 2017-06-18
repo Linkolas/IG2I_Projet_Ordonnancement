@@ -42,6 +42,14 @@ public class CplexSolve {
         }
     }
     
+    public void setTimeLimit(int seconds) {
+        try {
+            cplex.setParam(IloCplex.Param.TimeLimit, seconds);
+        } catch (IloException ex) {
+            Logger.getLogger(CplexSolve.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public void addTournee(CplexTournee tournee) {
         try {
             IloNumVar var = cplex.boolVar();

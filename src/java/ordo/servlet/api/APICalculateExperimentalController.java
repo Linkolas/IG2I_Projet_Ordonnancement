@@ -46,9 +46,9 @@ public class APICalculateExperimentalController extends HttpServlet {
         
         String applicationPath = request.getServletContext().getRealPath("");
         String uploadFilePath = applicationPath + File.separator + UPLOAD_DIR + File.separator;
-        System.out.println(uploadFilePath + "Solution.csv");
         
         int generateTourneesDuringSeconds = 30;
+        int cplexSolveLimitSeconds = generateTourneesDuringSeconds;
         
         System.out.println("STEP 1 / READING FLEET.CSV");
         CSVReader reader = new CSVReader();
@@ -64,6 +64,7 @@ public class APICalculateExperimentalController extends HttpServlet {
         for(CplexTournee ct: tournees) {
             cp.addTournee(ct);
         }
+        cp.setTimeLimit(cplexSolveLimitSeconds);
         cp.solve();
         ArrayList<CplexTournee> results = cp.getResults();
         System.out.println("Results found : " + results.size());
