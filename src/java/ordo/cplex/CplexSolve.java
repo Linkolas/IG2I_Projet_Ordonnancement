@@ -81,7 +81,7 @@ public class CplexSolve {
     
     public void solve() {
         System.out.println("Il y a " + tournees.size() + " tournées enregistrées.");
-        System.out.println("Il y a " + constraints.keySet().size() + " CommandeClient à traiter.");
+        System.out.println("Il y a " + constraints.keySet().size() + " CommandeClient (= contraintes) à traiter.");
         
         try {
             IloLinearNumExpr objective = cplex.linearNumExpr();
@@ -89,11 +89,6 @@ public class CplexSolve {
                 objective.addTerm(ct.getCplexVar(), ct.getCost());
             }
             cplex.addMinimize(objective);
-            
-            Set<CommandeClient> keySet = constraints.keySet();
-            for(CommandeClient cc: keySet) {
-                System.out.println("Contrainte " + cc.getNumeroLieu());
-            }
             
             Collection<List<IloNumVar>> listConstraints = constraints.values();
             for(List<IloNumVar> listVars: listConstraints) {
