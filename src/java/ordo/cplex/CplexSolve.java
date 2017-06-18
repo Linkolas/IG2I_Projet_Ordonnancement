@@ -11,6 +11,7 @@ import ilog.concert.IloNumVar;
 import ilog.concert.IloObjective;
 import ilog.concert.IloRange;
 import ilog.cplex.IloCplex;
+import ilog.cplex.IloCplex.MIPEmphasis;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -45,6 +46,57 @@ public class CplexSolve {
     public void setTimeLimit(int seconds) {
         try {
             cplex.setParam(IloCplex.Param.TimeLimit, seconds);
+        } catch (IloException ex) {
+            Logger.getLogger(CplexSolve.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public enum MIPEmphasis {
+        BALANCED(ilog.cplex.IloCplex.MIPEmphasis.Balanced),
+        FEASIBILITY(ilog.cplex.IloCplex.MIPEmphasis.Feasibility),
+        OPTIMALITY(ilog.cplex.IloCplex.MIPEmphasis.Optimality),
+        BESTBOUND(ilog.cplex.IloCplex.MIPEmphasis.BestBound),
+        HIDDENFEAS(ilog.cplex.IloCplex.MIPEmphasis.HiddenFeas);
+        
+        private final int value;
+        
+        MIPEmphasis(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
+    
+    public void setEmphasis(MIPEmphasis emphasis) {
+        try {
+            cplex.setParam(IloCplex.Param.Emphasis.MIP, emphasis.getValue());
+        } catch (IloException ex) {
+            Logger.getLogger(CplexSolve.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private boolean autoTune = false;
+    public void setAutoTune(boolean doIt) {
+        autoTune = doIt;
+    }
+    
+    public void setCutParams() {
+        try {
+            cplex.setParam(IloCplex.Param.MIP.Cuts.Cliques, 3);
+            cplex.setParam(IloCplex.Param.MIP.Cuts.Covers, 3);
+            cplex.setParam(IloCplex.Param.MIP.Cuts.Disjunctive, 3);
+            cplex.setParam(IloCplex.Param.MIP.Cuts.FlowCovers, 2);
+            cplex.setParam(IloCplex.Param.MIP.Cuts.GUBCovers, 2);
+            cplex.setParam(IloCplex.Param.MIP.Cuts.Gomory, 2);
+            cplex.setParam(IloCplex.Param.MIP.Cuts.Implied, 2);
+            cplex.setParam(IloCplex.Param.MIP.Cuts.LiftProj, 3);
+            cplex.setParam(IloCplex.Param.MIP.Cuts.LocalImplied, 3);
+            cplex.setParam(IloCplex.Param.MIP.Cuts.MCFCut, 2);
+            cplex.setParam(IloCplex.Param.MIP.Cuts.MIRCut, 2);
+            cplex.setParam(IloCplex.Param.MIP.Cuts.PathCut, 2);
+            cplex.setParam(IloCplex.Param.MIP.Cuts.ZeroHalfCut, 2);
         } catch (IloException ex) {
             Logger.getLogger(CplexSolve.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -99,6 +151,9 @@ public class CplexSolve {
                 cplex.addEq(contr, 1);
             }
             
+            if(autoTune) {
+                cplex.tuneParam();
+            }
             
             cplex.exportModel("cplex_model.lp");
             

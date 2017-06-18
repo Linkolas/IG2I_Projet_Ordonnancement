@@ -65,6 +65,7 @@ public class APICalculateExperimentalController extends HttpServlet {
             cp.addTournee(ct);
         }
         cp.setTimeLimit(cplexSolveLimitSeconds);
+        cp.setEmphasis(CplexSolve.MIPEmphasis.OPTIMALITY);
         cp.solve();
         ArrayList<CplexTournee> results = cp.getResults();
         System.out.println("Results found : " + results.size());

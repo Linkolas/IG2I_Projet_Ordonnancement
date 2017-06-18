@@ -5,6 +5,7 @@
  */
 package ordo.algo;
 
+import ilog.cplex.IloCplex;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -209,6 +210,7 @@ public class AlgoRandom {
             cp.addTournee(ct);
         }
         cp.setTimeLimit(cplexSolveLimitSeconds);
+        cp.setEmphasis(CplexSolve.MIPEmphasis.OPTIMALITY);
         cp.solve();
         ArrayList<CplexTournee> results = cp.getResults();
         System.out.println("Results found : " + results.size());
