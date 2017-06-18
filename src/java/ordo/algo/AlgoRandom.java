@@ -6,8 +6,10 @@
 package ordo.algo;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import ordo.cplex.CplexSolve;
 import ordo.cplex.CplexTournee;
 import ordo.cplex.DeCplexifier;
@@ -41,7 +43,7 @@ public class AlgoRandom {
         }
     }
     
-    public static List<HypoTournee> makeTourneesRandom(long timeoutSeconds)
+    public static Set<HypoTournee> makeTourneesRandom(long timeoutSeconds)
     {
         
         // Dans un premier temps on a besoin de récupérer les instances de chaques objets
@@ -53,7 +55,7 @@ public class AlgoRandom {
         List<CommandeClient> clientsAll     = new ArrayList<>(daoCommandeClient.findAll());
         Depot depot = daoDepot.findAll().iterator().next();
         
-        List<HypoTournee> tournees = generateSafeTournees(clientsAll, depot);
+        Set<HypoTournee> tournees = generateSafeTournees(clientsAll, depot);
         
         long beginTime = System.currentTimeMillis();
         long timeout = beginTime + (timeoutSeconds * 1000);
@@ -140,9 +142,9 @@ public class AlgoRandom {
         return commandeRandom;
     }
 
-    private static List<HypoTournee> generateSafeTournees(List<CommandeClient> clientsAll, Depot depot) {
+    private static Set<HypoTournee> generateSafeTournees(List<CommandeClient> clientsAll, Depot depot) {
         
-        List<HypoTournee> tournees = new ArrayList<>();
+        Set<HypoTournee> tournees = new HashSet<>();
         
         for(CommandeClient client : clientsAll) {
             HypoTournee tournee;
@@ -199,12 +201,11 @@ public class AlgoRandom {
         
         
         System.out.println("STEP 2 / GENERATING TOURNEES");
-        List<HypoTournee> hypoTournees = makeTourneesRandom(generateTourneesDuringSeconds);
-        List<CplexTournee> tournees = new ArrayList<>(hypoTournees);
+        Set<HypoTournee> hypoTournees = makeTourneesRandom(generateTourneesDuringSeconds);
         
         System.out.println("STEP 3 / SOLVING CPLEX");
         CplexSolve cp = new CplexSolve();
-        for(CplexTournee ct: tournees) {
+        for(CplexTournee ct: hypoTournees) {
             cp.addTournee(ct);
         }
         cp.setTimeLimit(cplexSolveLimitSeconds);

@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -56,12 +57,11 @@ public class APICalculateExperimentalController extends HttpServlet {
         
         
         System.out.println("STEP 2 / GENERATING TOURNEES");
-        List<HypoTournee> hypoTournees = makeTourneesRandom(generateTourneesDuringSeconds);
-        List<CplexTournee> tournees = new ArrayList<>(hypoTournees);
+        Set<HypoTournee> hypoTournees = makeTourneesRandom(generateTourneesDuringSeconds);
         
         System.out.println("STEP 3 / SOLVING CPLEX");
         CplexSolve cp = new CplexSolve();
-        for(CplexTournee ct: tournees) {
+        for(CplexTournee ct: hypoTournees) {
             cp.addTournee(ct);
         }
         cp.setTimeLimit(cplexSolveLimitSeconds);
