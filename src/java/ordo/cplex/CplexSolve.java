@@ -78,8 +78,10 @@ public class CplexSolve {
     }
     
     private boolean autoTune = false;
-    public void setAutoTune(boolean doIt) {
+    private int tuneTiLim = 0;
+    public void setAutoTune(boolean doIt, int timeLimit) {
         autoTune = doIt;
+        tuneTiLim = timeLimit;
     }
     
     public void setCutParams() {
@@ -152,6 +154,7 @@ public class CplexSolve {
             }
             
             if(autoTune) {
+                cplex.setParam(IloCplex.DoubleParam.TuningTiLim, tuneTiLim);
                 cplex.tuneParam();
             }
             
