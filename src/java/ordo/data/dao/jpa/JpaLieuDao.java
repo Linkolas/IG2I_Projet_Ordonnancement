@@ -43,6 +43,19 @@ public class JpaLieuDao extends JpaDao<Lieu> {
         return lieu;
     }
     
+    public Lieu findLieuByNumeroLieu(String lieu){
+        Query query = this.em.createNamedQuery("Lieu.findByNumeroLieu");
+        query.setParameter("numeroLieu", lieu);
+        
+        Lieu l = (Lieu) query.getSingleResult();
+        
+        if(lieu == null){
+            System.out.println("Il n'y a pas de Lieu ayant le code " + lieu);
+        }
+        
+        return l;
+    }
+    
     private JpaLieuDao() {
         super(Lieu.class);
     }
