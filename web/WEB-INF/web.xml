@@ -29,6 +29,10 @@
         <servlet-class>ordo.servlet.api.APICalculateExperimentalController</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>APICalculateJspritController</servlet-name>
+        <servlet-class>ordo.servlet.api.APICalculateJspritController</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>APIGenerateController</servlet-name>
         <servlet-class>ordo.servlet.api.APIGenerateController</servlet-class>
     </servlet>
@@ -63,6 +67,10 @@
     <servlet-mapping>
         <servlet-name>APICalculateExperimentalController</servlet-name>
         <url-pattern>/api/calculatewip</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>APICalculateJspritController</servlet-name>
+        <url-pattern>/api/calculatejsprit</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>APIGenerateController</servlet-name>

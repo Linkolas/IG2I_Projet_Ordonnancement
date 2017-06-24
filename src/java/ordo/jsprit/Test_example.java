@@ -31,7 +31,7 @@ import java.util.Collection;
  *
  * @author Nicolas
  */
-public class Test {
+public class Test_example {
     
      public static void main(String[] args) {
         /*
