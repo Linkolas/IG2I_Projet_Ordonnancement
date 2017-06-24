@@ -54,3 +54,6 @@ nb-configuration.xml
 release.properties
 pom.xml.releaseBackup
 pom.xml.tag
+/src/java/ordo/jsprit/AdditionalDistanceConstraintExample.java
+/src/java/ordo/jsprit/CostMatrixExample.java
+/src/java/ordo/jsprit/SolomonR101Example.java
