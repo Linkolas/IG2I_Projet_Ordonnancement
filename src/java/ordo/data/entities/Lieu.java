@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import ordo.data.dao.jpa.JpaTrajetDao;
 
@@ -20,7 +21,10 @@ import ordo.data.dao.jpa.JpaTrajetDao;
  * @author Nicolas
  */
 @Entity
-@NamedQuery(name="Lieu.findByCoordonnees", query="SELECT l FROM Lieu l WHERE l.coordX = :coordX AND l.coordY = :coordY") 
+@NamedQueries({
+    @NamedQuery(name="Lieu.findByCoordonnees", query="SELECT l FROM Lieu l WHERE l.coordX = :coordX AND l.coordY = :coordY"),
+    @NamedQuery(name="Lieu.findByNumeroLieu", query="SELECT l FROM Lieu l WHERE l.numeroLieu = :numeroLieu")
+    })
 public class Lieu implements Serializable {
 
     @Id
