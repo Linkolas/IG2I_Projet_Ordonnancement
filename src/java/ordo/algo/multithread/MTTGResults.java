@@ -15,6 +15,7 @@ import ordo.algo.HypoTournee;
  */
 public class MTTGResults {
     private Set<MTTournee> tournees = new HashSet<>();
+    private Set<MTSolution> solutions = new HashSet<>();
     private String message = "";
 
     public Set<MTTournee> getTournees() {
@@ -23,6 +24,14 @@ public class MTTGResults {
 
     public void setTournees(Set<MTTournee> tournees) {
         this.tournees = tournees;
+    }
+    
+    public Set<MTSolution> getSolutions() {
+        return solutions;
+    }
+
+    public void setSolutions(Set<MTSolution> solutions) {
+        this.solutions = solutions;
     }
     
     public String getMessage() {

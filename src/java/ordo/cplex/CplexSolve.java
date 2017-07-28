@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import ordo.algo.multithread.MTSolution;
 import ordo.data.entities.CommandeClient;
 import ordo.data.entities.Depot;
 import ordo.data.entities.Lieu;
@@ -104,9 +105,10 @@ public class CplexSolve {
         }
     }
     
-    public void addTournee(CplexTournee tournee) {
+    public IloNumVar addTournee(CplexTournee tournee) {
+        IloNumVar var = null;
         try {
-            IloNumVar var = cplex.boolVar();
+            var = cplex.boolVar();
             tournee.setCplexVar(var);
             
             for(Lieu lieu: tournee.getLieux()) {
@@ -131,6 +133,10 @@ public class CplexSolve {
         } catch (IloException ex) {
             Logger.getLogger(CplexSolve.class.getName()).log(Level.SEVERE, null, ex);
         }
+        if(var == null) {
+            System.out.println("NULL NULL !!");
+        }
+        return var;
     }
     
     public void solve() {
@@ -151,6 +157,10 @@ public class CplexSolve {
                     contr.addTerm(var, 1);
                 }
                 cplex.addEq(contr, 1);
+            }
+            
+            if(solution != null) {
+                setMIPStart();
             }
             
             if(autoTune) {
@@ -193,7 +203,53 @@ public class CplexSolve {
         return results;
     }
     
+    public double getResultCost() {
+        double rtn = 0;
+        try {
+            rtn = cplex.getBestObjValue();
+        } catch (IloException ex) {
+            Logger.getLogger(CplexSolve.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rtn;
+    }
+    
+    private MTSolution solution = null;
+    private IloNumVar[] startVar = null;
+    private double[] startVal = null;
+    
+    /**
+     * Must be called just before solving.
+     * @param solution 
+     */
+    public void setSolution(MTSolution solution) {
+        this.solution = solution;
+        
+        int size = solution.tournees.size();
+        System.out.println("solution.tournees.size(); " + size);
             
+        startVar = new IloNumVar[size];
+        startVal = new double[size];
+
+        int idx = 0;
+        for(CplexTournee ct : solution.tournees) {
+            startVar[idx] = addTournee(ct);
+            startVal[idx] = 1;
+
+            idx++;
+        }
+        
+        System.out.println("Added " + idx + " tournees from solution");
+    }
+    
+    private void setMIPStart() {
+        
+        try {
+            cplex.addMIPStart(startVar, startVal, IloCplex.MIPStartEffort.Repair);
+        } catch (IloException ex) {
+            Logger.getLogger(CplexSolve.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public static void main(String[] args) {
         List<CplexTournee> tournees = generateTournees();
         CplexSolve cp = new CplexSolve();

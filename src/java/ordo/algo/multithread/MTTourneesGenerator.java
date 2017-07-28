@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import static ordo.algo.AlgoRandom.choisirCommandeRandom;
 import ordo.algo.HypoTournee;
+import ordo.data.Constantes;
 import ordo.data.entities.CommandeClient;
 import ordo.data.entities.Depot;
 import ordo.data.entities.Trajet;
@@ -111,62 +112,95 @@ public class MTTourneesGenerator implements Callable<MTTGResults> {
         System.out.println(threadNumber + " | " + "CLIENTS T : " + clientsTrains.size());
         
         Set<MTTournee> tournees = new HashSet<>();
+        Set<MTSolution> solutions = new HashSet<>();
         
         long beginTime = System.currentTimeMillis();
         long timeout = beginTime + (runtime * 1000);
         long lastSout = System.currentTimeMillis();
         while(System.currentTimeMillis() < timeout) {
             
-            for(CommandeClient client : clientsAll) {
+            //Liste des clients restants pour la SOLUTION
+            List<CommandeClient> clientsRestants = new ArrayList<>(clientsAll);
+            List<CommandeClient> clientsRestantsTrains = new ArrayList<>(clientsTrains);
+            MTSolution solution = new MTSolution();
+            
+            while(clientsRestants.size() > 0) {
+                CommandeClient client = clientsRestants.get(0); // TODO: aléatoire ?
+                CommandeClient lastInserted;
                 
                 // La tournee en cours.
                 MTTournee tournee;
-
-                //Liste des clients restants
-                List<CommandeClient> clientsRestants = new ArrayList<>();
-
-                if(client.getNombreRemorquesMax() < 2) {
+                
+                if(client.getQuantiteVoulue() <= Constantes.capaciteMax) {
                     tournee = new MTTournee(MTTournee.Type.CAMION, trajets);
-                    clientsRestants.addAll(clientsCamions);
+                    //clientsRestants.addAll(clientsCamions);
                 } else {
                     tournee = new MTTournee(MTTournee.Type.TRAIN, trajets);
-                    clientsRestants.addAll(clientsTrains);
+                    //clientsRestants.addAll(clientsTrains);
                 }
 
                 // On part du dépot
                 tournee.addLieu(depot);
                 // On va chez le client
                 tournee.addLieu(client);
+                lastInserted = client;
+                // On revient de chez le client
+                tournee.addLieu(depot);
 
                 // On enlève le client en cours des choix aléatoire
                 clientsRestants.remove(client);
+                clientsRestantsTrains.remove(client);
 
-                while(!tournee.isTooFull() && !tournee.isTooLong()) {
+                
+                int retry = 3;
+                while(retry > 0) {
                     // Randomisation = ajout d'un client aléatoire
-                    CommandeClient nouveauClient = choisirCommandeRandom(clientsRestants);
+                    CommandeClient nouveauClient;
+                    if(tournee.getType() == MTTournee.Type.CAMION) {
+                        
+                        if(clientsRestants.size() < 1) {
+                            retry = 0;
+                            break;
+                        }
+                        
+                        nouveauClient = choisirCommandeRandom(clientsRestants);
+                        
+                    } else {
+                        
+                        if(clientsRestantsTrains.size() < 1) {
+                            retry = 0;
+                            break;
+                        }
+                        
+                        nouveauClient = choisirCommandeRandom(clientsRestantsTrains);
+                    }
 
                     // On ajoute le nouveau client à la tournée
-                    tournee.addLieu(nouveauClient);
-
-                    // On retire ce client des possibilités pour le prochain tirage
-                    clientsRestants.remove(nouveauClient);
-                }
-
-                // Le dernier lieu ajouté a fait dépasser un limite, on l'enlève
-                tournee.removeLastLieu();
-                
-                // On doit maintenant retourner au dépot
-                tournee.addLieu(depot);
-
-                while(tournee.isTooFull() || tournee.isTooLong()) {
-                    // On retire le depôt
-                    tournee.removeLastLieu();
-
-                    // On retire le dernier lieu ajouté
-                    tournee.removeLastLieu();
-
-                    // On ajoute le dépôt
-                    tournee.addLieu(depot);  
+                    tournee.addLieuBestInsertion(nouveauClient);
+                    lastInserted = nouveauClient;
+                    
+                    if(tournee.isTooFull() && !tournee.isTooLong()) {
+                        // Si c'est une tournée CAMION mais qu'on ne livre pas de camion
+                        if(tournee.getType() == MTTournee.Type.CAMION && !tournee.containsClientCamion()) {
+                            MTTournee saved = new MTTournee(tournee, trajets);
+                            tournees.add(saved);
+                        }
+                    }
+                    
+                    if(/*!tournee.isTooFull() &&*/ tournee.isTooLong()) {
+                        // TODO : Reorganiser l'ordre de passage (code des profs)
+                    }
+                    
+                    if(tournee.isTooFull() || tournee.isTooLong()) {
+                        
+                        tournee.removeLieu(lastInserted);
+                        retry--;
+                        
+                    } else {
+                        // On retire ce client des possibilités pour le prochain tirage
+                        clientsRestants.remove(nouveauClient);
+                        clientsRestantsTrains.remove(nouveauClient);
+                    }
                 }
 
                 // Il faut appeller getCost pour que le coût soit mis à jour.
@@ -175,7 +209,10 @@ public class MTTourneesGenerator implements Callable<MTTGResults> {
 
                 // Enfin, on l'ajoute à la liste.
                 tournees.add(tournee);
+                solution.tournees.add(tournee);
             }
+            
+            solutions.add(solution);
             
             long elapsed = (System.currentTimeMillis() - beginTime)/1000;
             
@@ -185,7 +222,7 @@ public class MTTourneesGenerator implements Callable<MTTGResults> {
             }
         }
         
-        
+        results.setSolutions(solutions);
         results.setTournees(tournees);
         return results;
     }

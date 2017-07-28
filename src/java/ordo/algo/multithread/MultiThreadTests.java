@@ -41,8 +41,10 @@ public class MultiThreadTests {
     public int threads = 4;
     public int generateTime = 10;
     
-    public Set<MTTournee> runTests() {
+    public MTTGResults runTests() {
+        MTTGResults rtn = new MTTGResults();
         Set<MTTournee> tournees = new HashSet<>();
+        Set<MTSolution> solutions = new HashSet<>();
         
         try {
             // Create a InitContext instance
@@ -57,14 +59,16 @@ public class MultiThreadTests {
             final List<Callable<MTTGResults>> callables = initializeThreads(threads);
             
             // Call the threads and get their results
-            System.out.println("LAUCHING CALLABLES");
+            System.out.println("LAUNCHING CALLABLES");
             List<Future<MTTGResults>> results = executorService.invokeAll(callables);
             
             for(Future<MTTGResults> result: results) {
                 tournees.addAll(result.get().getTournees());
+                solutions.addAll(result.get().getSolutions());
             }
             
             System.out.println("TOTAL OF TOURNEES : " + tournees.size());
+            System.out.println("TOTAL OF SOLUTIONS : " + solutions.size());
         } catch (NamingException ex) {
             Logger.getLogger(MultiThreadTests.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
@@ -73,7 +77,9 @@ public class MultiThreadTests {
             Logger.getLogger(MultiThreadTests.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        return tournees;
+        rtn.setTournees(tournees);
+        rtn.setSolutions(solutions);
+        return rtn;
     }
     
     
