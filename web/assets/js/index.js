@@ -11,7 +11,15 @@ $(function() {
     $("#calculate_wip").click(function() {
         $("#calculate_wip").html("Calcul en cours...");
         $.get("api/calculatewip", function(data) {
-            $("#calculate_wip").html("CALCULER (WIP)");
+            $("#calculate_wip").html("CALCULER (Cplex)");
+            location.reload();
+        });
+    });
+    
+    $("#calculate_jsprit").click(function() {
+        $("#calculate_jsprit").html("Calcul en cours...");
+        $.get("api/calculatejsprit", function(data) {
+            $("#calculate_jsprit").html("CALCULER (Jsprit)");
             location.reload();
         });
     });

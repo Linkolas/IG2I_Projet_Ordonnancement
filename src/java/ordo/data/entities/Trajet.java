@@ -128,9 +128,11 @@ public class Trajet implements Serializable {
         return true;
     }
     
+    
+    // </editor-fold>
+
     @Override
     public String toString() {
-        return "ordo.data.entities.Trajet[ id=" + id + " ]";
+        return "Trajet{" + "id=" + id + ", duree=" + duree + ", distance=" + distance + ", depart=" + depart.getNumeroLieu() + ", destination=" + destination.getNumeroLieu() + '}';
     }
-    // </editor-fold>
 }
